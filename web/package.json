@@ -1,0 +1,35 @@
+{
+  "name": "nt-javaee-fe",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@kangc/v-md-editor": "^2.3.15",
+    "@types/echarts": "^4.9.16",
+    "@types/node": "^18.11.15",
+    "@types/three": "^0.149.0",
+    "@types/vue-markdown": "^2.2.1",
+    "baidu-map-vue3": "^0.4.9",
+    "echarts": "^5.4.1",
+    "element-plus": "^2.2.26",
+    "pinia": "^2.0.28",
+    "three": "^0.150.1",
+    "vue": "^3.2.41",
+    "vue-axios": "^3.5.2",
+    "vue-router": "4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.2.0",
+    "axios": "^1.2.1",
+    "typescript": "^4.9.4",
+    "unplugin-auto-import": "^0.12.1",
+    "unplugin-vue-components": "^0.22.12",
+    "vite": "^3.2.3",
+    "vue-tsc": "^1.0.9"
+  }
+}
