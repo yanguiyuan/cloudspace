@@ -1,0 +1,18 @@
+cloudfile:
+  addr: "localhost:8080"
+  gorm-gen:
+    model: "./model"
+    dal: "./internal/cloudfile/dal"
+  mysql:
+    dsn: "root:yanguiyuan@tcp(localhost:3306)/cloud_file?charset=utf8&parseTime=True&loc=Local&timeout=100s"
+  oss:
+    endpoint: "https://oss-cn-hangzhou.aliyuncs.com"
+    accessKeyID: "LTAI5tJq4e3W3DK1qy9WQqHP"
+    accessKeySecret: "rpHWjgvPvoVtCie5ujY5TGnFkIWc25"
+    bucketName: "bucket-cloud-file"
+user:
+  gorm-gen:
+    model: "./model"
+    dal: "./internal/user/dal"
+  mysql:
+    dsn: "root:yanguiyuan@tcp(localhost:3306)/auth?charset=utf8&parseTime=True&loc=Local&timeout=100s"
