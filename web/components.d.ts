@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AppTemplate: typeof import('./src/components/AppTemplate.vue')['default']
     AppTempleate: typeof import('./src/components/AppTempleate.vue')['default']
     CurrentTime: typeof import('./src/components/CurrentTime.vue')['default']
     Drawer: typeof import('./src/components/Drawer.vue')['default']

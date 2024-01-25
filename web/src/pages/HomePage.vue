@@ -59,7 +59,7 @@ onUnmounted(() => {
     bottom: 0;
     right: 0;
     left: 0;
-    backdrop-filter: blur(10px);
+    //backdrop-filter: blur(10px);
 }
 
 .settingTooltip {

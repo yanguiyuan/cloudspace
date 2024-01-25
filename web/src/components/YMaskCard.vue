@@ -19,13 +19,12 @@
 // import { emit } from 'process';
 import { defineProps,withDefaults,defineEmits } from 'vue';
 interface Props{
-    visible:boolean
+    visible:boolean,
 }
 const props=withDefaults(defineProps<Props>(),{visible:false})
 const emit=defineEmits<{(event:"onClose") :void}>()
 const onClose=function(){
-    emit("onClose")
-    console.log("close")
+    emit("onClose");
 }
 </script>
 <style scoped>

@@ -1,15 +1,22 @@
 
 
-html, body {
+@layer tailwind-base, primevue, tailwind-utilities;
+
+@layer tailwind-base {
+  @tailwind base;
+}
+
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}
+
+html, body,#app {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
 }
-#app{
-  height: 100%;
-}
-
 
 *{
   box-sizing: border-box;

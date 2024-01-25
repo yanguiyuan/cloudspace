@@ -1,13 +1,13 @@
 <template>
-    <AppTempleate>
+    <AppTemplate>
         <template #content>
             nihao
         </template>
-    </AppTempleate>
+    </AppTemplate>
 </template>
 <script lang="ts" setup>
 import { reactive } from 'vue';
-import AppTempleate from '../components/AppTempleate.vue';
+import AppTemplate from '../components/AppTemplate.vue';
 interface TestB{
     one:string
     test2():void

@@ -12,3 +12,10 @@
 ```bash
 go run ./cmd/gen/cloufile-gorm
 ```
+
+### api网关
+
+- 代码生成
+```bash
+hz new -module github.com/yanguiyuan/cloudspace -idl idl/api/api.thrift
+```

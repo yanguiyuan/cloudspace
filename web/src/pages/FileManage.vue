@@ -53,7 +53,7 @@
           userData.username
         }}</div>
         <strong v-if="!fileBreadcrumbState.path.length" id="currentDirectory">{{ userData.username }}</strong>
-        <div class="filePathContainer" v-for="item, key in fileBreadcrumbState.path">
+        <div class="filePathContainer" v-for="(item, key) in fileBreadcrumbState.path">
           <div class="filePathItem divider">/</div>
           <div @click="update(item)" v-if="key != fileBreadcrumbState.path.length - 1" class="filePathItem filePoint">{{
             item.fileName }}
@@ -161,7 +161,7 @@ interface UserData {
 }
 const userData =reactive<UserData>({
     token:"",
-    username:"",
+    username:"202121091391",
     namespaceID:0
 })
 
@@ -182,7 +182,24 @@ interface FileItem{
     createTime:Date
     updateTime:Date
 }
-const fileList=ref<Array<FileItem>>([])
+const fileList=ref<Array<FileItem>>([
+  {
+    id:1,
+    name:"test.txt",
+    type:"doc",
+    size:1024,
+    fileLink:{
+      id:1,
+      fileID:1,
+      url:"",
+      path:"",
+      createTime:new Date(),
+      updateTime:new Date()
+    },
+    createTime:new Date(),
+    updateTime:new Date()
+  }
+])
 //控件显示状态
 const getFileListByParentID=async (id:number)=>{
     const resp=await axios.get("/auth/files/"+id)
@@ -345,7 +362,9 @@ interface FileListData {
 
 }
 const fileListData = reactive<FileListData>({
-  value: [],
+  value: [
+      new FileItemData("test.txt", 1, ".txt", "", new FileRenameComponentState(new ControlVisibleState(false), "")),
+  ],
 })
 const updateFromRemote = async function (file: FileItemData) {
   await fetchFileData()
@@ -617,11 +636,6 @@ onUnmounted(() => {
   cursor: pointer;
 }
 
-.uploadWindow {
-  background-color: rgb(0, 235, 235) !important;
-  border-radius: 25px !important;
-}
-
 .divider {
   color: rgba(0, 0, 0, 0.4);
   margin: 0 0.2rem 0;
@@ -666,44 +680,6 @@ input {
   box-shadow: 0 15px 30px rgb(0 0 0 / 25%);
 }
 
-.info-card {
-  position: fixed;
-  bottom: 40%;
-  top: 40%;
-  left: 30%;
-  right: 30%;
-  border-radius: 15px;
-  background-color: rgb(235, 235, 235);
-  box-shadow: 0 15px 30px rgb(0 0 0 / 25%);
-  padding: 10px;
-}
-
-.info-card-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.info-card-content {
-  margin: 10px;
-  position: absolute;
-  top: 15px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.info-card-close {
-  display: flex;
-  justify-content: flex-end;
-  cursor: pointer;
-  z-index: 999;
-}
 
 #sideCard {
   position: absolute;

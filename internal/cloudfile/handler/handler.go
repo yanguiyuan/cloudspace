@@ -43,7 +43,6 @@ const (
 
 // Add implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Add(ctx context.Context, req *rpc.AddRequest) (err error) {
-	// TODO: Your code here...
 	id1 := id.Base62()
 	id2 := id.Base62()
 	if err != nil {
@@ -78,7 +77,6 @@ func (s *CloudFileServiceImpl) Add(ctx context.Context, req *rpc.AddRequest) (er
 
 // Remove implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Remove(ctx context.Context, req *rpc.RemoveRequest) (err error) {
-	// TODO: Your code here...
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		_, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(req.Id)).Delete()
 		if err != nil {
@@ -98,7 +96,6 @@ func (s *CloudFileServiceImpl) Remove(ctx context.Context, req *rpc.RemoveReques
 
 // Query implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Query(ctx context.Context, req *rpc.QueryRequest) (resp *rpc.QueryResponse, err error) {
-	// TODO: Your code here...
 	find, err := dal.FileIndex.WithContext(ctx).Where(dal.FileIndex.ParentID.Eq(req.Pid)).Find()
 	if err != nil {
 		return nil, err
@@ -134,7 +131,6 @@ func (s *CloudFileServiceImpl) Query(ctx context.Context, req *rpc.QueryRequest)
 
 // Update implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Update(ctx context.Context, req *rpc.UpdateRequest) (err error) {
-	// TODO: Your code here...
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		item, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(req.Id)).First()
 		if err != nil {
@@ -151,7 +147,6 @@ func (s *CloudFileServiceImpl) Update(ctx context.Context, req *rpc.UpdateReques
 
 // CreateDirectory implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) CreateDirectory(ctx context.Context, req *rpc.CreateDirectoryRequest) (err error) {
-	// TODO: Your code here...
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		id0 := id.Base62()
 		if err != nil {
@@ -184,7 +179,6 @@ func (s *CloudFileServiceImpl) CreateDirectory(ctx context.Context, req *rpc.Cre
 
 // RemoveDirectory implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) RemoveDirectory(ctx context.Context, id string) (err error) {
-	// TODO: Your code here...
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		_, err := tx.FileIndex.WithContext(ctx).Where(dal.FileIndex.ChildID.Eq(id)).Delete()
 		if err != nil {
@@ -201,7 +195,6 @@ func (s *CloudFileServiceImpl) RemoveDirectory(ctx context.Context, id string) (
 
 // Rename implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Rename(ctx context.Context, id, newName string) (err error) {
-	// TODO: Your code here...
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		_, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).Update(dal.FileItem.Name, newName)
 		if err != nil {

@@ -9,16 +9,6 @@ const router=createRouter({
             component:()=>import('../pages/LoginPage.vue')
 
         },
-        // {
-        //     path:"/",
-        //     component:()=>import('../components/IndexPage.vue'),
-        //     children:[
-        //         {
-        //             path:"",
-        //             component:()=>import('../components/FileManage.vue')
-        //         }
-        //     ]
-        // }
         {
             path:"/",
             component:()=>import('../pages/HomePage.vue'),
@@ -30,7 +20,7 @@ const router=createRouter({
                 },
                 {
                     path:"/fileManagement",
-                    component:()=>import('../pages/FileManage.vue')
+                    component:()=>import('../pages/FileManage0.vue')
                 },
                 {
                     path:"/chatgpt",

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "api/file";
+
+import "api.proto";
+
+message QueryReq {
+  string ParentID = 1[(api.query)="parent_id"];
+}
+message FileItem {
+  string ID = 1;
+  string Name = 2;
+  string Type = 3;
+  string Url = 4;
+}
+message QueryResp {
+  repeated FileItem FileList = 1;
+}
+service FileService {
+  rpc Query(QueryReq) returns(QueryResp) {
+    option (api.get) = "/files";
+  }
+}

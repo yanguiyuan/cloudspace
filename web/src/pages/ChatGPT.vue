@@ -72,7 +72,7 @@
 </template>
 <script setup lang="ts">
 import { ElMessage } from 'element-plus';
-import AppTempleate from '../components/AppTempleate.vue';
+import AppTemplate from '../components/AppTemplate.vue';
 import { ref, onUnmounted, onMounted, reactive, getCurrentInstance } from 'vue'
 import axios from 'axios';
 

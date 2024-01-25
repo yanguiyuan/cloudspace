@@ -1,15 +1,15 @@
 <template>
     <div>
-        <AppTempleate>
+        <AppTemplate>
             <template #content>
                 <div ref="charts" :style="{ width: '900px', height: '300px' }">
             </div>
             </template>
-        </AppTempleate>
+        </AppTemplate>
     </div>
 </template>
 <script setup lang="ts">
-import AppTempleate from '../components/AppTempleate.vue';
+import AppTemplate from '../components/AppTemplate.vue';
 import { ref, onMounted, } from 'vue'
 import * as echarts from 'echarts'
 const canExpand = ref<Boolean>(false)

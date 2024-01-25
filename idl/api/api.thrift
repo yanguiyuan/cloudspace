@@ -1,5 +1,5 @@
-namespace go rpc
 
+namespace go api
 struct AddRequest{
     1:string fileName
     2:string parentID
