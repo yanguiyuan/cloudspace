@@ -118,6 +118,12 @@ export class AssetsIconSvgService {
                             fill="#D8D8D8" p-id="3600"></path>
                     </svg>
     `);
+    this.iconSvgMap.set("create-folder",`
+      <i class="pi pi-folder" style="font-size: 2rem"></i>
+    `)
+    this.iconSvgMap.set("create-file",`
+      <i class="pi pi-file" style="font-size: 2rem"></i>
+    `)
   }
   public static getInstance(): AssetsIconSvgService {
     if (!AssetsIconSvgService.instance) {

@@ -7,7 +7,8 @@ require (
 	github.com/apache/thrift v0.19.0
 	github.com/cloudwego/hertz v0.7.3
 	github.com/cloudwego/kitex v0.8.0
-	github.com/yanguiyuan/yuan v0.1.0
+	github.com/hertz-contrib/cors v0.1.0
+	github.com/yanguiyuan/yuan v0.1.3
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gen v0.3.24
@@ -33,11 +34,13 @@ require (
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20220608213341-c488b8fa1db3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/henrylee2cn/ameda v1.4.10 // indirect
 	github.com/henrylee2cn/goutil v0.0.0-20210127050712-89660552f6f8 // indirect
+	github.com/hertz-contrib/jwt v1.0.2 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/jhump/protoreflect v1.8.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

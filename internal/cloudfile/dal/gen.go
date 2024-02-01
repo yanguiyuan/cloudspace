@@ -16,39 +16,49 @@ import (
 )
 
 var (
-	Q         = new(Query)
-	FileIndex *fileIndex
-	FileItem  *fileItem
+	Q             = new(Query)
+	FileIndex     *fileIndex
+	FileItem      *fileItem
+	Namespace     *namespace
+	UserNamespace *userNamespace
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	FileIndex = &Q.FileIndex
 	FileItem = &Q.FileItem
+	Namespace = &Q.Namespace
+	UserNamespace = &Q.UserNamespace
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:        db,
-		FileIndex: newFileIndex(db, opts...),
-		FileItem:  newFileItem(db, opts...),
+		db:            db,
+		FileIndex:     newFileIndex(db, opts...),
+		FileItem:      newFileItem(db, opts...),
+		Namespace:     newNamespace(db, opts...),
+		UserNamespace: newUserNamespace(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	FileIndex fileIndex
-	FileItem  fileItem
+	FileIndex     fileIndex
+	FileItem      fileItem
+	Namespace     namespace
+	UserNamespace userNamespace
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:        db,
-		FileIndex: q.FileIndex.clone(db),
-		FileItem:  q.FileItem.clone(db),
+		db:            db,
+		FileIndex:     q.FileIndex.clone(db),
+		FileItem:      q.FileItem.clone(db),
+		Namespace:     q.Namespace.clone(db),
+		UserNamespace: q.UserNamespace.clone(db),
 	}
 }
 
@@ -62,21 +72,27 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:        db,
-		FileIndex: q.FileIndex.replaceDB(db),
-		FileItem:  q.FileItem.replaceDB(db),
+		db:            db,
+		FileIndex:     q.FileIndex.replaceDB(db),
+		FileItem:      q.FileItem.replaceDB(db),
+		Namespace:     q.Namespace.replaceDB(db),
+		UserNamespace: q.UserNamespace.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	FileIndex IFileIndexDo
-	FileItem  IFileItemDo
+	FileIndex     IFileIndexDo
+	FileItem      IFileItemDo
+	Namespace     INamespaceDo
+	UserNamespace IUserNamespaceDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		FileIndex: q.FileIndex.WithContext(ctx),
-		FileItem:  q.FileItem.WithContext(ctx),
+		FileIndex:     q.FileIndex.WithContext(ctx),
+		FileItem:      q.FileItem.WithContext(ctx),
+		Namespace:     q.Namespace.WithContext(ctx),
+		UserNamespace: q.UserNamespace.WithContext(ctx),
 	}
 }
 

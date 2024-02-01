@@ -4,19 +4,12 @@
 
 package model
 
-import (
-	"time"
-)
-
 const TableNameFileIndex = "file_indices"
 
 // FileIndex mapped from table <file_indices>
 type FileIndex struct {
-	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	ParentID   string    `gorm:"column:parent_id;not null" json:"parent_id"`
-	ChildID    string    `gorm:"column:child_id;not null" json:"child_id"`
-	CreateTime time.Time `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"`
-	UpdateTime time.Time `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP" json:"update_time"`
+	ParentID string `gorm:"column:parent_id;primaryKey" json:"parent_id"`
+	ChildID  string `gorm:"column:child_id;primaryKey" json:"child_id"`
 }
 
 // TableName FileIndex's table name

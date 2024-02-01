@@ -1,5 +1,6 @@
 <template>
     <div class="bg">
+        <Toast />
         <div class="login-container" :class="{ mask: isMask }">
             <div class="coner-ico"></div>
             <CurrentTime></CurrentTime>
@@ -37,18 +38,18 @@
 </template>
 
 <script setup lang="ts">
-import {cf as axios} from '../axios/axios'
+import axios from '../axios/axios'
 import { onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import CurrentTime from '../components/CurrentTime.vue';
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
 const btnmessage = ref<string>("登录")
 const user = ref<string>("")
 const pwd = ref<string>("")
 const comfirmPwd = ref<string>("")
 const isMask = ref<boolean>(false)
-const nowHour = ref<string | number>("00")
-const nowMinutes = ref<string | number>("00")
 const isLoginActive = ref<boolean>(true)
 const isRegisterActive = ref<boolean>(false)
 const router = useRouter()
@@ -74,7 +75,16 @@ let loginOrRegister = function () {
                 "username": user.value,
                 "password": pwd.value
             }).then((res) => {
-                ElMessage.success("注册成功")
+                if(res.data.code==0){
+                  ElMessage.success("注册成功")
+                  return
+                }
+                if(res.data.code==1002){
+                  toast.add({ severity: 'error', summary: '错误', detail: "用户名已经存在", life: 3000 })
+                  return;
+                }
+                toast.add({ severity: 'error', summary: '错误', detail: res.data.msg, life: 3000 })
+
             }).catch((err)=>{
                 console.log(err.response)
                 ElMessage.error(err.response.data.error)

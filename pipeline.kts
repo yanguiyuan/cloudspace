@@ -27,6 +27,7 @@ pipeline("api"){
 
     step("update"){
         cmd("hz update -I idl -idl idl/api/file.proto")
+        cmd("hz update -I idl -idl idl/api/user.proto")
     }
     step("server"){
         cmd("go run .")
@@ -44,5 +45,37 @@ pipeline("user"){
     step("update"){
         cmd("kitex -gen-path pkg -module github.com/yanguiyuan/cloudspace idl/user/user.thrift")
         cmd("go run ./cmd/gen/user")
+    }
+}
+pipeline("file"){
+    step("update"){
+        cmd("kitex -gen-path pkg -module github.com/yanguiyuan/cloudspace idl/cloudfile/cloudfile.thrift")
+    }
+}
+pipeline("auth"){
+    parallel("rpc"){
+        cmd("go run ./cmd/user")
+    }
+    parallel("api"){
+        cmd("go run .")
+    }
+    parallel("web"){
+        workspace("./web")
+        cmd("yarn dev")
+    }
+}
+pipeline("server"){
+    parallel("user"){
+        cmd("go run ./cmd/user")
+    }
+    parallel("file"){
+        cmd("go run ./cmd/cloudfile")
+    }
+    parallel("api"){
+        cmd("go run ./cmd/api")
+    }
+    parallel("web"){
+        workspace("./web")
+        cmd("yarn dev")
     }
 }

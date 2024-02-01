@@ -1,11 +1,7 @@
 package main
 
-import (
-	"fmt"
-	"github.com/yanguiyuan/yuan/pkg/gen/id"
-)
+import "fmt"
 
 func main() {
-	i := id.Base62()
-	fmt.Println(i)
+	fmt.Printf("user/%d/%d.%s", 110, 210, "txt")
 }

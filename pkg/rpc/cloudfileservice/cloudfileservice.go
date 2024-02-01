@@ -19,13 +19,18 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "CloudFileService"
 	handlerType := (*rpc.CloudFileService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"add":             kitex.NewMethodInfo(addHandler, newCloudFileServiceAddArgs, newCloudFileServiceAddResult, false),
-		"createDirectory": kitex.NewMethodInfo(createDirectoryHandler, newCloudFileServiceCreateDirectoryArgs, newCloudFileServiceCreateDirectoryResult, false),
-		"remove":          kitex.NewMethodInfo(removeHandler, newCloudFileServiceRemoveArgs, newCloudFileServiceRemoveResult, false),
-		"removeDirectory": kitex.NewMethodInfo(removeDirectoryHandler, newCloudFileServiceRemoveDirectoryArgs, newCloudFileServiceRemoveDirectoryResult, false),
-		"query":           kitex.NewMethodInfo(queryHandler, newCloudFileServiceQueryArgs, newCloudFileServiceQueryResult, false),
-		"update":          kitex.NewMethodInfo(updateHandler, newCloudFileServiceUpdateArgs, newCloudFileServiceUpdateResult, false),
-		"rename":          kitex.NewMethodInfo(renameHandler, newCloudFileServiceRenameArgs, newCloudFileServiceRenameResult, false),
+		"add":                 kitex.NewMethodInfo(addHandler, newCloudFileServiceAddArgs, newCloudFileServiceAddResult, false),
+		"createDirectory":     kitex.NewMethodInfo(createDirectoryHandler, newCloudFileServiceCreateDirectoryArgs, newCloudFileServiceCreateDirectoryResult, false),
+		"remove":              kitex.NewMethodInfo(removeHandler, newCloudFileServiceRemoveArgs, newCloudFileServiceRemoveResult, false),
+		"removeDirectory":     kitex.NewMethodInfo(removeDirectoryHandler, newCloudFileServiceRemoveDirectoryArgs, newCloudFileServiceRemoveDirectoryResult, false),
+		"query":               kitex.NewMethodInfo(queryHandler, newCloudFileServiceQueryArgs, newCloudFileServiceQueryResult, false),
+		"queryFileItemByID":   kitex.NewMethodInfo(queryFileItemByIDHandler, newCloudFileServiceQueryFileItemByIDArgs, newCloudFileServiceQueryFileItemByIDResult, false),
+		"update":              kitex.NewMethodInfo(updateHandler, newCloudFileServiceUpdateArgs, newCloudFileServiceUpdateResult, false),
+		"rename":              kitex.NewMethodInfo(renameHandler, newCloudFileServiceRenameArgs, newCloudFileServiceRenameResult, false),
+		"queryUserFileRoot":   kitex.NewMethodInfo(queryUserFileRootHandler, newCloudFileServiceQueryUserFileRootArgs, newCloudFileServiceQueryUserFileRootResult, false),
+		"createFileItem":      kitex.NewMethodInfo(createFileItemHandler, newCloudFileServiceCreateFileItemArgs, newCloudFileServiceCreateFileItemResult, false),
+		"createNamespace":     kitex.NewMethodInfo(createNamespaceHandler, newCloudFileServiceCreateNamespaceArgs, newCloudFileServiceCreateNamespaceResult, false),
+		"createUserNamespace": kitex.NewMethodInfo(createUserNamespaceHandler, newCloudFileServiceCreateUserNamespaceArgs, newCloudFileServiceCreateUserNamespaceResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "rpc",
@@ -116,7 +121,7 @@ func newCloudFileServiceRemoveDirectoryResult() interface{} {
 func queryHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*rpc.CloudFileServiceQueryArgs)
 	realResult := result.(*rpc.CloudFileServiceQueryResult)
-	success, err := handler.(rpc.CloudFileService).Query(ctx, realArg.Req)
+	success, err := handler.(rpc.CloudFileService).Query(ctx, realArg.Pid, realArg.Uid)
 	if err != nil {
 		return err
 	}
@@ -129,6 +134,24 @@ func newCloudFileServiceQueryArgs() interface{} {
 
 func newCloudFileServiceQueryResult() interface{} {
 	return rpc.NewCloudFileServiceQueryResult()
+}
+
+func queryFileItemByIDHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceQueryFileItemByIDArgs)
+	realResult := result.(*rpc.CloudFileServiceQueryFileItemByIDResult)
+	success, err := handler.(rpc.CloudFileService).QueryFileItemByID(ctx, realArg.Id)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCloudFileServiceQueryFileItemByIDArgs() interface{} {
+	return rpc.NewCloudFileServiceQueryFileItemByIDArgs()
+}
+
+func newCloudFileServiceQueryFileItemByIDResult() interface{} {
+	return rpc.NewCloudFileServiceQueryFileItemByIDResult()
 }
 
 func updateHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -165,6 +188,78 @@ func newCloudFileServiceRenameArgs() interface{} {
 
 func newCloudFileServiceRenameResult() interface{} {
 	return rpc.NewCloudFileServiceRenameResult()
+}
+
+func queryUserFileRootHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceQueryUserFileRootArgs)
+	realResult := result.(*rpc.CloudFileServiceQueryUserFileRootResult)
+	success, err := handler.(rpc.CloudFileService).QueryUserFileRoot(ctx, realArg.UserID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = &success
+	return nil
+}
+func newCloudFileServiceQueryUserFileRootArgs() interface{} {
+	return rpc.NewCloudFileServiceQueryUserFileRootArgs()
+}
+
+func newCloudFileServiceQueryUserFileRootResult() interface{} {
+	return rpc.NewCloudFileServiceQueryUserFileRootResult()
+}
+
+func createFileItemHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceCreateFileItemArgs)
+	realResult := result.(*rpc.CloudFileServiceCreateFileItemResult)
+	success, err := handler.(rpc.CloudFileService).CreateFileItem(ctx, realArg.Name, realArg.Ty, realArg.ParentID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = &success
+	return nil
+}
+func newCloudFileServiceCreateFileItemArgs() interface{} {
+	return rpc.NewCloudFileServiceCreateFileItemArgs()
+}
+
+func newCloudFileServiceCreateFileItemResult() interface{} {
+	return rpc.NewCloudFileServiceCreateFileItemResult()
+}
+
+func createNamespaceHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceCreateNamespaceArgs)
+	realResult := result.(*rpc.CloudFileServiceCreateNamespaceResult)
+	success, err := handler.(rpc.CloudFileService).CreateNamespace(ctx, realArg.Name, realArg.RootID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = &success
+	return nil
+}
+func newCloudFileServiceCreateNamespaceArgs() interface{} {
+	return rpc.NewCloudFileServiceCreateNamespaceArgs()
+}
+
+func newCloudFileServiceCreateNamespaceResult() interface{} {
+	return rpc.NewCloudFileServiceCreateNamespaceResult()
+}
+
+func createUserNamespaceHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceCreateUserNamespaceArgs)
+
+	err := handler.(rpc.CloudFileService).CreateUserNamespace(ctx, realArg.UserID, realArg.NamespaceID, realArg.Authority)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newCloudFileServiceCreateUserNamespaceArgs() interface{} {
+	return rpc.NewCloudFileServiceCreateUserNamespaceArgs()
+}
+
+func newCloudFileServiceCreateUserNamespaceResult() interface{} {
+	return rpc.NewCloudFileServiceCreateUserNamespaceResult()
 }
 
 type kClient struct {
@@ -217,11 +312,22 @@ func (p *kClient) RemoveDirectory(ctx context.Context, id string) (err error) {
 	return nil
 }
 
-func (p *kClient) Query(ctx context.Context, req *rpc.QueryRequest) (r *rpc.QueryResponse, err error) {
+func (p *kClient) Query(ctx context.Context, pid string, uid int64) (r *rpc.QueryResponse, err error) {
 	var _args rpc.CloudFileServiceQueryArgs
-	_args.Req = req
+	_args.Pid = pid
+	_args.Uid = uid
 	var _result rpc.CloudFileServiceQueryResult
 	if err = p.c.Call(ctx, "query", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryFileItemByID(ctx context.Context, id string) (r *rpc.CloudFileItem, err error) {
+	var _args rpc.CloudFileServiceQueryFileItemByIDArgs
+	_args.Id = id
+	var _result rpc.CloudFileServiceQueryFileItemByIDResult
+	if err = p.c.Call(ctx, "queryFileItemByID", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -243,6 +349,51 @@ func (p *kClient) Rename(ctx context.Context, id string, newName_ string) (err e
 	_args.NewName_ = newName_
 	var _result rpc.CloudFileServiceRenameResult
 	if err = p.c.Call(ctx, "rename", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
+
+func (p *kClient) QueryUserFileRoot(ctx context.Context, userID int64) (r string, err error) {
+	var _args rpc.CloudFileServiceQueryUserFileRootArgs
+	_args.UserID = userID
+	var _result rpc.CloudFileServiceQueryUserFileRootResult
+	if err = p.c.Call(ctx, "queryUserFileRoot", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string) (r string, err error) {
+	var _args rpc.CloudFileServiceCreateFileItemArgs
+	_args.Name = name
+	_args.Ty = ty
+	_args.ParentID = parentID
+	var _result rpc.CloudFileServiceCreateFileItemResult
+	if err = p.c.Call(ctx, "createFileItem", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CreateNamespace(ctx context.Context, name string, rootID string) (r int64, err error) {
+	var _args rpc.CloudFileServiceCreateNamespaceArgs
+	_args.Name = name
+	_args.RootID = rootID
+	var _result rpc.CloudFileServiceCreateNamespaceResult
+	if err = p.c.Call(ctx, "createNamespace", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CreateUserNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32) (err error) {
+	var _args rpc.CloudFileServiceCreateUserNamespaceArgs
+	_args.UserID = userID
+	_args.NamespaceID = namespaceID
+	_args.Authority = authority
+	var _result rpc.CloudFileServiceCreateUserNamespaceResult
+	if err = p.c.Call(ctx, "createUserNamespace", &_args, &_result); err != nil {
 		return
 	}
 	return nil

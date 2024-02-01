@@ -33,7 +33,7 @@
   </div>
   <Dialog v-model:visible="maskCardVisible" :style="{ width: '50rem' }" modal header="上传文件">
     <Toast />
-    <FileUpload name="demo[]" url="/api/upload" @upload="onTemplatedUpload()" :multiple="true" accept="image/*" :maxFileSize="1024*1024" @select="onSelectedFiles">
+    <FileUpload name="data" url="http://localhost:8888/files" @upload="onTemplatedUpload()" :multiple="true" accept="image/*" :maxFileSize="1024*1024" @select="onSelectedFiles" @before-send="onBeforeSend">
       <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
         <div class="flex flex-nowrap justify-between items-center flex-1 gap-2">
           <div class="flex gap-2">
@@ -87,6 +87,18 @@
       </template>
     </FileUpload>
   </Dialog>
+  <Dialog modal v-model:visible="createFolderVisible">
+    <template #header>
+      <h4 class="mr-3">新建文件夹</h4>
+    </template>
+      <div>
+        <span>当前所在文件路径：</span>
+        <p>{{currentPath}}</p>
+      </div>
+      <div class="flex flex-col items-center">
+        <InputText type="text" class="input" placeholder="请输入文件夹名" v-model="folderName" />
+      </div>
+  </Dialog>
 </template>
 <script setup lang="ts">
 import {AssetsIconSvgService} from "../assets/assets";
@@ -96,11 +108,15 @@ import Dialog  from 'primevue/dialog';
 import Badge  from 'primevue/badge';
 import Button  from 'primevue/button';
 import ProgressBar from "primevue/progressbar";
+import FileUpload from 'primevue/fileupload';
+import {FileUploadSelectEvent, FileUploadBeforeSendEvent} from 'primevue/fileupload';
+import axios from '../axios/axios'
+import InputText from "primevue/inputtext";
 const namespace=ref<string>("202121091391")
 const breadcrumbs=reactive<string[]>(["test","test1"])
 const maskCardVisible=ref<boolean>(false);
-import FileUpload from 'primevue/fileupload';
-import {FileUploadSelectEvent} from 'primevue/fileupload';
+const createFolderVisible=ref<boolean>(false);
+const folderName=ref<string>("")
 interface FileItem{
   id:string
   fileName:string
@@ -114,6 +130,23 @@ const optionItems=[
     enableRouterLink:false,
     action:()=>{
       maskCardVisible.value=true;
+    }
+  },
+  {
+    tooltip:"创建文件夹",
+    to:"/",
+    icon:"create-folder",
+    enableRouterLink:false,
+    action:()=>{
+      createFolderVisible.value=true;
+    }
+  },
+  {
+    tooltip:"创建文件",
+    to:"/",
+    icon:"create-file",
+    enableRouterLink:false,
+    action:()=>{
     }
   },
 ]
@@ -176,7 +209,7 @@ const toast = useToast();
 
 const totalSize = ref(0);
 const totalSizePercent = ref(0);
-const files = ref([]);
+const files = ref<Array<File>>([]);
 const onRemoveTemplatingFile = (file, removeFileCallback, index) => {
   removeFileCallback(index);
   totalSize.value -= parseInt(formatSize(file.size));
@@ -204,7 +237,13 @@ const uploadEvent = (callback:()=>void) => {
 const onTemplatedUpload = () => {
   toast.add({ severity: "info", summary: "Success", detail: "File Uploaded", life: 3000 });
 };
-
+const onBeforeSend = (e: FileUploadBeforeSendEvent) => {
+  const formData = new FormData();
+  for (const file of files.value) {
+    formData.append("data", file);
+  }
+  e.formData=formData;
+};
 const formatSize = (bytes:number) => {
       const k = 1024;
       const dm = 3;
@@ -221,8 +260,16 @@ const formatSize = (bytes:number) => {
 
       return `${formattedSize} ${sizes[i]}`;
 }
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener("click", handleClickOutside)
+  let id =await axios.get("/user/file/root").then((res) => {
+    console.log("root_data:",res.data.id)
+    return res.data.id
+  }).catch((e) => {
+    console.log("error:",e)
+  })
+  let res=await axios.get("/user/file/"+id)
+  console.log("root_item:",res)
 }
 )
 onUnmounted(() => {

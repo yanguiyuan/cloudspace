@@ -27,11 +27,8 @@ func newFileIndex(db *gorm.DB, opts ...gen.DOOption) fileIndex {
 
 	tableName := _fileIndex.fileIndexDo.TableName()
 	_fileIndex.ALL = field.NewAsterisk(tableName)
-	_fileIndex.ID = field.NewString(tableName, "id")
 	_fileIndex.ParentID = field.NewString(tableName, "parent_id")
 	_fileIndex.ChildID = field.NewString(tableName, "child_id")
-	_fileIndex.CreateTime = field.NewTime(tableName, "create_time")
-	_fileIndex.UpdateTime = field.NewTime(tableName, "update_time")
 
 	_fileIndex.fillFieldMap()
 
@@ -41,12 +38,9 @@ func newFileIndex(db *gorm.DB, opts ...gen.DOOption) fileIndex {
 type fileIndex struct {
 	fileIndexDo fileIndexDo
 
-	ALL        field.Asterisk
-	ID         field.String
-	ParentID   field.String
-	ChildID    field.String
-	CreateTime field.Time
-	UpdateTime field.Time
+	ALL      field.Asterisk
+	ParentID field.String
+	ChildID  field.String
 
 	fieldMap map[string]field.Expr
 }
@@ -63,11 +57,8 @@ func (f fileIndex) As(alias string) *fileIndex {
 
 func (f *fileIndex) updateTableName(table string) *fileIndex {
 	f.ALL = field.NewAsterisk(table)
-	f.ID = field.NewString(table, "id")
 	f.ParentID = field.NewString(table, "parent_id")
 	f.ChildID = field.NewString(table, "child_id")
-	f.CreateTime = field.NewTime(table, "create_time")
-	f.UpdateTime = field.NewTime(table, "update_time")
 
 	f.fillFieldMap()
 
@@ -94,12 +85,9 @@ func (f *fileIndex) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (f *fileIndex) fillFieldMap() {
-	f.fieldMap = make(map[string]field.Expr, 5)
-	f.fieldMap["id"] = f.ID
+	f.fieldMap = make(map[string]field.Expr, 2)
 	f.fieldMap["parent_id"] = f.ParentID
 	f.fieldMap["child_id"] = f.ChildID
-	f.fieldMap["create_time"] = f.CreateTime
-	f.fieldMap["update_time"] = f.UpdateTime
 }
 
 func (f fileIndex) clone(db *gorm.DB) fileIndex {

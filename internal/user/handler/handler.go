@@ -2,9 +2,9 @@ package handler
 
 import (
 	"context"
+	"github.com/yanguiyuan/cloudspace/internal/cloudfile"
 	"github.com/yanguiyuan/cloudspace/internal/user/dal"
 	"github.com/yanguiyuan/cloudspace/internal/user/model"
-	"github.com/yanguiyuan/yuan/pkg/gen/id"
 )
 
 // UserServiceImpl implements the last service interface defined in the IDL.
@@ -22,10 +22,33 @@ func (s *UserServiceImpl) UserLogin(ctx context.Context, username string, passwo
 
 // UserRegister implements the UserServiceImpl interface.
 func (s *UserServiceImpl) UserRegister(ctx context.Context, username string, password string) (resp int64, err error) {
-	i := int64(id.One())
-	err = dal.User.WithContext(ctx).Create(&model.User{ID: i, Username: username, Password: password})
+	var user *model.User
+	err = dal.Q.Transaction(func(tx *dal.Query) error {
+		user, err = dal.User.WithContext(ctx).Where(dal.User.Username.Eq(username), dal.User.Password.Eq(password)).FirstOrCreate()
+		if err != nil {
+			return err
+		}
+		client, err := cloudfile.NewFileServiceClient()
+		if err != nil {
+			return err
+		}
+		r, err := client.CreateFileItem(ctx, username, "namespace", "@root")
+		if err != nil {
+			return err
+		}
+		namespaceID, err := client.CreateNamespace(ctx, username, r)
+		if err != nil {
+			return err
+		}
+		err = client.CreateUserNamespace(ctx, user.ID, namespaceID, 0)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
 		return 0, err
 	}
-	return i, nil
+
+	return user.ID, nil
 }
