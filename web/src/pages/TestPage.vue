@@ -1,7 +1,22 @@
 <template>
     <AppTemplate>
-        <template #content>
+        <template  #header>
+          <div class="bg-blue-500">
+            <h1>test</h1>
+          </div>
+
+        </template>
+        <template  #content>
+          <div class="bg-amber-500">
             nihao
+            <div class="bg-red-500">
+                <button @click="testa.test1()">点击</button>
+            </div>
+            <div class="bg-green-500">
+                <button @click="testb.test2()">点击</button>
+            </div>
+          </div>
+          <div>{{getUrlParams(url)}}</div>
         </template>
     </AppTemplate>
 </template>
@@ -30,7 +45,15 @@ const testa=reactive<TestA>({
         console.log(testa)
     }
 })
-
+const url=window.location.href
+let URL = "http://www.baidu.com?name=Jack&age=25&sex=men&wife=Lucy"
+function getUrlParams(url:string) {
+  let urlStr = url.split('?')[1]
+  const urlSearchParams = new URLSearchParams(urlStr)
+  const result = Object.fromEntries(urlSearchParams.entries())
+  return result
+}
+console.log(getUrlParams(URL))
 testb.test2()
 testa.test1()
 console.log(testa.prop1)

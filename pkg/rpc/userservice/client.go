@@ -6,12 +6,16 @@ import (
 	"context"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
+	rpc "github.com/yanguiyuan/cloudspace/pkg/rpc"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	UserLogin(ctx context.Context, username string, password string, callOptions ...callopt.Option) (r int64, err error)
 	UserRegister(ctx context.Context, username string, password string, callOptions ...callopt.Option) (r int64, err error)
+	GetUser(ctx context.Context, id int64, callOptions ...callopt.Option) (r *rpc.User, err error)
+	UpdateUser(ctx context.Context, user *rpc.User, callOptions ...callopt.Option) (err error)
+	GetUsers(ctx context.Context, offset int32, limit int32, callOptions ...callopt.Option) (r []*rpc.User, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -51,4 +55,19 @@ func (p *kUserServiceClient) UserLogin(ctx context.Context, username string, pas
 func (p *kUserServiceClient) UserRegister(ctx context.Context, username string, password string, callOptions ...callopt.Option) (r int64, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.UserRegister(ctx, username, password)
+}
+
+func (p *kUserServiceClient) GetUser(ctx context.Context, id int64, callOptions ...callopt.Option) (r *rpc.User, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetUser(ctx, id)
+}
+
+func (p *kUserServiceClient) UpdateUser(ctx context.Context, user *rpc.User, callOptions ...callopt.Option) (err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UpdateUser(ctx, user)
+}
+
+func (p *kUserServiceClient) GetUsers(ctx context.Context, offset int32, limit int32, callOptions ...callopt.Option) (r []*rpc.User, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetUsers(ctx, offset, limit)
 }

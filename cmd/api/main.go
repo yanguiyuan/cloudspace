@@ -16,7 +16,7 @@ const identityKey = "key"
 func main() {
 	c := config.NewConfig()
 	mw.InitJWT()
-	h := server.New(server.WithHostPorts(":" + c.GetString("api.port")))
+	h := server.New(server.WithHostPorts(":"+c.GetString("api.port")), server.WithMaxRequestBodySize(1024*1024*1024))
 	h.Use(cors.New(cors.Config{
 		AllowOrigins:     c.GetStringSlice("api.cors.allowOrigins"),
 		AllowMethods:     c.GetStringSlice("api.cors.allowMethods"),

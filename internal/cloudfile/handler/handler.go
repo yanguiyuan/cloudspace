@@ -14,7 +14,7 @@ import (
 )
 
 func LinkPath(userID int64, id, fileType string) string {
-	return fmt.Sprintf("cloud-file/user/%d/%d.%s", userID, id, fileType)
+	return fmt.Sprintf("cloud-file/user/%d/%s.%s", userID, id, fileType)
 }
 func ParseFileType(filename string) string {
 	ext := filepath.Ext(filename)
@@ -43,18 +43,18 @@ const (
 )
 
 // Add implements the CloudFileServiceImpl interface.
-func (s *CloudFileServiceImpl) Add(ctx context.Context, req *rpc.AddRequest) (err error) {
-	id1 := id.Base62()
+func (s *CloudFileServiceImpl) Add(ctx context.Context, req *rpc.AddRequest) (resp *rpc.CloudFileItem, err error) {
+	id1 := "F-" + id.Base62()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	dal.Q.Transaction(func(tx *dal.Query) error {
+	var f *model.FileItem
+	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		fileType := ParseFileType(req.FileName)
-		err := tx.FileItem.WithContext(ctx).Create(&model.FileItem{
-			ID:   id1,
-			Name: req.FileName,
-			Type: fileType,
-		})
+		f, err = tx.FileItem.WithContext(ctx).Where(
+			tx.FileItem.ID.Eq(id1),
+			tx.FileItem.Name.Eq(req.FileName),
+			tx.FileItem.Type.Eq(fileType)).FirstOrCreate()
 		if err != nil {
 			return err
 		}
@@ -67,15 +67,26 @@ func (s *CloudFileServiceImpl) Add(ctx context.Context, req *rpc.AddRequest) (er
 		}
 		err = s.OssBucket.PutObject(LinkPath(req.Uid, id1, fileType), bytes.NewReader(req.FileData))
 		if err != nil {
+			fmt.Println("oss err:", err.Error())
 			return err
 		}
 		return nil
 	})
-	return
+	if err != nil {
+		return nil, err
+	}
+	return &rpc.CloudFileItem{
+		Id:         f.ID,
+		FileName:   f.Name,
+		FileType:   f.Type,
+		CreateTime: f.CreateTime.String(),
+		UpdateTime: f.UpdateTime.String(),
+	}, nil
 }
 
 // Remove implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Remove(ctx context.Context, req *rpc.RemoveRequest) (err error) {
+	fmt.Println("remove", req)
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		_, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(req.Id)).Delete()
 		if err != nil {
@@ -110,11 +121,14 @@ func (s *CloudFileServiceImpl) Query(ctx context.Context, pid string, uid int64)
 	var res []*rpc.CloudFileItem
 	var urls []*rpc.UrlTable
 	for _, item := range items {
-		url, err := s.OssBucket.SignURL(LinkPath(uid, item.ID, item.Type), oss.HTTPGet, 60*60*24)
-		if err != nil {
-			return nil, err
+		var url string
+		if item.Type != Directory && item.Type != Namespace {
+			url, err = s.OssBucket.SignURL(LinkPath(uid, item.ID, item.Type), oss.HTTPGet, 60*60*24)
+			if err != nil {
+				return nil, err
+			}
+			urls = append(urls, &rpc.UrlTable{Url: url, Id: item.ID})
 		}
-		urls = append(urls, &rpc.UrlTable{Url: url, Id: item.ID})
 		res = append(res, &rpc.CloudFileItem{
 			Id:         item.ID,
 			FileName:   item.Name,
@@ -123,8 +137,10 @@ func (s *CloudFileServiceImpl) Query(ctx context.Context, pid string, uid int64)
 			CreateTime: item.CreateTime.String(),
 		})
 	}
-	resp.Items = res
-	resp.Urlmaps = urls
+	var resp0 = &rpc.QueryResponse{}
+	resp0.Items = res
+	resp0.Urlmaps = urls
+	resp = resp0
 	return resp, nil
 }
 
@@ -145,20 +161,20 @@ func (s *CloudFileServiceImpl) Update(ctx context.Context, req *rpc.UpdateReques
 }
 
 // CreateDirectory implements the CloudFileServiceImpl interface.
-func (s *CloudFileServiceImpl) CreateDirectory(ctx context.Context, req *rpc.CreateDirectoryRequest) (err error) {
+func (s *CloudFileServiceImpl) CreateDirectory(ctx context.Context, req *rpc.CreateDirectoryRequest) (resp *rpc.CloudFileItem, err error) {
+	var file *model.FileItem
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
-		id0 := id.Base62()
+		id0 := "D-" + id.Base62()
 		if err != nil {
 			return err
 		}
 		if err != nil {
 			return err
 		}
-		err = tx.FileItem.WithContext(ctx).Create(&model.FileItem{
-			ID:   id0,
-			Name: req.DirectoryName,
-			Type: Directory,
-		})
+		file, err = tx.FileItem.WithContext(ctx).Where(
+			tx.FileItem.ID.Eq(id0),
+			tx.FileItem.Name.Eq(req.DirectoryName),
+			tx.FileItem.Type.Eq(Directory)).FirstOrCreate()
 		if err != nil {
 			return err
 		}
@@ -171,7 +187,13 @@ func (s *CloudFileServiceImpl) CreateDirectory(ctx context.Context, req *rpc.Cre
 		}
 		return nil
 	})
-	return err
+	return &rpc.CloudFileItem{
+		Id:         file.ID,
+		FileName:   file.Name,
+		FileType:   file.Type,
+		UpdateTime: file.UpdateTime.String(),
+		CreateTime: file.CreateTime.String(),
+	}, err
 }
 
 // RemoveDirectory implements the CloudFileServiceImpl interface.
@@ -206,12 +228,9 @@ func (s *CloudFileServiceImpl) QueryUserFileRoot(ctx context.Context, id int64) 
 		Select(dal.Namespace.RootID).
 		LeftJoin(
 			dal.UserNamespace,
-			dal.UserNamespace.UserID.Eq(id),
 			dal.Namespace.ID.EqCol(dal.UserNamespace.NamespaceID)).
+		Where(dal.UserNamespace.UserID.Eq(id)).
 		First()
-	fmt.Println("ID:", id)
-	fmt.Println("Result:", res)
-	fmt.Println("err:", err)
 	if err != nil {
 		return "", err
 	}
@@ -261,5 +280,32 @@ func (s *CloudFileServiceImpl) CreateUserNamespace(ctx context.Context, userID i
 }
 func (s *CloudFileServiceImpl) QueryFileItemByID(ctx context.Context, id string) (resp *rpc.CloudFileItem, err error) {
 	res, err := dal.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).First()
+	if err != nil {
+		return nil, err
+	}
 	return &rpc.CloudFileItem{Id: res.ID, FileName: res.Name, FileType: res.Type, UpdateTime: res.UpdateTime.String(), CreateTime: res.CreateTime.String()}, err
+}
+func (s *CloudFileServiceImpl) GetFileURL(ctx context.Context, id string, uid int64) (url string, err error) {
+	item, err := s.QueryFileItemByID(ctx, id)
+	if err != nil {
+		return "", err
+	}
+	url, err = s.OssBucket.SignURL(LinkPath(uid, item.Id, item.FileType), oss.HTTPGet, 60*60*24)
+	if err != nil {
+		return "", err
+	}
+	return url, err
+}
+func (s *CloudFileServiceImpl) QueryUserNamespaces(ctx context.Context, uid int64) (r []*rpc.Namespace, err error) {
+	var res []*rpc.Namespace
+	err = dal.Q.Namespace.WithContext(ctx).
+		Select(dal.Namespace.ALL, dal.UserNamespace.Authority).
+		LeftJoin(dal.UserNamespace, dal.Namespace.ID.EqCol(dal.UserNamespace.NamespaceID)).
+		Where(dal.UserNamespace.UserID.Eq(uid)).
+		Debug().
+		Scan(&res)
+	if err != nil {
+		return nil, err
+	}
+	return res, err
 }

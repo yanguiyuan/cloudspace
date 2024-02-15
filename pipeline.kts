@@ -1,9 +1,9 @@
 pipeline("dev"){
-    step("web"){
+    parallel("web"){
         workspace("./web")
         cmd("yarn dev")
     }
-    step("tailwind"){
+    parallel("tailwind"){
         workspace("./web")
         cmd("npx tailwindcss -i./src/style.css -o./src/output.css --watch")
     }
@@ -73,9 +73,5 @@ pipeline("server"){
     }
     parallel("api"){
         cmd("go run ./cmd/api")
-    }
-    parallel("web"){
-        workspace("./web")
-        cmd("yarn dev")
     }
 }

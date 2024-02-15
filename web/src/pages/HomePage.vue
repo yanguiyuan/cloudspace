@@ -10,9 +10,9 @@
                 </svg>
             </div>
             <div v-bind:style="{ display: menuTipVisible }" class="settingTooltip">
-                <div class="tipMenuItem">账号管理</div>
+                <div @click="userStore.showAccountDialog" class="tipMenuItem">账号管理</div>
                 <div class="tipMenuItem">
-                    <RouterLink to="/login">
+                    <RouterLink  @click="logout" to="/login">
                         退出登录
                     </RouterLink>
                 </div>
@@ -20,14 +20,19 @@
             <CurrentTime></CurrentTime>
             <RouterView></RouterView>
         </div>
+      <AccountManagementDialog></AccountManagementDialog>
     </div>
 </template>
 <script setup lang="ts">
 import { ref, onUnmounted, onMounted, getCurrentInstance } from 'vue'
+import {useUserStore} from "../store/user";
+import AccountManagementDialog from "../components/user/AccountManagementDialog.vue";
+import {logout} from "../service/user";
 const menuTipVisible = ref<string>("none")
 const showMenu = function () {
     menuTipVisible.value = "block"
 }
+const userStore=useUserStore();
 const handleClickOutside = function (e: MouseEvent) {
 
     const target = e.target as HTMLElement;

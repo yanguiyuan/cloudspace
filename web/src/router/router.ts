@@ -1,8 +1,8 @@
-import { createRouter,createWebHashHistory } from "vue-router"
+import {createRouter, createWebHashHistory, createWebHistory} from "vue-router"
 
 
 const router=createRouter({
-    history:createWebHashHistory(),
+    history:createWebHistory(),
     routes:[
         {
             path:"/login",
@@ -20,7 +20,7 @@ const router=createRouter({
                 },
                 {
                     path:"/fileManagement",
-                    component:()=>import('../pages/FileManage0.vue')
+                    component:()=>import('../pages/FileManage.vue')
                 },
                 {
                     path:"/chatgpt",
@@ -49,6 +49,14 @@ const router=createRouter({
                 {
                     path:"/js",
                     component:()=>import('../pages/Js.vue')
+                },
+                {
+                    path:"/admin",
+                    component:()=>import('../pages/AdminPage.vue')
+                },
+                {
+                    path:"/link",
+                    component:()=>import('../pages/LinkNamespace.vue')
                 }
             ]
         }

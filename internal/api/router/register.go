@@ -11,6 +11,7 @@ import (
 func Register(r *server.Hertz) {
 	r.GET("/", handler.Ping)
 	r.POST("/login", mw.JwtMiddleware.LoginHandler)
+
 	user.Register(r)
 	file.Register(r)
 }

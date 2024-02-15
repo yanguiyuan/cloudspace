@@ -74,6 +74,12 @@ const appList =reactive<Array<AppProp>>( [
     enable: false
   },
   {
+    icon:'app-admin',
+    title:'用户管理',
+    link:'/admin',
+    enable:true
+  },
+  {
     icon: 'add-app',
     title: '添加应用',
     link: '/',

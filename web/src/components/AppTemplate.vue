@@ -18,7 +18,10 @@
               </div>
             </div>
         </div>
-        <div class="content" :style="expandPadding">
+        <div  class="p-3">
+          <slot name="header"></slot>
+        </div>
+        <div class="relative flex-auto  overflow-auto" :style="expandPadding">
             <slot name="content"></slot>
         </div>
     </div>
@@ -91,6 +94,8 @@ input {
     top: 120px;
     left: 20%;
     right: 20%;
+    display:flex;
+    flex-direction: column;
     border-radius: 15px;
     background-color: rgb(235, 235, 235);
     box-shadow: 0 15px 30px rgb(0 0 0 / 25%);
@@ -128,6 +133,8 @@ input {
 
 .expandCard {
     position: absolute;
+    display:flex;
+    flex-direction: column;
     bottom: 0px;
     top: 0px;
     left: 0%;

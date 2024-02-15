@@ -14,10 +14,13 @@ let token=localStorage.getItem("token")
 if(token==null){
     token=""
 }else{
-    token=token.substring(1,token.length-1)
+    let tokenStr=JSON.parse(token);
+    api.defaults.headers.common["Authorization"]="Bearer "+tokenStr;
+    token=token.substring(1,token.length-1);
 }
-let tokenHeader="Bearer ".concat(token)
-cf.defaults.headers.common['Authorization'] = tokenHeader
-console.log(tokenHeader)
+let tokenHeader="Bearer ".concat(token);
+cf.defaults.headers.common['Authorization'] = tokenHeader;
+console.log(tokenHeader);
+
 export {js,cf}
 export default api

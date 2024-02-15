@@ -21,6 +21,9 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	methods := map[string]kitex.MethodInfo{
 		"UserLogin":    kitex.NewMethodInfo(userLoginHandler, newUserServiceUserLoginArgs, newUserServiceUserLoginResult, false),
 		"UserRegister": kitex.NewMethodInfo(userRegisterHandler, newUserServiceUserRegisterArgs, newUserServiceUserRegisterResult, false),
+		"GetUser":      kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
+		"UpdateUser":   kitex.NewMethodInfo(updateUserHandler, newUserServiceUpdateUserArgs, newUserServiceUpdateUserResult, false),
+		"GetUsers":     kitex.NewMethodInfo(getUsersHandler, newUserServiceGetUsersArgs, newUserServiceGetUsersResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "rpc",
@@ -72,6 +75,60 @@ func newUserServiceUserRegisterResult() interface{} {
 	return rpc.NewUserServiceUserRegisterResult()
 }
 
+func getUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.UserServiceGetUserArgs)
+	realResult := result.(*rpc.UserServiceGetUserResult)
+	success, err := handler.(rpc.UserService).GetUser(ctx, realArg.Id)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceGetUserArgs() interface{} {
+	return rpc.NewUserServiceGetUserArgs()
+}
+
+func newUserServiceGetUserResult() interface{} {
+	return rpc.NewUserServiceGetUserResult()
+}
+
+func updateUserHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.UserServiceUpdateUserArgs)
+
+	err := handler.(rpc.UserService).UpdateUser(ctx, realArg.User)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newUserServiceUpdateUserArgs() interface{} {
+	return rpc.NewUserServiceUpdateUserArgs()
+}
+
+func newUserServiceUpdateUserResult() interface{} {
+	return rpc.NewUserServiceUpdateUserResult()
+}
+
+func getUsersHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.UserServiceGetUsersArgs)
+	realResult := result.(*rpc.UserServiceGetUsersResult)
+	success, err := handler.(rpc.UserService).GetUsers(ctx, realArg.Offset, realArg.Limit)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceGetUsersArgs() interface{} {
+	return rpc.NewUserServiceGetUsersArgs()
+}
+
+func newUserServiceGetUsersResult() interface{} {
+	return rpc.NewUserServiceGetUsersResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -99,6 +156,37 @@ func (p *kClient) UserRegister(ctx context.Context, username string, password st
 	_args.Password = password
 	var _result rpc.UserServiceUserRegisterResult
 	if err = p.c.Call(ctx, "UserRegister", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetUser(ctx context.Context, id int64) (r *rpc.User, err error) {
+	var _args rpc.UserServiceGetUserArgs
+	_args.Id = id
+	var _result rpc.UserServiceGetUserResult
+	if err = p.c.Call(ctx, "GetUser", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) UpdateUser(ctx context.Context, user *rpc.User) (err error) {
+	var _args rpc.UserServiceUpdateUserArgs
+	_args.User = user
+	var _result rpc.UserServiceUpdateUserResult
+	if err = p.c.Call(ctx, "UpdateUser", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
+
+func (p *kClient) GetUsers(ctx context.Context, offset int32, limit int32) (r []*rpc.User, err error) {
+	var _args rpc.UserServiceGetUsersArgs
+	_args.Offset = offset
+	_args.Limit = limit
+	var _result rpc.UserServiceGetUsersResult
+	if err = p.c.Call(ctx, "GetUsers", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

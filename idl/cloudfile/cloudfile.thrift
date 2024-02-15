@@ -5,7 +5,6 @@ struct AddRequest{
     2:string parentID
     3:binary fileData
     4:i64 uid
-    5:string path
 }
 struct CloudFileItem{
     1:string id
@@ -13,6 +12,14 @@ struct CloudFileItem{
     3:string fileType
     4:string updateTime
     5:string createTime
+}
+struct Namespace{
+    1:i64 id
+    2:string name
+    3:string rootID
+    4:i32 authority
+    5:string createTime
+    6:string updateTime
 }
 struct QueryResponse{
     1:list<CloudFileItem> items
@@ -37,8 +44,8 @@ struct RemoveRequest{
     3:string filename
 }
 service CloudFileService{
-    void add(1:AddRequest req)
-    void createDirectory(1:CreateDirectoryRequest req)
+    CloudFileItem add(1:AddRequest req)
+    CloudFileItem createDirectory(1:CreateDirectoryRequest req)
     void remove(1:RemoveRequest req)
     void removeDirectory(1:string id)
     QueryResponse query(1:string pid,2:i64 uid )
@@ -49,4 +56,6 @@ service CloudFileService{
     string createFileItem(1:string name,2:string ty,3:string parentID)
     i64 createNamespace(1:string name,2:string rootID)
     void createUserNamespace(1:i64 userID,2:i64 namespaceID,3:i32 authority)
+    string getFileURL(1:string id,2:i64 uid)
+    list<Namespace> queryUserNamespaces(1:i64 userID)
 }

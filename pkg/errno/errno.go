@@ -11,6 +11,7 @@ const (
 	UserAlreadyExistCode
 	UsernameOrPasswordErrorCode
 	NotFoundCode
+	InvalidParamCode
 )
 
 const (
@@ -19,6 +20,7 @@ const (
 	UserAlreadyExistMsg        = "User already exist"
 	UsernameOrPasswordErrorMsg = "Username or password error"
 	NotFoundMsg                = "Not found"
+	InvalidParamMsg            = "Invalid param"
 )
 
 var (
@@ -27,6 +29,7 @@ var (
 	UserAlreadyExist        = NewErrNo(UserAlreadyExistCode, UserAlreadyExistMsg)
 	UsernameOrPasswordError = NewErrNo(UsernameOrPasswordErrorCode, UsernameOrPasswordErrorMsg)
 	NotFound                = NewErrNo(NotFoundCode, NotFoundMsg)
+	InvalidParam            = NewErrNo(InvalidParamCode, InvalidParamMsg)
 )
 
 type ErrNo struct {

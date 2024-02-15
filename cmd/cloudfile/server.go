@@ -20,7 +20,7 @@ func main() {
 		log.Println(err.Error())
 	}
 	dal.SetDefault(db)
-	client, err := oss.New(c.GetString("cloudfile.oss.endpoint"), c.GetString("cloudfile.oss.accessKeyID"), c.GetString("oss.accessKeySecret"))
+	client, err := oss.New(c.GetString("cloudfile.oss.endpoint"), c.GetString("cloudfile.oss.accessKeyID"), c.GetString("cloudfile.oss.accessKeySecret"))
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -28,7 +28,7 @@ func main() {
 	bucket, err := client.Bucket(c.GetString("cloudfile.oss.bucketName"))
 	service := handler.CloudFileServiceImpl{OssBucket: bucket}
 	addr, _ := net.ResolveTCPAddr("tcp", c.GetString("cloudfile.addr"))
-	svr := rpc.NewServer(&service, server.WithServiceAddr(addr), server.WithReadWriteTimeout(1000*1000*10))
+	svr := rpc.NewServer(&service, server.WithServiceAddr(addr), server.WithReadWriteTimeout(1000*1000*60*5))
 	err = svr.Run()
 
 	if err != nil {

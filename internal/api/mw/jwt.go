@@ -46,7 +46,6 @@ func InitJWT() {
 		},
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(int64); ok {
-				fmt.Println("Payload:", v)
 				return jwt.MapClaims{
 					IdentityKey: v,
 				}
@@ -55,7 +54,6 @@ func InitJWT() {
 		},
 		IdentityHandler: func(ctx context.Context, c *app.RequestContext) interface{} {
 			claims := jwt.ExtractClaims(ctx, c)
-			fmt.Println("IH-Claims:", claims)
 			return int64(claims[IdentityKey].(float64))
 
 		},
