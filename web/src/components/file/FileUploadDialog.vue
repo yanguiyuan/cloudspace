@@ -89,11 +89,11 @@ const formatSize = (bytes:number) => {
 <template>
   <Dialog v-model:visible="fileStore.dialog.upload.visible" :style="{ width: '50rem' }" modal header="上传文件">
     <Toast />
-    <FileUpload  :max-file-size="1021*1021*1024" name="data" :url="'http://localhost:8888/user/files/upload/'+fileStore.currentParentID" @upload="onTemplatedUpload" :multiple="true" accept="image/*" @select="onSelectedFiles" @before-send="onBeforeSend">
+    <FileUpload  :max-file-size="1021*1021*1024" name="data" :url="'http://localhost:8888/user/file/'+fileStore.getCurrentParentID()+'/upload'" @upload="onTemplatedUpload" :multiple="true" @select="onSelectedFiles" @before-send="onBeforeSend">
       <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
         <div class="flex flex-nowrap justify-between items-center flex-1 gap-2">
           <div class="flex gap-2">
-            <Button @click="chooseCallback()" icon="pi pi-images" rounded outlined></Button>
+            <Button @click="chooseCallback()" icon="pi pi-file" rounded outlined></Button>
             <Button @click="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" rounded outlined severity="success" :disabled="!files || files.length === 0"></Button>
             <Button @click="clearCallback()" icon="pi pi-times" rounded outlined severity="danger" :disabled="!files || files.length === 0"></Button>
           </div>

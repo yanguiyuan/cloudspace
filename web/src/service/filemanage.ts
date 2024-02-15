@@ -174,7 +174,7 @@ export  async function onClickFileItem (it:FileItem) {
             console.log("error:",e);
         })
         fileStore.fileList=res.data.items;
-    }else {
+    }else if(it.fileType=="png"){
         const urlMap=fileStore.urlMap;
         let url=urlMap.get(it.id);
         if(url==undefined){
@@ -313,4 +313,10 @@ export async function generateNamespaceJoinLink(id:number):Promise<any> {
         console.log("error:",e);
     });
     return resp;
+}
+export function getUrlParams(url:string):any {
+    let urlStr = url.split('?')[1]
+    const urlSearchParams = new URLSearchParams(urlStr)
+    const result = Object.fromEntries(urlSearchParams.entries())
+    return result
 }

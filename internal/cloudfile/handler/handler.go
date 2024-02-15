@@ -174,7 +174,8 @@ func (s *CloudFileServiceImpl) CreateDirectory(ctx context.Context, req *rpc.Cre
 		file, err = tx.FileItem.WithContext(ctx).Where(
 			tx.FileItem.ID.Eq(id0),
 			tx.FileItem.Name.Eq(req.DirectoryName),
-			tx.FileItem.Type.Eq(Directory)).FirstOrCreate()
+			tx.FileItem.Type.Eq(Directory)).
+			FirstOrCreate()
 		if err != nil {
 			return err
 		}

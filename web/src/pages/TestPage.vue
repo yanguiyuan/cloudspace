@@ -47,7 +47,7 @@ const testa=reactive<TestA>({
 })
 const url=window.location.href
 let URL = "http://www.baidu.com?name=Jack&age=25&sex=men&wife=Lucy"
-function getUrlParams(url:string) {
+function getUrlParams(url:string):any {
   let urlStr = url.split('?')[1]
   const urlSearchParams = new URLSearchParams(urlStr)
   const result = Object.fromEntries(urlSearchParams.entries())

@@ -18,10 +18,8 @@ const toast=useToast();
 const selectedNamespace=ref<Namespace>(DefaultNamespace);
 const selectedAuth=ref<{ label:string,code:number }>();
 const auths=ref([
-  {label:"读取",code:1},
-  {label:"写入",code:2},
-  {label:"删除",code:4},
-  {label:"管理",code:8}
+  {label:"读权限（查看文件列表，浏览文件，下载文件）",code:1},
+  {label:"写权限（创建，删除，重命名，上传文件）",code:2},
 ])
 const namespaces=ref<Namespace[]>([])
 const visible=ref<string>("create")

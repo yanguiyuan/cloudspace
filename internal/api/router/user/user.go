@@ -14,6 +14,7 @@ func Register(r *server.Hertz) {
 		user.POST("/logout", mw.JwtMiddleware.LogoutHandler)
 		user.GET("/info", userserver.UserInfo)
 		user.PUT("/info", userserver.ModifyUserInfo)
+		///list/0/3
 		user.GET("/list/:offset/:limit", userserver.GetUsers)
 	}
 }

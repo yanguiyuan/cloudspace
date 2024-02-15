@@ -31,7 +31,7 @@
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
     <div id="renameButton" @click="canRename=true;renameFileItem=optionFileItem" class="tipMenuItem">重命名</div>
     <div v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">编辑</div>
-    <div v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem"><a>下载</a></div>
+    <div  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem"><a :href="fileStore.urlMap.get(optionFileItem.id)">下载</a></div>
   </div>
   <FileUploadDialog></FileUploadDialog>
   <FileCreateDialog></FileCreateDialog>

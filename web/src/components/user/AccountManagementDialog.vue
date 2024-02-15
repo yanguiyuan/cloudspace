@@ -15,7 +15,6 @@ const copy=async (content:string)=>{
 onMounted(async ()=>{
   const user=await FetchUserInfo();
   userStore.setUser(user);
-
 })
 </script>
 

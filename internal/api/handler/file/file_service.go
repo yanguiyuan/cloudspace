@@ -50,7 +50,7 @@ func QueryFileItemList(ctx context.Context, c *app.RequestContext) {
 func Upload(ctx context.Context, c *app.RequestContext) {
 	form, _ := c.MultipartForm()
 	files := form.File["data"]
-	parentID := c.Param("parent_id")
+	parentID := c.Param("id")
 	identity, b := c.Get(mw.IdentityKey)
 	if !b {
 		c.String(consts.StatusUnauthorized, "未登录")
