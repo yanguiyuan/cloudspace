@@ -213,7 +213,7 @@ func newCloudFileServiceQueryUserFileRootResult() interface{} {
 func createFileItemHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*rpc.CloudFileServiceCreateFileItemArgs)
 	realResult := result.(*rpc.CloudFileServiceCreateFileItemResult)
-	success, err := handler.(rpc.CloudFileService).CreateFileItem(ctx, realArg.Name, realArg.Ty, realArg.ParentID)
+	success, err := handler.(rpc.CloudFileService).CreateFileItem(ctx, realArg.Name, realArg.Ty, realArg.ParentID, realArg.NamespaceID)
 	if err != nil {
 		return err
 	}
@@ -231,7 +231,7 @@ func newCloudFileServiceCreateFileItemResult() interface{} {
 func createNamespaceHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*rpc.CloudFileServiceCreateNamespaceArgs)
 	realResult := result.(*rpc.CloudFileServiceCreateNamespaceResult)
-	success, err := handler.(rpc.CloudFileService).CreateNamespace(ctx, realArg.Name, realArg.RootID)
+	success, err := handler.(rpc.CloudFileService).CreateNamespace(ctx, realArg.Name)
 	if err != nil {
 		return err
 	}
@@ -402,11 +402,12 @@ func (p *kClient) QueryUserFileRoot(ctx context.Context, userID int64) (r string
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string) (r string, err error) {
+func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
 	var _args rpc.CloudFileServiceCreateFileItemArgs
 	_args.Name = name
 	_args.Ty = ty
 	_args.ParentID = parentID
+	_args.NamespaceID = namespaceID
 	var _result rpc.CloudFileServiceCreateFileItemResult
 	if err = p.c.Call(ctx, "createFileItem", &_args, &_result); err != nil {
 		return
@@ -414,10 +415,9 @@ func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, pa
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) CreateNamespace(ctx context.Context, name string, rootID string) (r int64, err error) {
+func (p *kClient) CreateNamespace(ctx context.Context, name string) (r int64, err error) {
 	var _args rpc.CloudFileServiceCreateNamespaceArgs
 	_args.Name = name
-	_args.RootID = rootID
 	var _result rpc.CloudFileServiceCreateNamespaceResult
 	if err = p.c.Call(ctx, "createNamespace", &_args, &_result); err != nil {
 		return

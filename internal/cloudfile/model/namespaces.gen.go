@@ -12,9 +12,8 @@ const TableNameNamespace = "namespaces"
 
 // Namespace mapped from table <namespaces>
 type Namespace struct {
-	ID         int64     `gorm:"column:id;primaryKey" json:"id"`
+	ID         int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	Name       string    `gorm:"column:name;not null" json:"name"`
-	RootID     string    `gorm:"column:root_id;not null" json:"root_id"`
 	CreateTime time.Time `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"`
 	UpdateTime time.Time `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP" json:"update_time"`
 }

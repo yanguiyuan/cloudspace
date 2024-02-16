@@ -20,8 +20,8 @@ type Client interface {
 	Update(ctx context.Context, req *rpc.UpdateRequest, callOptions ...callopt.Option) (err error)
 	Rename(ctx context.Context, id string, newName_ string, callOptions ...callopt.Option) (err error)
 	QueryUserFileRoot(ctx context.Context, userID int64, callOptions ...callopt.Option) (r string, err error)
-	CreateFileItem(ctx context.Context, name string, ty string, parentID string, callOptions ...callopt.Option) (r string, err error)
-	CreateNamespace(ctx context.Context, name string, rootID string, callOptions ...callopt.Option) (r int64, err error)
+	CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64, callOptions ...callopt.Option) (r string, err error)
+	CreateNamespace(ctx context.Context, name string, callOptions ...callopt.Option) (r int64, err error)
 	CreateUserNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32, callOptions ...callopt.Option) (err error)
 	GetFileURL(ctx context.Context, id string, uid int64, callOptions ...callopt.Option) (r string, err error)
 	QueryUserNamespaces(ctx context.Context, userID int64, callOptions ...callopt.Option) (r []*rpc.Namespace, err error)
@@ -101,14 +101,14 @@ func (p *kCloudFileServiceClient) QueryUserFileRoot(ctx context.Context, userID 
 	return p.kClient.QueryUserFileRoot(ctx, userID)
 }
 
-func (p *kCloudFileServiceClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, callOptions ...callopt.Option) (r string, err error) {
+func (p *kCloudFileServiceClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64, callOptions ...callopt.Option) (r string, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.CreateFileItem(ctx, name, ty, parentID)
+	return p.kClient.CreateFileItem(ctx, name, ty, parentID, namespaceID)
 }
 
-func (p *kCloudFileServiceClient) CreateNamespace(ctx context.Context, name string, rootID string, callOptions ...callopt.Option) (r int64, err error) {
+func (p *kCloudFileServiceClient) CreateNamespace(ctx context.Context, name string, callOptions ...callopt.Option) (r int64, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.CreateNamespace(ctx, name, rootID)
+	return p.kClient.CreateNamespace(ctx, name)
 }
 
 func (p *kCloudFileServiceClient) CreateUserNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32, callOptions ...callopt.Option) (err error) {

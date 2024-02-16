@@ -33,11 +33,11 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, username string, pas
 		if err != nil {
 			return err
 		}
-		r, err := client.CreateFileItem(ctx, username, "namespace", "@root")
+		namespaceID, err := client.CreateNamespace(ctx, username)
 		if err != nil {
 			return err
 		}
-		namespaceID, err := client.CreateNamespace(ctx, username, r)
+		_, err = client.CreateFileItem(ctx, username, "namespace", "@root", namespaceID)
 		if err != nil {
 			return err
 		}

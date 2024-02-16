@@ -25,7 +25,7 @@ func Register(r *server.Hertz) {
 		}
 		directory := user.Group("/directory")
 		{
-			directory.POST("/", fileserver.CreateDirectory)
+			directory.POST("", fileserver.CreateDirectory)
 		}
 		namespace := user.Group("/namespace")
 		{

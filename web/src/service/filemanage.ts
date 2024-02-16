@@ -19,6 +19,7 @@ export interface FileManagementState{
             visible:boolean;
         }
     }
+    namespaces:Namespace[];
     breadcrumbs:FileItem[];
     fileList:FileItem[];
     urlMap:Map<string,string>
@@ -235,6 +236,7 @@ export async function getRootFileItemID():Promise<string> {
         }
         console.log("error:",e);
     })
+    console.log("id:",id);
     return id;
 }
 export async function getFileItemByID(id:string):Promise<FileItem> {
@@ -282,7 +284,6 @@ export async function renameFileOrDirectory(file:FileItem,toast: ToastServiceMet
 }
 export async function getUserNamespaces():Promise<Namespace[]> {
     const resp=await axios.get("/user/namespace/list").then((res)=>{
-        console.log("namespace-list:",res);
         return res.data.data;
     }).catch((e)=>{
         console.log("error:",e);

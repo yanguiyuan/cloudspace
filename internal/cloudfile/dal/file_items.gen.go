@@ -28,6 +28,7 @@ func newFileItem(db *gorm.DB, opts ...gen.DOOption) fileItem {
 	tableName := _fileItem.fileItemDo.TableName()
 	_fileItem.ALL = field.NewAsterisk(tableName)
 	_fileItem.ID = field.NewString(tableName, "id")
+	_fileItem.NamespaceID = field.NewInt64(tableName, "namespace_id")
 	_fileItem.Name = field.NewString(tableName, "name")
 	_fileItem.Type = field.NewString(tableName, "type")
 	_fileItem.CreateTime = field.NewTime(tableName, "create_time")
@@ -41,12 +42,13 @@ func newFileItem(db *gorm.DB, opts ...gen.DOOption) fileItem {
 type fileItem struct {
 	fileItemDo fileItemDo
 
-	ALL        field.Asterisk
-	ID         field.String
-	Name       field.String
-	Type       field.String
-	CreateTime field.Time
-	UpdateTime field.Time
+	ALL         field.Asterisk
+	ID          field.String
+	NamespaceID field.Int64
+	Name        field.String
+	Type        field.String
+	CreateTime  field.Time
+	UpdateTime  field.Time
 
 	fieldMap map[string]field.Expr
 }
@@ -64,6 +66,7 @@ func (f fileItem) As(alias string) *fileItem {
 func (f *fileItem) updateTableName(table string) *fileItem {
 	f.ALL = field.NewAsterisk(table)
 	f.ID = field.NewString(table, "id")
+	f.NamespaceID = field.NewInt64(table, "namespace_id")
 	f.Name = field.NewString(table, "name")
 	f.Type = field.NewString(table, "type")
 	f.CreateTime = field.NewTime(table, "create_time")
@@ -92,8 +95,9 @@ func (f *fileItem) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (f *fileItem) fillFieldMap() {
-	f.fieldMap = make(map[string]field.Expr, 5)
+	f.fieldMap = make(map[string]field.Expr, 6)
 	f.fieldMap["id"] = f.ID
+	f.fieldMap["namespace_id"] = f.NamespaceID
 	f.fieldMap["name"] = f.Name
 	f.fieldMap["type"] = f.Type
 	f.fieldMap["create_time"] = f.CreateTime

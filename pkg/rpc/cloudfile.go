@@ -2512,9 +2512,9 @@ type CloudFileService interface {
 
 	QueryUserFileRoot(ctx context.Context, userID int64) (r string, err error)
 
-	CreateFileItem(ctx context.Context, name string, ty string, parentID string) (r string, err error)
+	CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error)
 
-	CreateNamespace(ctx context.Context, name string, rootID string) (r int64, err error)
+	CreateNamespace(ctx context.Context, name string) (r int64, err error)
 
 	CreateUserNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32) (err error)
 
@@ -2632,21 +2632,21 @@ func (p *CloudFileServiceClient) QueryUserFileRoot(ctx context.Context, userID i
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *CloudFileServiceClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string) (r string, err error) {
+func (p *CloudFileServiceClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
 	var _args CloudFileServiceCreateFileItemArgs
 	_args.Name = name
 	_args.Ty = ty
 	_args.ParentID = parentID
+	_args.NamespaceID = namespaceID
 	var _result CloudFileServiceCreateFileItemResult
 	if err = p.Client_().Call(ctx, "createFileItem", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *CloudFileServiceClient) CreateNamespace(ctx context.Context, name string, rootID string) (r int64, err error) {
+func (p *CloudFileServiceClient) CreateNamespace(ctx context.Context, name string) (r int64, err error) {
 	var _args CloudFileServiceCreateNamespaceArgs
 	_args.Name = name
-	_args.RootID = rootID
 	var _result CloudFileServiceCreateNamespaceResult
 	if err = p.Client_().Call(ctx, "createNamespace", &_args, &_result); err != nil {
 		return
@@ -3178,7 +3178,7 @@ func (p *cloudFileServiceProcessorCreateFileItem) Process(ctx context.Context, s
 	var err2 error
 	result := CloudFileServiceCreateFileItemResult{}
 	var retval string
-	if retval, err2 = p.handler.CreateFileItem(ctx, args.Name, args.Ty, args.ParentID); err2 != nil {
+	if retval, err2 = p.handler.CreateFileItem(ctx, args.Name, args.Ty, args.ParentID, args.NamespaceID); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing createFileItem: "+err2.Error())
 		oprot.WriteMessageBegin("createFileItem", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -3226,7 +3226,7 @@ func (p *cloudFileServiceProcessorCreateNamespace) Process(ctx context.Context, 
 	var err2 error
 	result := CloudFileServiceCreateNamespaceResult{}
 	var retval int64
-	if retval, err2 = p.handler.CreateNamespace(ctx, args.Name, args.RootID); err2 != nil {
+	if retval, err2 = p.handler.CreateNamespace(ctx, args.Name); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing createNamespace: "+err2.Error())
 		oprot.WriteMessageBegin("createNamespace", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -6274,9 +6274,10 @@ func (p *CloudFileServiceQueryUserFileRootResult) Field0DeepEqual(src *string) b
 }
 
 type CloudFileServiceCreateFileItemArgs struct {
-	Name     string `thrift:"name,1" frugal:"1,default,string" json:"name"`
-	Ty       string `thrift:"ty,2" frugal:"2,default,string" json:"ty"`
-	ParentID string `thrift:"parentID,3" frugal:"3,default,string" json:"parentID"`
+	Name        string `thrift:"name,1" frugal:"1,default,string" json:"name"`
+	Ty          string `thrift:"ty,2" frugal:"2,default,string" json:"ty"`
+	ParentID    string `thrift:"parentID,3" frugal:"3,default,string" json:"parentID"`
+	NamespaceID int64  `thrift:"namespaceID,4" frugal:"4,default,i64" json:"namespaceID"`
 }
 
 func NewCloudFileServiceCreateFileItemArgs() *CloudFileServiceCreateFileItemArgs {
@@ -6298,6 +6299,10 @@ func (p *CloudFileServiceCreateFileItemArgs) GetTy() (v string) {
 func (p *CloudFileServiceCreateFileItemArgs) GetParentID() (v string) {
 	return p.ParentID
 }
+
+func (p *CloudFileServiceCreateFileItemArgs) GetNamespaceID() (v int64) {
+	return p.NamespaceID
+}
 func (p *CloudFileServiceCreateFileItemArgs) SetName(val string) {
 	p.Name = val
 }
@@ -6307,11 +6312,15 @@ func (p *CloudFileServiceCreateFileItemArgs) SetTy(val string) {
 func (p *CloudFileServiceCreateFileItemArgs) SetParentID(val string) {
 	p.ParentID = val
 }
+func (p *CloudFileServiceCreateFileItemArgs) SetNamespaceID(val int64) {
+	p.NamespaceID = val
+}
 
 var fieldIDToName_CloudFileServiceCreateFileItemArgs = map[int16]string{
 	1: "name",
 	2: "ty",
 	3: "parentID",
+	4: "namespaceID",
 }
 
 func (p *CloudFileServiceCreateFileItemArgs) Read(iprot thrift.TProtocol) (err error) {
@@ -6356,6 +6365,16 @@ func (p *CloudFileServiceCreateFileItemArgs) Read(iprot thrift.TProtocol) (err e
 		case 3:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField4(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -6420,6 +6439,15 @@ func (p *CloudFileServiceCreateFileItemArgs) ReadField3(iprot thrift.TProtocol) 
 	return nil
 }
 
+func (p *CloudFileServiceCreateFileItemArgs) ReadField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.NamespaceID = v
+	}
+	return nil
+}
+
 func (p *CloudFileServiceCreateFileItemArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("createFileItem_args"); err != nil {
@@ -6436,6 +6464,10 @@ func (p *CloudFileServiceCreateFileItemArgs) Write(oprot thrift.TProtocol) (err 
 		}
 		if err = p.writeField3(oprot); err != nil {
 			fieldId = 3
+			goto WriteFieldError
+		}
+		if err = p.writeField4(oprot); err != nil {
+			fieldId = 4
 			goto WriteFieldError
 		}
 
@@ -6508,6 +6540,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
+func (p *CloudFileServiceCreateFileItemArgs) writeField4(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("namespaceID", thrift.I64, 4); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.NamespaceID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
 func (p *CloudFileServiceCreateFileItemArgs) String() string {
 	if p == nil {
 		return "<nil>"
@@ -6530,6 +6579,9 @@ func (p *CloudFileServiceCreateFileItemArgs) DeepEqual(ano *CloudFileServiceCrea
 	if !p.Field3DeepEqual(ano.ParentID) {
 		return false
 	}
+	if !p.Field4DeepEqual(ano.NamespaceID) {
+		return false
+	}
 	return true
 }
 
@@ -6550,6 +6602,13 @@ func (p *CloudFileServiceCreateFileItemArgs) Field2DeepEqual(src string) bool {
 func (p *CloudFileServiceCreateFileItemArgs) Field3DeepEqual(src string) bool {
 
 	if strings.Compare(p.ParentID, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *CloudFileServiceCreateFileItemArgs) Field4DeepEqual(src int64) bool {
+
+	if p.NamespaceID != src {
 		return false
 	}
 	return true
@@ -6736,8 +6795,7 @@ func (p *CloudFileServiceCreateFileItemResult) Field0DeepEqual(src *string) bool
 }
 
 type CloudFileServiceCreateNamespaceArgs struct {
-	Name   string `thrift:"name,1" frugal:"1,default,string" json:"name"`
-	RootID string `thrift:"rootID,2" frugal:"2,default,string" json:"rootID"`
+	Name string `thrift:"name,1" frugal:"1,default,string" json:"name"`
 }
 
 func NewCloudFileServiceCreateNamespaceArgs() *CloudFileServiceCreateNamespaceArgs {
@@ -6751,20 +6809,12 @@ func (p *CloudFileServiceCreateNamespaceArgs) InitDefault() {
 func (p *CloudFileServiceCreateNamespaceArgs) GetName() (v string) {
 	return p.Name
 }
-
-func (p *CloudFileServiceCreateNamespaceArgs) GetRootID() (v string) {
-	return p.RootID
-}
 func (p *CloudFileServiceCreateNamespaceArgs) SetName(val string) {
 	p.Name = val
-}
-func (p *CloudFileServiceCreateNamespaceArgs) SetRootID(val string) {
-	p.RootID = val
 }
 
 var fieldIDToName_CloudFileServiceCreateNamespaceArgs = map[int16]string{
 	1: "name",
-	2: "rootID",
 }
 
 func (p *CloudFileServiceCreateNamespaceArgs) Read(iprot thrift.TProtocol) (err error) {
@@ -6789,16 +6839,6 @@ func (p *CloudFileServiceCreateNamespaceArgs) Read(iprot thrift.TProtocol) (err 
 		case 1:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 2:
-			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -6845,15 +6885,6 @@ func (p *CloudFileServiceCreateNamespaceArgs) ReadField1(iprot thrift.TProtocol)
 	return nil
 }
 
-func (p *CloudFileServiceCreateNamespaceArgs) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadString(); err != nil {
-		return err
-	} else {
-		p.RootID = v
-	}
-	return nil
-}
-
 func (p *CloudFileServiceCreateNamespaceArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("createNamespace_args"); err != nil {
@@ -6862,10 +6893,6 @@ func (p *CloudFileServiceCreateNamespaceArgs) Write(oprot thrift.TProtocol) (err
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
-			goto WriteFieldError
-		}
-		if err = p.writeField2(oprot); err != nil {
-			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -6904,23 +6931,6 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *CloudFileServiceCreateNamespaceArgs) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("rootID", thrift.STRING, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteString(p.RootID); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
-}
-
 func (p *CloudFileServiceCreateNamespaceArgs) String() string {
 	if p == nil {
 		return "<nil>"
@@ -6937,22 +6947,12 @@ func (p *CloudFileServiceCreateNamespaceArgs) DeepEqual(ano *CloudFileServiceCre
 	if !p.Field1DeepEqual(ano.Name) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.RootID) {
-		return false
-	}
 	return true
 }
 
 func (p *CloudFileServiceCreateNamespaceArgs) Field1DeepEqual(src string) bool {
 
 	if strings.Compare(p.Name, src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *CloudFileServiceCreateNamespaceArgs) Field2DeepEqual(src string) bool {
-
-	if strings.Compare(p.RootID, src) != 0 {
 		return false
 	}
 	return true

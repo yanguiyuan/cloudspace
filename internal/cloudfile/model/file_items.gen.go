@@ -12,11 +12,12 @@ const TableNameFileItem = "file_items"
 
 // FileItem mapped from table <file_items>
 type FileItem struct {
-	ID         string    `gorm:"column:id;primaryKey" json:"id"`
-	Name       string    `gorm:"column:name;not null" json:"name"`
-	Type       string    `gorm:"column:type;not null" json:"type"`
-	CreateTime time.Time `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"`
-	UpdateTime time.Time `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP" json:"update_time"`
+	ID          string    `gorm:"column:id;primaryKey" json:"id"`
+	NamespaceID int64     `gorm:"column:namespace_id;not null;default:1" json:"namespace_id"`
+	Name        string    `gorm:"column:name;not null" json:"name"`
+	Type        string    `gorm:"column:type;not null" json:"type"`
+	CreateTime  time.Time `gorm:"column:create_time;not null;default:CURRENT_TIMESTAMP" json:"create_time"`
+	UpdateTime  time.Time `gorm:"column:update_time;not null;default:CURRENT_TIMESTAMP" json:"update_time"`
 }
 
 // TableName FileItem's table name

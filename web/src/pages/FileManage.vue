@@ -59,7 +59,7 @@ import Button from "primevue/button";
 import {
   FileItem, onClickFileItem, getRootFileItemID, initDefaultFileItemList,
   deleteFileOrDirectory, getFileItemByID,
-  SideMenuOptionItems, DefaultFileItem, renameFileOrDirectory
+  SideMenuOptionItems, DefaultFileItem, renameFileOrDirectory, getUserNamespaces
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";
@@ -112,16 +112,6 @@ const toggle = (event:MouseEvent) => {
 
 onMounted(async () => {
   document.addEventListener("click", handleClickOutside);
-  const id=await getRootFileItemID();
-  const namespaceFileItem=await getFileItemByID(id)
-  if(!namespaceFileItem){
-    return;
-  }
-  if(fileStore.breadcrumbs.length==0){
-    fileStore.breadcrumbs.push(namespaceFileItem);
-    await initDefaultFileItemList(id);
-  }
-
 });
 onUnmounted(() => {
   document.removeEventListener("click", handleClickOutside);

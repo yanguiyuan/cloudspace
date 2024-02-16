@@ -265,8 +265,6 @@ func QueryUserNamespaces(ctx context.Context, c *app.RequestContext) {
 	if !b {
 		c.String(consts.StatusUnauthorized, "未登录")
 	}
-	fmt.Println("userID:", identity)
-
 	client, err := cloudfile.NewFileServiceClient()
 	if err != nil {
 		c.String(consts.StatusInternalServerError, err.Error())
@@ -298,7 +296,7 @@ func CreateNamespace(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusInternalServerError, err.Error())
 		return
 	}
-	r, err := client.CreateFileItem(ctx, name, "namespace", "@root")
+	namespaceID, err := client.CreateNamespace(ctx, name)
 	if err != nil {
 		c.JSON(consts.StatusOK, utils.H{
 			"code":    errno.ServiceErrCode,
@@ -306,7 +304,7 @@ func CreateNamespace(ctx context.Context, c *app.RequestContext) {
 		})
 		return
 	}
-	namespaceID, err := client.CreateNamespace(ctx, name, r)
+	_, err = client.CreateFileItem(ctx, name, "namespace", "@root", namespaceID)
 	if err != nil {
 		c.JSON(consts.StatusOK, utils.H{
 			"code":    errno.ServiceErrCode,
@@ -314,6 +312,7 @@ func CreateNamespace(ctx context.Context, c *app.RequestContext) {
 		})
 		return
 	}
+
 	err = client.CreateUserNamespace(ctx, userid, namespaceID, 0)
 	if err != nil {
 		c.JSON(consts.StatusOK, utils.H{

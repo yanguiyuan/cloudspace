@@ -41,9 +41,11 @@ const addOwnerNamespace=(n:Namespace)=>{
 }
 onMounted(async ()=>{
   const namespaces=await getUserNamespaces();
+  fileStore.setNamespaceList(namespaces)
   for (const namespace of namespaces) {
     addOwnerNamespace(namespace);
   }
+  await changeNamespace(fileStore.namespaces[0].rootID);
 });
 </script>
 
