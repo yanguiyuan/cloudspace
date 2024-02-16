@@ -1,0 +1,9 @@
+{
+  "name": "cloudspace",
+  "version": "1.0.0",
+  "description": "description",
+  "main": "index.js",
+  "repository": "https://github.com/yanguiyuan/cloudspace.git",
+  "author": "uniquebai <1435992332@qq.com>",
+  "license": "MIT"
+}
