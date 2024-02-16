@@ -47,9 +47,8 @@ const onTemplatedUpload = (e: FileUploadUploadEvent) => {
   const resp=JSON.parse(e.xhr.response)
   if(resp.code==0){
     fileStore.fileList.push(resp.data)
-  }else{
-    toast.add({ severity: "error", summary: "失败", detail: "上传失败", life: 3000 });
   }
+  console.log(resp)
   toast.add({ severity: "success", summary: "成功", detail: "上传成功", life: 3000 });
 };
 

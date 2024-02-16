@@ -25,7 +25,6 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-
 	router.Register(h)
 	h.Spin()
 }

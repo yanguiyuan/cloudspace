@@ -224,21 +224,8 @@ func (s *CloudFileServiceImpl) Rename(ctx context.Context, id, newName string) (
 	})
 	return err
 }
-func (s *CloudFileServiceImpl) QueryUserFileRoot(ctx context.Context, id int64) (r string, err error) {
-	res, err := dal.Q.Namespace.WithContext(ctx).
-		Select(dal.Namespace.RootID).
-		LeftJoin(
-			dal.UserNamespace,
-			dal.Namespace.ID.EqCol(dal.UserNamespace.NamespaceID)).
-		Where(dal.UserNamespace.UserID.Eq(id)).
-		First()
-	if err != nil {
-		return "", err
-	}
-	return res.RootID, nil
-}
 
-func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, ty string, parentID string) (r string, err error) {
+func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
 	id := id.Base62()
 	switch ty {
 	case "namespace":
@@ -250,7 +237,7 @@ func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, 
 	}
 	var fileItem *model.FileItem
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
-		fileItem, err = tx.FileItem.WithContext(ctx).Where(tx.FileItem.ID.Eq(id), tx.FileItem.Name.Eq(name), tx.FileItem.Type.Eq(ty)).FirstOrCreate()
+		fileItem, err = tx.FileItem.WithContext(ctx).Where(tx.FileItem.ID.Eq(id), tx.FileItem.Name.Eq(name), tx.FileItem.Type.Eq(ty), tx.FileItem.NamespaceID.Eq(namespaceID)).FirstOrCreate()
 		if err != nil {
 			return err
 		}
@@ -265,8 +252,8 @@ func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, 
 	}
 	return fileItem.ID, nil
 }
-func (s *CloudFileServiceImpl) CreateNamespace(ctx context.Context, name string, rootID string) (r int64, err error) {
-	namespace, err := dal.Namespace.WithContext(ctx).Where(dal.Namespace.Name.Eq(name), dal.Namespace.RootID.Eq(rootID)).FirstOrCreate()
+func (s *CloudFileServiceImpl) CreateNamespace(ctx context.Context, name string) (r int64, err error) {
+	namespace, err := dal.Namespace.WithContext(ctx).Where(dal.Namespace.Name.Eq(name)).FirstOrCreate()
 	if err != nil {
 		return 0, err
 	}
@@ -299,9 +286,10 @@ func (s *CloudFileServiceImpl) GetFileURL(ctx context.Context, id string, uid in
 }
 func (s *CloudFileServiceImpl) QueryUserNamespaces(ctx context.Context, uid int64) (r []*rpc.Namespace, err error) {
 	var res []*rpc.Namespace
-	err = dal.Q.Namespace.WithContext(ctx).
-		Select(dal.Namespace.ALL, dal.UserNamespace.Authority).
+	err = dal.Namespace.WithContext(ctx).
+		Select(dal.Namespace.ALL, dal.UserNamespace.Authority, dal.FileItem.ID.As("root_id")).
 		LeftJoin(dal.UserNamespace, dal.Namespace.ID.EqCol(dal.UserNamespace.NamespaceID)).
+		LeftJoin(dal.FileItem, dal.FileItem.NamespaceID.EqCol(dal.UserNamespace.NamespaceID), dal.FileItem.Type.Eq(Namespace)).
 		Where(dal.UserNamespace.UserID.Eq(uid)).
 		Debug().
 		Scan(&res)

@@ -19,6 +19,7 @@ export interface FileManagementState{
             visible:boolean;
         }
     }
+    namespaces:Namespace[];
     breadcrumbs:FileItem[];
     fileList:FileItem[];
     urlMap:Map<string,string>
@@ -235,6 +236,7 @@ export async function getRootFileItemID():Promise<string> {
         }
         console.log("error:",e);
     })
+    console.log("id:",id);
     return id;
 }
 export async function getFileItemByID(id:string):Promise<FileItem> {
@@ -282,7 +284,6 @@ export async function renameFileOrDirectory(file:FileItem,toast: ToastServiceMet
 }
 export async function getUserNamespaces():Promise<Namespace[]> {
     const resp=await axios.get("/user/namespace/list").then((res)=>{
-        console.log("namespace-list:",res);
         return res.data.data;
     }).catch((e)=>{
         console.log("error:",e);
@@ -299,11 +300,23 @@ export async function  changeNamespace(id:string){
     fileStore.breadcrumbs.push(namespaceFileItem);
     await initDefaultFileItemList(id);
 }
-export async function createNamespace(name:string){
+export async function createNamespace(name:string,toast: ToastServiceMethods){
     await axios.post("/user/namespace/"+name).then((res)=>{
         console.log("namespace-create:",res);
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "创建命名空间成功",
+            life: 3000
+        });
     }).catch((e)=>{
         console.log("error:",e);
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "创建命名空间失败",
+            life: 3000
+        });
     });
 }
 export async function generateNamespaceJoinLink(id:number):Promise<any> {

@@ -3977,269 +3977,6 @@ func (p *CloudFileServiceRenameResult) BLength() int {
 	return l
 }
 
-func (p *CloudFileServiceQueryUserFileRootArgs) FastRead(buf []byte) (int, error) {
-	var err error
-	var offset int
-	var l int
-	var fieldTypeId thrift.TType
-	var fieldId int16
-	_, l, err = bthrift.Binary.ReadStructBegin(buf)
-	offset += l
-	if err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, l, err = bthrift.Binary.ReadFieldBegin(buf[offset:])
-		offset += l
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-		switch fieldId {
-		case 1:
-			if fieldTypeId == thrift.I64 {
-				l, err = p.FastReadField1(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-			offset += l
-			if err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		l, err = bthrift.Binary.ReadFieldEnd(buf[offset:])
-		offset += l
-		if err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	l, err = bthrift.Binary.ReadStructEnd(buf[offset:])
-	offset += l
-	if err != nil {
-		goto ReadStructEndError
-	}
-
-	return offset, nil
-ReadStructBeginError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceQueryUserFileRootArgs[fieldId]), err)
-SkipFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-ReadFieldEndError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *CloudFileServiceQueryUserFileRootArgs) FastReadField1(buf []byte) (int, error) {
-	offset := 0
-
-	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-
-		p.UserID = v
-
-	}
-	return offset, nil
-}
-
-// for compatibility
-func (p *CloudFileServiceQueryUserFileRootArgs) FastWrite(buf []byte) int {
-	return 0
-}
-
-func (p *CloudFileServiceQueryUserFileRootArgs) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "queryUserFileRoot_args")
-	if p != nil {
-		offset += p.fastWriteField1(buf[offset:], binaryWriter)
-	}
-	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
-	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
-	return offset
-}
-
-func (p *CloudFileServiceQueryUserFileRootArgs) BLength() int {
-	l := 0
-	l += bthrift.Binary.StructBeginLength("queryUserFileRoot_args")
-	if p != nil {
-		l += p.field1Length()
-	}
-	l += bthrift.Binary.FieldStopLength()
-	l += bthrift.Binary.StructEndLength()
-	return l
-}
-
-func (p *CloudFileServiceQueryUserFileRootArgs) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "userID", thrift.I64, 1)
-	offset += bthrift.Binary.WriteI64(buf[offset:], p.UserID)
-
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	return offset
-}
-
-func (p *CloudFileServiceQueryUserFileRootArgs) field1Length() int {
-	l := 0
-	l += bthrift.Binary.FieldBeginLength("userID", thrift.I64, 1)
-	l += bthrift.Binary.I64Length(p.UserID)
-
-	l += bthrift.Binary.FieldEndLength()
-	return l
-}
-
-func (p *CloudFileServiceQueryUserFileRootResult) FastRead(buf []byte) (int, error) {
-	var err error
-	var offset int
-	var l int
-	var fieldTypeId thrift.TType
-	var fieldId int16
-	_, l, err = bthrift.Binary.ReadStructBegin(buf)
-	offset += l
-	if err != nil {
-		goto ReadStructBeginError
-	}
-
-	for {
-		_, fieldTypeId, fieldId, l, err = bthrift.Binary.ReadFieldBegin(buf[offset:])
-		offset += l
-		if err != nil {
-			goto ReadFieldBeginError
-		}
-		if fieldTypeId == thrift.STOP {
-			break
-		}
-		switch fieldId {
-		case 0:
-			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField0(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
-		default:
-			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-			offset += l
-			if err != nil {
-				goto SkipFieldError
-			}
-		}
-
-		l, err = bthrift.Binary.ReadFieldEnd(buf[offset:])
-		offset += l
-		if err != nil {
-			goto ReadFieldEndError
-		}
-	}
-	l, err = bthrift.Binary.ReadStructEnd(buf[offset:])
-	offset += l
-	if err != nil {
-		goto ReadStructEndError
-	}
-
-	return offset, nil
-ReadStructBeginError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
-ReadFieldBeginError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
-ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceQueryUserFileRootResult[fieldId]), err)
-SkipFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
-ReadFieldEndError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
-ReadStructEndError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-}
-
-func (p *CloudFileServiceQueryUserFileRootResult) FastReadField0(buf []byte) (int, error) {
-	offset := 0
-
-	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-		p.Success = &v
-
-	}
-	return offset, nil
-}
-
-// for compatibility
-func (p *CloudFileServiceQueryUserFileRootResult) FastWrite(buf []byte) int {
-	return 0
-}
-
-func (p *CloudFileServiceQueryUserFileRootResult) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "queryUserFileRoot_result")
-	if p != nil {
-		offset += p.fastWriteField0(buf[offset:], binaryWriter)
-	}
-	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
-	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
-	return offset
-}
-
-func (p *CloudFileServiceQueryUserFileRootResult) BLength() int {
-	l := 0
-	l += bthrift.Binary.StructBeginLength("queryUserFileRoot_result")
-	if p != nil {
-		l += p.field0Length()
-	}
-	l += bthrift.Binary.FieldStopLength()
-	l += bthrift.Binary.StructEndLength()
-	return l
-}
-
-func (p *CloudFileServiceQueryUserFileRootResult) fastWriteField0(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	if p.IsSetSuccess() {
-		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "success", thrift.STRING, 0)
-		offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, *p.Success)
-
-		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	}
-	return offset
-}
-
-func (p *CloudFileServiceQueryUserFileRootResult) field0Length() int {
-	l := 0
-	if p.IsSetSuccess() {
-		l += bthrift.Binary.FieldBeginLength("success", thrift.STRING, 0)
-		l += bthrift.Binary.StringLengthNocopy(*p.Success)
-
-		l += bthrift.Binary.FieldEndLength()
-	}
-	return l
-}
-
 func (p *CloudFileServiceCreateFileItemArgs) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
@@ -4293,6 +4030,20 @@ func (p *CloudFileServiceCreateFileItemArgs) FastRead(buf []byte) (int, error) {
 		case 3:
 			if fieldTypeId == thrift.STRING {
 				l, err = p.FastReadField3(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField4(buf[offset:])
 				offset += l
 				if err != nil {
 					goto ReadFieldError
@@ -4381,6 +4132,20 @@ func (p *CloudFileServiceCreateFileItemArgs) FastReadField3(buf []byte) (int, er
 	return offset, nil
 }
 
+func (p *CloudFileServiceCreateFileItemArgs) FastReadField4(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.NamespaceID = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *CloudFileServiceCreateFileItemArgs) FastWrite(buf []byte) int {
 	return 0
@@ -4390,6 +4155,7 @@ func (p *CloudFileServiceCreateFileItemArgs) FastWriteNocopy(buf []byte, binaryW
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "createFileItem_args")
 	if p != nil {
+		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
@@ -4406,6 +4172,7 @@ func (p *CloudFileServiceCreateFileItemArgs) BLength() int {
 		l += p.field1Length()
 		l += p.field2Length()
 		l += p.field3Length()
+		l += p.field4Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -4439,6 +4206,15 @@ func (p *CloudFileServiceCreateFileItemArgs) fastWriteField3(buf []byte, binaryW
 	return offset
 }
 
+func (p *CloudFileServiceCreateFileItemArgs) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "namespaceID", thrift.I64, 4)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.NamespaceID)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *CloudFileServiceCreateFileItemArgs) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("name", thrift.STRING, 1)
@@ -4461,6 +4237,15 @@ func (p *CloudFileServiceCreateFileItemArgs) field3Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("parentID", thrift.STRING, 3)
 	l += bthrift.Binary.StringLengthNocopy(p.ParentID)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *CloudFileServiceCreateFileItemArgs) field4Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("namespaceID", thrift.I64, 4)
+	l += bthrift.Binary.I64Length(p.NamespaceID)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -4635,20 +4420,6 @@ func (p *CloudFileServiceCreateNamespaceArgs) FastRead(buf []byte) (int, error) 
 					goto SkipFieldError
 				}
 			}
-		case 2:
-			if fieldTypeId == thrift.STRING {
-				l, err = p.FastReadField2(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -4698,20 +4469,6 @@ func (p *CloudFileServiceCreateNamespaceArgs) FastReadField1(buf []byte) (int, e
 	return offset, nil
 }
 
-func (p *CloudFileServiceCreateNamespaceArgs) FastReadField2(buf []byte) (int, error) {
-	offset := 0
-
-	if v, l, err := bthrift.Binary.ReadString(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-
-		p.RootID = v
-
-	}
-	return offset, nil
-}
-
 // for compatibility
 func (p *CloudFileServiceCreateNamespaceArgs) FastWrite(buf []byte) int {
 	return 0
@@ -4722,7 +4479,6 @@ func (p *CloudFileServiceCreateNamespaceArgs) FastWriteNocopy(buf []byte, binary
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "createNamespace_args")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
-		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -4734,7 +4490,6 @@ func (p *CloudFileServiceCreateNamespaceArgs) BLength() int {
 	l += bthrift.Binary.StructBeginLength("createNamespace_args")
 	if p != nil {
 		l += p.field1Length()
-		l += p.field2Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -4750,28 +4505,10 @@ func (p *CloudFileServiceCreateNamespaceArgs) fastWriteField1(buf []byte, binary
 	return offset
 }
 
-func (p *CloudFileServiceCreateNamespaceArgs) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "rootID", thrift.STRING, 2)
-	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.RootID)
-
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	return offset
-}
-
 func (p *CloudFileServiceCreateNamespaceArgs) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("name", thrift.STRING, 1)
 	l += bthrift.Binary.StringLengthNocopy(p.Name)
-
-	l += bthrift.Binary.FieldEndLength()
-	return l
-}
-
-func (p *CloudFileServiceCreateNamespaceArgs) field2Length() int {
-	l := 0
-	l += bthrift.Binary.FieldBeginLength("rootID", thrift.STRING, 2)
-	l += bthrift.Binary.StringLengthNocopy(p.RootID)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l
@@ -5873,14 +5610,6 @@ func (p *CloudFileServiceRenameArgs) GetFirstArgument() interface{} {
 
 func (p *CloudFileServiceRenameResult) GetResult() interface{} {
 	return nil
-}
-
-func (p *CloudFileServiceQueryUserFileRootArgs) GetFirstArgument() interface{} {
-	return p.UserID
-}
-
-func (p *CloudFileServiceQueryUserFileRootResult) GetResult() interface{} {
-	return p.Success
 }
 
 func (p *CloudFileServiceCreateFileItemArgs) GetFirstArgument() interface{} {

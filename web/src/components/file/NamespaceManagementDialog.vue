@@ -69,7 +69,7 @@ onMounted(async ()=>{
                   <InputText id="namespace" v-model="namespaceName" />
                   <label for="namespace">命名空间名称</label>
                 </FloatLabel>
-                <Button size="small" @click="createNamespace(namespaceName)" class="ml-2">确定</Button>
+                <Button size="small" @click="createNamespace(namespaceName,toast)" class="ml-2">确定</Button>
               </div>
               <div v-if="visible=='auth'" >
                 <div>

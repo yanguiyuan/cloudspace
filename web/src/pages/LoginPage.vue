@@ -67,7 +67,7 @@ let loginOrRegister = function () {
             router.push("/")
         }).catch((err) => {
             console.log(err)
-            ElMessage.error(err.response.data.Message)
+            ElMessage.error(err.response.data.message)
         })
     } else {
         if (pwd.value == comfirmPwd.value) {

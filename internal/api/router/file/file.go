@@ -12,8 +12,6 @@ func Register(r *server.Hertz) {
 	{
 		file := user.Group("/file")
 		{
-			//查询用户的默认命名空间的根文件项（namespace文件项）
-			file.GET("/root", fileserver.UserRootFile)
 			//查询文件项根据id
 			file.GET("/:id", fileserver.QueryFileItemByID)
 			//查询文件项列表，每个文件项的父文件项ID为id
@@ -25,7 +23,7 @@ func Register(r *server.Hertz) {
 		}
 		directory := user.Group("/directory")
 		{
-			directory.POST("/", fileserver.CreateDirectory)
+			directory.POST("", fileserver.CreateDirectory)
 		}
 		namespace := user.Group("/namespace")
 		{
