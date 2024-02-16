@@ -224,20 +224,6 @@ func (s *CloudFileServiceImpl) Rename(ctx context.Context, id, newName string) (
 	})
 	return err
 }
-func (s *CloudFileServiceImpl) QueryUserFileRoot(ctx context.Context, id int64) (r string, err error) {
-	//res, err := dal.Q.Namespace.WithContext(ctx).
-	//	Select(dal.Namespace.RootID).
-	//	LeftJoin(
-	//		dal.UserNamespace,
-	//		dal.Namespace.ID.EqCol(dal.UserNamespace.NamespaceID)).
-	//	Where(dal.UserNamespace.UserID.Eq(id)).
-	//	First()
-	//dal.UserNamespace.WithContext(ctx).L
-	//if err != nil {
-	//	return "", err
-	//}
-	return "none", nil
-}
 
 func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
 	id := id.Base62()

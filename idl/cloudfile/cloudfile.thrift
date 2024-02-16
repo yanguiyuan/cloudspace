@@ -52,7 +52,6 @@ service CloudFileService{
     CloudFileItem queryFileItemByID(1:string id)
     void update(1:UpdateRequest req)
     void rename(1:string id,2:string newName)
-    string queryUserFileRoot(1:i64 userID)
     string createFileItem(1:string name,2:string ty,3:string parentID,4:i64 namespaceID)
     i64 createNamespace(1:string name)
     void createUserNamespace(1:i64 userID,2:i64 namespaceID,3:i32 authority)

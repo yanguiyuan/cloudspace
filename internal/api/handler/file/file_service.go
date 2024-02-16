@@ -95,32 +95,6 @@ func Upload(ctx context.Context, c *app.RequestContext) {
 	})
 }
 
-// UserRootFile .
-// @router /user/file/root [GET]
-func UserRootFile(ctx context.Context, c *app.RequestContext) {
-	if identity, ok := c.Get(mw.IdentityKey); ok {
-		client, err := cloudfile.NewFileServiceClient()
-		if err != nil {
-			c.String(consts.StatusInternalServerError, err.Error())
-			return
-		}
-		r, err := client.QueryUserFileRoot(ctx, identity.(int64))
-		if err != nil {
-			c.JSON(consts.StatusOK, utils.H{
-				"code":    errno.NotFoundCode,
-				"message": errno.NotFoundMsg,
-			})
-			return
-		}
-		c.JSON(consts.StatusOK, utils.H{
-			"code":    errno.SuccessCode,
-			"message": errno.SuccessMsg,
-			"id":      r,
-		})
-		return
-	}
-	c.String(consts.StatusUnauthorized, "未登录")
-}
 func QueryFileItemByID(ctx context.Context, c *app.RequestContext) {
 	id := c.Param("id")
 	client, err := cloudfile.NewFileServiceClient()

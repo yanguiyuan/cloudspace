@@ -27,7 +27,6 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"queryFileItemByID":   kitex.NewMethodInfo(queryFileItemByIDHandler, newCloudFileServiceQueryFileItemByIDArgs, newCloudFileServiceQueryFileItemByIDResult, false),
 		"update":              kitex.NewMethodInfo(updateHandler, newCloudFileServiceUpdateArgs, newCloudFileServiceUpdateResult, false),
 		"rename":              kitex.NewMethodInfo(renameHandler, newCloudFileServiceRenameArgs, newCloudFileServiceRenameResult, false),
-		"queryUserFileRoot":   kitex.NewMethodInfo(queryUserFileRootHandler, newCloudFileServiceQueryUserFileRootArgs, newCloudFileServiceQueryUserFileRootResult, false),
 		"createFileItem":      kitex.NewMethodInfo(createFileItemHandler, newCloudFileServiceCreateFileItemArgs, newCloudFileServiceCreateFileItemResult, false),
 		"createNamespace":     kitex.NewMethodInfo(createNamespaceHandler, newCloudFileServiceCreateNamespaceArgs, newCloudFileServiceCreateNamespaceResult, false),
 		"createUserNamespace": kitex.NewMethodInfo(createUserNamespaceHandler, newCloudFileServiceCreateUserNamespaceArgs, newCloudFileServiceCreateUserNamespaceResult, false),
@@ -190,24 +189,6 @@ func newCloudFileServiceRenameArgs() interface{} {
 
 func newCloudFileServiceRenameResult() interface{} {
 	return rpc.NewCloudFileServiceRenameResult()
-}
-
-func queryUserFileRootHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*rpc.CloudFileServiceQueryUserFileRootArgs)
-	realResult := result.(*rpc.CloudFileServiceQueryUserFileRootResult)
-	success, err := handler.(rpc.CloudFileService).QueryUserFileRoot(ctx, realArg.UserID)
-	if err != nil {
-		return err
-	}
-	realResult.Success = &success
-	return nil
-}
-func newCloudFileServiceQueryUserFileRootArgs() interface{} {
-	return rpc.NewCloudFileServiceQueryUserFileRootArgs()
-}
-
-func newCloudFileServiceQueryUserFileRootResult() interface{} {
-	return rpc.NewCloudFileServiceQueryUserFileRootResult()
 }
 
 func createFileItemHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -390,16 +371,6 @@ func (p *kClient) Rename(ctx context.Context, id string, newName_ string) (err e
 		return
 	}
 	return nil
-}
-
-func (p *kClient) QueryUserFileRoot(ctx context.Context, userID int64) (r string, err error) {
-	var _args rpc.CloudFileServiceQueryUserFileRootArgs
-	_args.UserID = userID
-	var _result rpc.CloudFileServiceQueryUserFileRootResult
-	if err = p.c.Call(ctx, "queryUserFileRoot", &_args, &_result); err != nil {
-		return
-	}
-	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
