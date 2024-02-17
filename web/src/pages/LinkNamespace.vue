@@ -9,10 +9,12 @@ const router=useRouter();
 const afterHide=()=>{
   router.push("/");
 };
+
 onMounted(()=>{
   const params=getUrlParams(window.location.href);
   if(params.user_id===userStore.user.id.toString()){
-    alert("请重新登录");
+    userStore.linkNamespace=true;
+    router.push("/login");
   }
   console.log(params);
 });
@@ -20,7 +22,8 @@ onMounted(()=>{
 
 <template>
 <Dialog v-model:visible="visible" @after-hide="afterHide">
-  你好
+  你确定加入命名空间：
+  <span></span>
 </Dialog>
 </template>
 

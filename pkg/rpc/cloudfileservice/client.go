@@ -24,6 +24,7 @@ type Client interface {
 	CreateUserNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32, callOptions ...callopt.Option) (err error)
 	GetFileURL(ctx context.Context, id string, uid int64, callOptions ...callopt.Option) (r string, err error)
 	QueryUserNamespaces(ctx context.Context, userID int64, callOptions ...callopt.Option) (r []*rpc.Namespace, err error)
+	QueryNamespace(ctx context.Context, namespaceID int64, callOptions ...callopt.Option) (r *rpc.Namespace, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -118,4 +119,9 @@ func (p *kCloudFileServiceClient) GetFileURL(ctx context.Context, id string, uid
 func (p *kCloudFileServiceClient) QueryUserNamespaces(ctx context.Context, userID int64, callOptions ...callopt.Option) (r []*rpc.Namespace, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.QueryUserNamespaces(ctx, userID)
+}
+
+func (p *kCloudFileServiceClient) QueryNamespace(ctx context.Context, namespaceID int64, callOptions ...callopt.Option) (r *rpc.Namespace, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryNamespace(ctx, namespaceID)
 }

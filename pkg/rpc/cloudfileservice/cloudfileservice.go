@@ -32,6 +32,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"createUserNamespace": kitex.NewMethodInfo(createUserNamespaceHandler, newCloudFileServiceCreateUserNamespaceArgs, newCloudFileServiceCreateUserNamespaceResult, false),
 		"getFileURL":          kitex.NewMethodInfo(getFileURLHandler, newCloudFileServiceGetFileURLArgs, newCloudFileServiceGetFileURLResult, false),
 		"queryUserNamespaces": kitex.NewMethodInfo(queryUserNamespacesHandler, newCloudFileServiceQueryUserNamespacesArgs, newCloudFileServiceQueryUserNamespacesResult, false),
+		"queryNamespace":      kitex.NewMethodInfo(queryNamespaceHandler, newCloudFileServiceQueryNamespaceArgs, newCloudFileServiceQueryNamespaceResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName":     "rpc",
@@ -282,6 +283,24 @@ func newCloudFileServiceQueryUserNamespacesResult() interface{} {
 	return rpc.NewCloudFileServiceQueryUserNamespacesResult()
 }
 
+func queryNamespaceHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceQueryNamespaceArgs)
+	realResult := result.(*rpc.CloudFileServiceQueryNamespaceResult)
+	success, err := handler.(rpc.CloudFileService).QueryNamespace(ctx, realArg.NamespaceID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCloudFileServiceQueryNamespaceArgs() interface{} {
+	return rpc.NewCloudFileServiceQueryNamespaceArgs()
+}
+
+func newCloudFileServiceQueryNamespaceResult() interface{} {
+	return rpc.NewCloudFileServiceQueryNamespaceResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -425,6 +444,16 @@ func (p *kClient) QueryUserNamespaces(ctx context.Context, userID int64) (r []*r
 	_args.UserID = userID
 	var _result rpc.CloudFileServiceQueryUserNamespacesResult
 	if err = p.c.Call(ctx, "queryUserNamespaces", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryNamespace(ctx context.Context, namespaceID int64) (r *rpc.Namespace, err error) {
+	var _args rpc.CloudFileServiceQueryNamespaceArgs
+	_args.NamespaceID = namespaceID
+	var _result rpc.CloudFileServiceQueryNamespaceResult
+	if err = p.c.Call(ctx, "queryNamespace", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

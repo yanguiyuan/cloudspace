@@ -21,7 +21,6 @@ const auths=ref([
   {label:"读权限（查看文件列表，浏览文件，下载文件）",code:1},
   {label:"写权限（创建，删除，重命名，上传文件）",code:2},
 ])
-const namespaces=ref<Namespace[]>([])
 const visible=ref<string>("create")
 const title=ref<string>("新建命名空间");
 const fileStore = useFileStore()
@@ -42,9 +41,7 @@ const items=ref([
   { label: '新建', icon: 'pi pi-plus', command:()=>{visible.value="create";title.value="新建命名空间"} },
   { label: '授权', icon: 'pi pi-paperclip',command:()=>{visible.value="auth";title.value="命名空间授权"} }
 ])
-onMounted(async ()=>{
-  namespaces.value=await getUserNamespaces();
-});
+
 </script>
 
 <template>
@@ -74,7 +71,7 @@ onMounted(async ()=>{
               <div v-if="visible=='auth'" >
                 <div>
                   <div>命名空间:</div>
-                  <Dropdown v-model="selectedNamespace" :options="namespaces" optionLabel="name" placeholder="选择一个命名空间"  />
+                  <Dropdown v-model="selectedNamespace" :options="fileStore.namespaces" optionLabel="name" placeholder="选择一个命名空间"  />
                 </div>
                 <div>
                   <div>权限:</div>

@@ -303,9 +303,10 @@ func CreateNamespace(ctx context.Context, c *app.RequestContext) {
 }
 
 func LinkNamespace(ctx context.Context, c *app.RequestContext) {
-	c.Redirect(consts.StatusOK, []byte("http://localhost:5173/link?user_id="))
+	//c.Redirect(consts.StatusOK, []byte("http://localhost:5173/link?user_id="))
 	id, b := handler.ExtractID(c)
 	namespaceId := c.Param("id")
+	authority := c.Param("authority")
 	if !b {
 		return
 	}
@@ -322,6 +323,11 @@ func LinkNamespace(ctx context.Context, c *app.RequestContext) {
 		"data": "http://localhost:5173/link?user_id=" +
 			strconv.FormatInt(id, 10) +
 			"&namespace_id=" + namespaceId +
+			"&authority=" + authority +
 			"&token=" + token,
 	})
+}
+
+func QueryNamespace(ctx context.Context, c *app.RequestContext) {
+
 }

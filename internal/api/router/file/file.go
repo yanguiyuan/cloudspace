@@ -27,9 +27,10 @@ func Register(r *server.Hertz) {
 		}
 		namespace := user.Group("/namespace")
 		{
+			namespace.GET("/:id", fileserver.QueryNamespace)
 			namespace.GET("/list", fileserver.QueryUserNamespaces)
 			namespace.POST("/:name", fileserver.CreateNamespace)
-			namespace.GET("/:id/link", fileserver.LinkNamespace)
+			namespace.GET("/:id/link/:authority", fileserver.LinkNamespace)
 		}
 	}
 

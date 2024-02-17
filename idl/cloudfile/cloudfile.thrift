@@ -57,4 +57,5 @@ service CloudFileService{
     void createUserNamespace(1:i64 userID,2:i64 namespaceID,3:i32 authority)
     string getFileURL(1:string id,2:i64 uid)
     list<Namespace> queryUserNamespaces(1:i64 userID)
+    Namespace queryNamespace(1:i64 namespaceID)
 }
