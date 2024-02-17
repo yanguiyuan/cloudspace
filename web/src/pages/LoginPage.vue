@@ -44,7 +44,9 @@ import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import CurrentTime from '../components/CurrentTime.vue';
 import { useToast } from "primevue/usetoast";
+import {useUserStore} from "../store/user";
 const toast = useToast();
+const userStore=useUserStore();
 const btnmessage = ref<string>("登录")
 const user = ref<string>("")
 const pwd = ref<string>("")
@@ -64,7 +66,11 @@ let loginOrRegister = function () {
             console.log("token:", res.data.token)
             console.log("user:", res.data)
             axios.defaults.headers.common["Authorization"]="Bearer "+res.data.token
-            router.push("/")
+            if(userStore.linkNamespace){
+              router.push("/link")
+              return;
+            }
+            router.push("/");
         }).catch((err) => {
             console.log(err)
             ElMessage.error(err.response.data.message)
@@ -77,6 +83,7 @@ let loginOrRegister = function () {
             }).then((res) => {
                 if(res.data.code==0){
                   ElMessage.success("注册成功")
+                  loginActive();
                   return
                 }
                 if(res.data.code==1002){

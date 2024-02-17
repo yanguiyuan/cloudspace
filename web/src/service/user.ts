@@ -2,6 +2,7 @@ import axios from "../axios/axios";
 import {useUserStore} from "../store/user";
 import {ToastServiceMethods} from "primevue/toastservice";
 import {useFileStore} from "../store/file";
+import router from "../router/router";
 export interface User {
     id:number;
     username:string;
@@ -26,13 +27,17 @@ export interface UserState{
             visible:boolean;
         }
     },
-    user:User
+    user:User,
+    linkNamespace:boolean
 }
 
 const fileStore=useFileStore();
 const userStore=useUserStore();
 
 export const FetchUserInfo=async function ():Promise<User> {
+    if(userStore.user.id==0){
+        await router.push("/login")
+    }
     const res=await axios.get("/user/info").then((res)=>{
         console.log("r:",res)
         return res.data.data;

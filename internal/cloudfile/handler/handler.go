@@ -298,3 +298,8 @@ func (s *CloudFileServiceImpl) QueryUserNamespaces(ctx context.Context, uid int6
 	}
 	return res, err
 }
+func (s *CloudFileServiceImpl) QueryNamespace(ctx context.Context, id int64) (r *rpc.Namespace, err error) {
+
+	//dal.Namespace.
+	return nil, nil
+}

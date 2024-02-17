@@ -23,7 +23,8 @@ export const DefaultUserState:UserState={
         role:"user",
         createTime:"",
         updateTime:""
-    }
+    },
+    linkNamespace:false
 }
 export const useUserStore=defineStore({
     id:"user",
