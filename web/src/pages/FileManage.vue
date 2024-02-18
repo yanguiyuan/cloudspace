@@ -30,8 +30,8 @@
   <div ref="fileTip" id="fileTip"  class="settingTooltip hidden">
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
     <div id="renameButton" @click="canRename=true;renameFileItem=optionFileItem" class="tipMenuItem">重命名</div>
-    <div v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">编辑</div>
-    <div  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem"><a :href="fileStore.urlMap.get(optionFileItem.id)">下载</a></div>
+    <div @click="editFile(optionFileItem)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
+    <div @click="downLoad"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
   </div>
   <FileUploadDialog></FileUploadDialog>
   <FileCreateDialog></FileCreateDialog>
@@ -40,6 +40,7 @@
   </Dialog>
   <ConfirmDialog></ConfirmDialog>
   <NamespaceManagementDialog></NamespaceManagementDialog>
+  <MarkdownEdit></MarkdownEdit>
 </template>
 <script setup lang="ts">
 import {AssetsIconSvgService} from "../assets/assets";
@@ -59,12 +60,13 @@ import Button from "primevue/button";
 import {
   onClickFileItem, initDefaultFileItemList,
   deleteFileOrDirectory, getFileItemByID,
-  SideMenuOptionItems, renameFileOrDirectory, getUserNamespaces
+  SideMenuOptionItems, renameFileOrDirectory, getUserNamespaces, editFile, canEdit, getFileURL
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";
 import Image from "primevue/image";
 import NamespaceManagementDialog from "../components/file/NamespaceManagementDialog.vue";
+import MarkdownEdit from "../components/file/MarkdownEdit.vue";
 const renameOp = ref();
 const toast = useToast();
 const confirm = useConfirm();
@@ -82,6 +84,10 @@ const displayMenu = function (e: MouseEvent,it:FileItem) {
     el.style.display='block';
   }
   optionFileItem.value=it;
+}
+const downLoad =async function () {
+  const url=await getFileURL(optionFileItem.value.id);
+  window.open(url);
 }
 const getFileName = function (value: FileItem) {
   if (value.fileName.length > 30) {

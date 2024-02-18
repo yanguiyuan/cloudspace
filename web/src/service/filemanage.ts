@@ -11,7 +11,6 @@ export interface ConfirmMethods{
 }
 
 const fileStore=useFileStore();
-
 export const SideMenuOptionItems=[
     {
         tooltip:"文件上传",
@@ -318,4 +317,47 @@ export async function linkNamespace(id:number,auth:number,token:string,toast: To
             life: 3000
         })
     }
+}
+export function canEdit(file:FileItem):boolean{
+    const stringArray: string[] = ["png","jpg","exe","directory"];
+    return !stringArray.includes(file.fileType);
+}
+export async function  getFileURL(id:string){
+    let url=fileStore.urlMap.get(id);
+    if(url==undefined){
+        const resp:string=await axios.get("/user/file/"+id+"/url").then((res)=>{
+            return res.data.data;
+        }).catch((e)=>{
+            console.log("error:",e);
+        })
+        url=resp
+    }
+    return url
+}
+export async function editFile(file:FileItem){
+    fileStore.dialog.markdownEdit.visible=true
+    fileStore.dialog.markdownEdit.editFileItem=file;
+    await axios.get("/user/file/"+file.id+"/content").then((res)=>{
+        fileStore.dialog.markdownEdit.text=res.data.data;
+        console.log("res:",res.data.data)
+    }).catch((e)=>{
+        console.log("error:",e);
+    })
+}
+export async function saveFileContent(toast: ToastServiceMethods){
+    await axios.put("/user/file/"+fileStore.dialog.markdownEdit.editFileItem.id+"/content",{
+        content:fileStore.dialog.markdownEdit.text,
+    }).then((res)=>{
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "保存成功",
+            life: 3000
+        });
+    }).catch((e)=>{
+        console.log("error:",e);
+        toast.add({
+            severity: 'error',
+        });
+    });
 }

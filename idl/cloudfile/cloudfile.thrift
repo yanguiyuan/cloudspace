@@ -67,4 +67,6 @@ service CloudFileService{
     list<Namespace> queryUserNamespaces(1:i64 userID)
     void LinkNamespace(1:i64 userID,2:i64 namespaceID,3:i32 authority)
     i64 getUserIDByFileID(1:string id)
+    binary fetchFileData(1:string id)
+    void modifyFileContent(1:string id,2:string content)
 }

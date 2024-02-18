@@ -423,3 +423,56 @@ func RemoveDirectory(ctx context.Context, c *app.RequestContext) {
 		"message": errno.SuccessMsg,
 	})
 }
+
+func FetchFileContent(ctx context.Context, c *app.RequestContext) {
+	id := c.Param("id")
+	client, err := cloudfile.NewFileServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		return
+	}
+	data, err := client.FetchFileData(ctx, id)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+		"data":    string(data),
+	})
+}
+
+func ModifyFileContent(ctx context.Context, c *app.RequestContext) {
+	var req file.ModifyFileContentReq
+	err := c.BindAndValidate(&req)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.InvalidParamCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	client, err := cloudfile.NewFileServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		return
+	}
+	err = client.ModifyFileContent(ctx, req.ID, req.Content)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+	})
+
+}

@@ -26,6 +26,7 @@ declare module '@vue/runtime-core' {
     FileCreateDialog: typeof import('./src/components/file/FileCreateDialog.vue')['default']
     FileManagementHeader: typeof import('./src/components/file/FileManagementHeader.vue')['default']
     FileUploadDialog: typeof import('./src/components/file/FileUploadDialog.vue')['default']
+    MarkdownEdit: typeof import('./src/components/file/MarkdownEdit.vue')['default']
     MarkdownPreview: typeof import('./src/components/MarkdownPreview.vue')['default']
     NamespaceManagement: typeof import('./src/components/file/NamespaceManagement.vue')['default']
     NamespaceManagementDialog: typeof import('./src/components/file/NamespaceManagementDialog.vue')['default']

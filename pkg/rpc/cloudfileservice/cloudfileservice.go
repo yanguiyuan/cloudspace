@@ -35,6 +35,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"queryUserNamespaces": kitex.NewMethodInfo(queryUserNamespacesHandler, newCloudFileServiceQueryUserNamespacesArgs, newCloudFileServiceQueryUserNamespacesResult, false),
 		"LinkNamespace":       kitex.NewMethodInfo(linkNamespaceHandler, newCloudFileServiceLinkNamespaceArgs, newCloudFileServiceLinkNamespaceResult, false),
 		"getUserIDByFileID":   kitex.NewMethodInfo(getUserIDByFileIDHandler, newCloudFileServiceGetUserIDByFileIDArgs, newCloudFileServiceGetUserIDByFileIDResult, false),
+		"fetchFileData":       kitex.NewMethodInfo(fetchFileDataHandler, newCloudFileServiceFetchFileDataArgs, newCloudFileServiceFetchFileDataResult, false),
+		"modifyFileContent":   kitex.NewMethodInfo(modifyFileContentHandler, newCloudFileServiceModifyFileContentArgs, newCloudFileServiceModifyFileContentResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "rpc",
@@ -338,6 +340,42 @@ func newCloudFileServiceGetUserIDByFileIDResult() interface{} {
 	return rpc.NewCloudFileServiceGetUserIDByFileIDResult()
 }
 
+func fetchFileDataHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceFetchFileDataArgs)
+	realResult := result.(*rpc.CloudFileServiceFetchFileDataResult)
+	success, err := handler.(rpc.CloudFileService).FetchFileData(ctx, realArg.Id)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCloudFileServiceFetchFileDataArgs() interface{} {
+	return rpc.NewCloudFileServiceFetchFileDataArgs()
+}
+
+func newCloudFileServiceFetchFileDataResult() interface{} {
+	return rpc.NewCloudFileServiceFetchFileDataResult()
+}
+
+func modifyFileContentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceModifyFileContentArgs)
+
+	err := handler.(rpc.CloudFileService).ModifyFileContent(ctx, realArg.Id, realArg.Content)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newCloudFileServiceModifyFileContentArgs() interface{} {
+	return rpc.NewCloudFileServiceModifyFileContentArgs()
+}
+
+func newCloudFileServiceModifyFileContentResult() interface{} {
+	return rpc.NewCloudFileServiceModifyFileContentResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -515,4 +553,25 @@ func (p *kClient) GetUserIDByFileID(ctx context.Context, id string) (r int64, er
 		return
 	}
 	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FetchFileData(ctx context.Context, id string) (r []byte, err error) {
+	var _args rpc.CloudFileServiceFetchFileDataArgs
+	_args.Id = id
+	var _result rpc.CloudFileServiceFetchFileDataResult
+	if err = p.c.Call(ctx, "fetchFileData", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ModifyFileContent(ctx context.Context, id string, content string) (err error) {
+	var _args rpc.CloudFileServiceModifyFileContentArgs
+	_args.Id = id
+	_args.Content = content
+	var _result rpc.CloudFileServiceModifyFileContentResult
+	if err = p.c.Call(ctx, "modifyFileContent", &_args, &_result); err != nil {
+		return
+	}
+	return nil
 }

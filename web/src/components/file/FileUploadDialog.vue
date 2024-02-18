@@ -104,7 +104,7 @@ const formatSize = (bytes:number) => {
           <h5>Pending</h5>
           <div class="flex flex-wrap p-0 sm:p-5 gap-5">
             <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
-              <div>
+              <div v-if="file.type=='png'||file.type=='jpg'">
                 <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
               </div>
               <span class="font-semibold">{{ file.name }}</span>
@@ -119,7 +119,7 @@ const formatSize = (bytes:number) => {
           <h5>Completed</h5>
           <div class="flex flex-wrap p-0 sm:p-5 gap-5">
             <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="card m-0 px-6 flex flex-column border-1 surface-border align-items-center gap-3">
-              <div>
+              <div  v-if="file.type=='png'||file.type=='jpg'">
                 <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
               </div>
               <span class="font-semibold">{{ file.name }}</span>

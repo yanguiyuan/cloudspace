@@ -11,6 +11,7 @@ import (
 	"github.com/yanguiyuan/cloudspace/internal/cloudfile/model"
 	rpc "github.com/yanguiyuan/cloudspace/pkg/rpc"
 	"github.com/yanguiyuan/yuan/pkg/gen/id"
+	"io"
 	"path/filepath"
 	"strings"
 )
@@ -388,4 +389,27 @@ func (s *CloudFileServiceImpl) UploadFile(ctx context.Context, req *rpc.UploadFi
 		CreateTime:  f.CreateTime.String(),
 		UpdateTime:  f.UpdateTime.String(),
 	}, nil
+}
+
+func (s *CloudFileServiceImpl) FetchFileData(ctx context.Context, id string) ([]byte, error) {
+	first, err := dal.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).First()
+	if err != nil {
+		return nil, err
+	}
+	object, err := s.OssBucket.GetObject(fmt.Sprintf("cloud-file/namespace/%d/%s.%s", first.NamespaceID, first.ID, first.Type))
+	if err != nil {
+		return nil, err
+	}
+	all, err := io.ReadAll(object)
+	if err != nil {
+		return nil, err
+	}
+	return all, err
+}
+func (s *CloudFileServiceImpl) ModifyFileContent(ctx context.Context, id string, content string) error {
+	first, err := dal.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).First()
+	if err != nil {
+		return err
+	}
+	return s.OssBucket.PutObject(fmt.Sprintf("cloud-file/namespace/%d/%s.%s", first.NamespaceID, first.ID, first.Type), bytes.NewReader([]byte(content)))
 }

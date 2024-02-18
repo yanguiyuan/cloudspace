@@ -16,6 +16,11 @@ export const useFileStore=defineStore({
            },
            namespace:{
                visible:false
+           },
+           markdownEdit:{
+               visible:false,
+               text:"",
+               editFileItem:EmptyFileItem,
            }
        },
         linkParams:DefaultLinkParams,
@@ -61,6 +66,11 @@ export interface FileManagementState{
         };
         namespace:{
             visible:boolean;
+        };
+        markdownEdit:{
+            visible:boolean;
+            text:string;
+            editFileItem:FileItem;
         }
     }
     namespaces:Namespace[];
