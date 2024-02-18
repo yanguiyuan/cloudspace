@@ -47,7 +47,7 @@ import { ref, onUnmounted, onMounted, getCurrentInstance } from 'vue'
 import AppTemplate from "../components/AppTemplate.vue";
 import { useToast } from "primevue/usetoast";
 import FileUploadDialog from "../components/file/FileUploadDialog.vue";
-import {useFileStore} from "../store/file";
+import {DefaultFileItem, FileItem, useFileStore} from "../store/file";
 import Dialog from "primevue/dialog";
 import ConfirmDialog from "primevue/confirmdialog";
 import {useConfirm} from "primevue/useconfirm";
@@ -57,9 +57,9 @@ import InputIcon from "primevue/inputicon";
 import OverlayPanel from "primevue/overlaypanel";
 import Button from "primevue/button";
 import {
-  FileItem, onClickFileItem, getRootFileItemID, initDefaultFileItemList,
+  onClickFileItem, initDefaultFileItemList,
   deleteFileOrDirectory, getFileItemByID,
-  SideMenuOptionItems, DefaultFileItem, renameFileOrDirectory, getUserNamespaces
+  SideMenuOptionItems, renameFileOrDirectory, getUserNamespaces
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";

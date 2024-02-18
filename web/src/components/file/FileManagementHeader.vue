@@ -3,11 +3,10 @@
 import {
   changeNamespace,
   getUserNamespaces,
-  Namespace,
   onClickBreadcrumbs
 } from "../../service/filemanage";
 import {AssetsIconSvgService} from "../../assets/assets";
-import {useFileStore} from "../../store/file";
+import {Namespace, useFileStore} from "../../store/file";
 import MegaMenu from "primevue/megamenu";
 import {onMounted, ref} from "vue";
 import {MenuItem} from "primevue/menuitem";
@@ -25,6 +24,12 @@ const items=ref<MenuItem>([{
       ],
     [
       {
+        label:"可写",
+        items:[]
+      }
+    ],
+    [
+      {
         label:"可读",
         items:[]
       }
@@ -32,15 +37,32 @@ const items=ref<MenuItem>([{
   ]
 }])
 const addOwnerNamespace=(n:Namespace)=>{
-  items.value[0].items[0][0].items.push({
-    label:n.name,
-    command:async ()=>{
-      await changeNamespace(n.rootID)
-    }
-  });
+  if(n.authority==0){
+    items.value[0].items[0][0].items.push({
+      label:n.name,
+      command:async ()=>{
+        await changeNamespace(n.rootID)
+      }
+    });
+  }else if(n.authority==1){
+    items.value[0].items[1][0].items.push({
+      label:n.name,
+      command:async ()=>{
+        await changeNamespace(n.rootID)
+      }
+    });
+  }else if(n.authority==2){
+    items.value[0].items[2][0].items.push({
+      label:n.name,
+      command:async ()=>{
+        await changeNamespace(n.rootID)
+      }
+    });
+  }
 }
 onMounted(async ()=>{
   const namespaces=await getUserNamespaces();
+  console.log("namespaces:",namespaces);
   fileStore.setNamespaceList(namespaces)
   for (const namespace of namespaces) {
     addOwnerNamespace(namespace);

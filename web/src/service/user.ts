@@ -35,11 +35,10 @@ const fileStore=useFileStore();
 const userStore=useUserStore();
 
 export const FetchUserInfo=async function ():Promise<User> {
-    if(userStore.user.id==0){
-        await router.push("/login")
-    }
     const res=await axios.get("/user/info").then((res)=>{
-        console.log("r:",res)
+        if(res.data.code==401){
+            router.push("/login");
+        }
         return res.data.data;
     }).catch(err=>{
         console.log(err);

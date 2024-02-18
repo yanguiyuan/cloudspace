@@ -12,8 +12,6 @@ const fileStore=useFileStore()
 import { useToast } from "primevue/usetoast";
 import {getCurrentInstance, ref} from "vue";
 import {useFileStore} from "../../store/file";
-import axios from "../../axios/axios";
-import {FileItem} from "../../service/filemanage";
 const toast = useToast();
 const app = getCurrentInstance()
 const totalSize = ref(0);

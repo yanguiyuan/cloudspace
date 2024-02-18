@@ -351,12 +351,354 @@ func (p *AddRequest) Field4DeepEqual(src int64) bool {
 	return true
 }
 
+type UploadFileRequest struct {
+	FileName    string `thrift:"fileName,1" frugal:"1,default,string" json:"fileName"`
+	ParentID    string `thrift:"parentID,2" frugal:"2,default,string" json:"parentID"`
+	FileData    []byte `thrift:"fileData,3" frugal:"3,default,binary" json:"fileData"`
+	NamespaceID int64  `thrift:"namespaceID,4" frugal:"4,default,i64" json:"namespaceID"`
+}
+
+func NewUploadFileRequest() *UploadFileRequest {
+	return &UploadFileRequest{}
+}
+
+func (p *UploadFileRequest) InitDefault() {
+	*p = UploadFileRequest{}
+}
+
+func (p *UploadFileRequest) GetFileName() (v string) {
+	return p.FileName
+}
+
+func (p *UploadFileRequest) GetParentID() (v string) {
+	return p.ParentID
+}
+
+func (p *UploadFileRequest) GetFileData() (v []byte) {
+	return p.FileData
+}
+
+func (p *UploadFileRequest) GetNamespaceID() (v int64) {
+	return p.NamespaceID
+}
+func (p *UploadFileRequest) SetFileName(val string) {
+	p.FileName = val
+}
+func (p *UploadFileRequest) SetParentID(val string) {
+	p.ParentID = val
+}
+func (p *UploadFileRequest) SetFileData(val []byte) {
+	p.FileData = val
+}
+func (p *UploadFileRequest) SetNamespaceID(val int64) {
+	p.NamespaceID = val
+}
+
+var fieldIDToName_UploadFileRequest = map[int16]string{
+	1: "fileName",
+	2: "parentID",
+	3: "fileData",
+	4: "namespaceID",
+}
+
+func (p *UploadFileRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField4(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UploadFileRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UploadFileRequest) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.FileName = v
+	}
+	return nil
+}
+
+func (p *UploadFileRequest) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.ParentID = v
+	}
+	return nil
+}
+
+func (p *UploadFileRequest) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadBinary(); err != nil {
+		return err
+	} else {
+		p.FileData = []byte(v)
+	}
+	return nil
+}
+
+func (p *UploadFileRequest) ReadField4(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.NamespaceID = v
+	}
+	return nil
+}
+
+func (p *UploadFileRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("UploadFileRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+		if err = p.writeField4(oprot); err != nil {
+			fieldId = 4
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UploadFileRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("fileName", thrift.STRING, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.FileName); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UploadFileRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("parentID", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.ParentID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *UploadFileRequest) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("fileData", thrift.STRING, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteBinary([]byte(p.FileData)); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *UploadFileRequest) writeField4(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("namespaceID", thrift.I64, 4); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.NamespaceID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
+}
+
+func (p *UploadFileRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UploadFileRequest(%+v)", *p)
+}
+
+func (p *UploadFileRequest) DeepEqual(ano *UploadFileRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.FileName) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.ParentID) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.FileData) {
+		return false
+	}
+	if !p.Field4DeepEqual(ano.NamespaceID) {
+		return false
+	}
+	return true
+}
+
+func (p *UploadFileRequest) Field1DeepEqual(src string) bool {
+
+	if strings.Compare(p.FileName, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *UploadFileRequest) Field2DeepEqual(src string) bool {
+
+	if strings.Compare(p.ParentID, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *UploadFileRequest) Field3DeepEqual(src []byte) bool {
+
+	if bytes.Compare(p.FileData, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *UploadFileRequest) Field4DeepEqual(src int64) bool {
+
+	if p.NamespaceID != src {
+		return false
+	}
+	return true
+}
+
 type CloudFileItem struct {
-	Id         string `thrift:"id,1" frugal:"1,default,string" json:"id"`
-	FileName   string `thrift:"fileName,2" frugal:"2,default,string" json:"fileName"`
-	FileType   string `thrift:"fileType,3" frugal:"3,default,string" json:"fileType"`
-	UpdateTime string `thrift:"updateTime,4" frugal:"4,default,string" json:"updateTime"`
-	CreateTime string `thrift:"createTime,5" frugal:"5,default,string" json:"createTime"`
+	Id          string `thrift:"id,1" frugal:"1,default,string" json:"id"`
+	FileName    string `thrift:"fileName,2" frugal:"2,default,string" json:"fileName"`
+	FileType    string `thrift:"fileType,3" frugal:"3,default,string" json:"fileType"`
+	UpdateTime  string `thrift:"updateTime,4" frugal:"4,default,string" json:"updateTime"`
+	CreateTime  string `thrift:"createTime,5" frugal:"5,default,string" json:"createTime"`
+	NamespaceID int64  `thrift:"namespaceID,6" frugal:"6,default,i64" json:"namespaceID"`
 }
 
 func NewCloudFileItem() *CloudFileItem {
@@ -386,6 +728,10 @@ func (p *CloudFileItem) GetUpdateTime() (v string) {
 func (p *CloudFileItem) GetCreateTime() (v string) {
 	return p.CreateTime
 }
+
+func (p *CloudFileItem) GetNamespaceID() (v int64) {
+	return p.NamespaceID
+}
 func (p *CloudFileItem) SetId(val string) {
 	p.Id = val
 }
@@ -401,6 +747,9 @@ func (p *CloudFileItem) SetUpdateTime(val string) {
 func (p *CloudFileItem) SetCreateTime(val string) {
 	p.CreateTime = val
 }
+func (p *CloudFileItem) SetNamespaceID(val int64) {
+	p.NamespaceID = val
+}
 
 var fieldIDToName_CloudFileItem = map[int16]string{
 	1: "id",
@@ -408,6 +757,7 @@ var fieldIDToName_CloudFileItem = map[int16]string{
 	3: "fileType",
 	4: "updateTime",
 	5: "createTime",
+	6: "namespaceID",
 }
 
 func (p *CloudFileItem) Read(iprot thrift.TProtocol) (err error) {
@@ -472,6 +822,16 @@ func (p *CloudFileItem) Read(iprot thrift.TProtocol) (err error) {
 		case 5:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 6:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -554,6 +914,15 @@ func (p *CloudFileItem) ReadField5(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *CloudFileItem) ReadField6(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.NamespaceID = v
+	}
+	return nil
+}
+
 func (p *CloudFileItem) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("CloudFileItem"); err != nil {
@@ -578,6 +947,10 @@ func (p *CloudFileItem) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField5(oprot); err != nil {
 			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
 			goto WriteFieldError
 		}
 
@@ -684,6 +1057,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
 }
 
+func (p *CloudFileItem) writeField6(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("namespaceID", thrift.I64, 6); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.NamespaceID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
 func (p *CloudFileItem) String() string {
 	if p == nil {
 		return "<nil>"
@@ -710,6 +1100,9 @@ func (p *CloudFileItem) DeepEqual(ano *CloudFileItem) bool {
 		return false
 	}
 	if !p.Field5DeepEqual(ano.CreateTime) {
+		return false
+	}
+	if !p.Field6DeepEqual(ano.NamespaceID) {
 		return false
 	}
 	return true
@@ -746,6 +1139,13 @@ func (p *CloudFileItem) Field4DeepEqual(src string) bool {
 func (p *CloudFileItem) Field5DeepEqual(src string) bool {
 
 	if strings.Compare(p.CreateTime, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *CloudFileItem) Field6DeepEqual(src int64) bool {
+
+	if p.NamespaceID != src {
 		return false
 	}
 	return true
@@ -2494,11 +2894,13 @@ func (p *RemoveRequest) Field3DeepEqual(src string) bool {
 }
 
 type CloudFileService interface {
+	UploadFile(ctx context.Context, req *UploadFileRequest) (r *CloudFileItem, err error)
+
 	Add(ctx context.Context, req *AddRequest) (r *CloudFileItem, err error)
 
 	CreateDirectory(ctx context.Context, req *CreateDirectoryRequest) (r *CloudFileItem, err error)
 
-	Remove(ctx context.Context, req *RemoveRequest) (err error)
+	Remove(ctx context.Context, id string) (err error)
 
 	RemoveDirectory(ctx context.Context, id string) (err error)
 
@@ -2516,11 +2918,13 @@ type CloudFileService interface {
 
 	CreateUserNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32) (err error)
 
-	GetFileURL(ctx context.Context, id string, uid int64) (r string, err error)
+	GetFileURL(ctx context.Context, id string) (r string, err error)
 
 	QueryUserNamespaces(ctx context.Context, userID int64) (r []*Namespace, err error)
 
-	QueryNamespace(ctx context.Context, namespaceID int64) (r *Namespace, err error)
+	LinkNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32) (err error)
+
+	GetUserIDByFileID(ctx context.Context, id string) (r int64, err error)
 }
 
 type CloudFileServiceClient struct {
@@ -2549,6 +2953,15 @@ func (p *CloudFileServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
+func (p *CloudFileServiceClient) UploadFile(ctx context.Context, req *UploadFileRequest) (r *CloudFileItem, err error) {
+	var _args CloudFileServiceUploadFileArgs
+	_args.Req = req
+	var _result CloudFileServiceUploadFileResult
+	if err = p.Client_().Call(ctx, "uploadFile", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
 func (p *CloudFileServiceClient) Add(ctx context.Context, req *AddRequest) (r *CloudFileItem, err error) {
 	var _args CloudFileServiceAddArgs
 	_args.Req = req
@@ -2567,9 +2980,9 @@ func (p *CloudFileServiceClient) CreateDirectory(ctx context.Context, req *Creat
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *CloudFileServiceClient) Remove(ctx context.Context, req *RemoveRequest) (err error) {
+func (p *CloudFileServiceClient) Remove(ctx context.Context, id string) (err error) {
 	var _args CloudFileServiceRemoveArgs
-	_args.Req = req
+	_args.Id = id
 	var _result CloudFileServiceRemoveResult
 	if err = p.Client_().Call(ctx, "remove", &_args, &_result); err != nil {
 		return
@@ -2655,10 +3068,9 @@ func (p *CloudFileServiceClient) CreateUserNamespace(ctx context.Context, userID
 	}
 	return nil
 }
-func (p *CloudFileServiceClient) GetFileURL(ctx context.Context, id string, uid int64) (r string, err error) {
+func (p *CloudFileServiceClient) GetFileURL(ctx context.Context, id string) (r string, err error) {
 	var _args CloudFileServiceGetFileURLArgs
 	_args.Id = id
-	_args.Uid = uid
 	var _result CloudFileServiceGetFileURLResult
 	if err = p.Client_().Call(ctx, "getFileURL", &_args, &_result); err != nil {
 		return
@@ -2674,11 +3086,22 @@ func (p *CloudFileServiceClient) QueryUserNamespaces(ctx context.Context, userID
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *CloudFileServiceClient) QueryNamespace(ctx context.Context, namespaceID int64) (r *Namespace, err error) {
-	var _args CloudFileServiceQueryNamespaceArgs
+func (p *CloudFileServiceClient) LinkNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32) (err error) {
+	var _args CloudFileServiceLinkNamespaceArgs
+	_args.UserID = userID
 	_args.NamespaceID = namespaceID
-	var _result CloudFileServiceQueryNamespaceResult
-	if err = p.Client_().Call(ctx, "queryNamespace", &_args, &_result); err != nil {
+	_args.Authority = authority
+	var _result CloudFileServiceLinkNamespaceResult
+	if err = p.Client_().Call(ctx, "LinkNamespace", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
+func (p *CloudFileServiceClient) GetUserIDByFileID(ctx context.Context, id string) (r int64, err error) {
+	var _args CloudFileServiceGetUserIDByFileIDArgs
+	_args.Id = id
+	var _result CloudFileServiceGetUserIDByFileIDResult
+	if err = p.Client_().Call(ctx, "getUserIDByFileID", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -2704,6 +3127,7 @@ func (p *CloudFileServiceProcessor) ProcessorMap() map[string]thrift.TProcessorF
 
 func NewCloudFileServiceProcessor(handler CloudFileService) *CloudFileServiceProcessor {
 	self := &CloudFileServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self.AddToProcessorMap("uploadFile", &cloudFileServiceProcessorUploadFile{handler: handler})
 	self.AddToProcessorMap("add", &cloudFileServiceProcessorAdd{handler: handler})
 	self.AddToProcessorMap("createDirectory", &cloudFileServiceProcessorCreateDirectory{handler: handler})
 	self.AddToProcessorMap("remove", &cloudFileServiceProcessorRemove{handler: handler})
@@ -2717,7 +3141,8 @@ func NewCloudFileServiceProcessor(handler CloudFileService) *CloudFileServicePro
 	self.AddToProcessorMap("createUserNamespace", &cloudFileServiceProcessorCreateUserNamespace{handler: handler})
 	self.AddToProcessorMap("getFileURL", &cloudFileServiceProcessorGetFileURL{handler: handler})
 	self.AddToProcessorMap("queryUserNamespaces", &cloudFileServiceProcessorQueryUserNamespaces{handler: handler})
-	self.AddToProcessorMap("queryNamespace", &cloudFileServiceProcessorQueryNamespace{handler: handler})
+	self.AddToProcessorMap("LinkNamespace", &cloudFileServiceProcessorLinkNamespace{handler: handler})
+	self.AddToProcessorMap("getUserIDByFileID", &cloudFileServiceProcessorGetUserIDByFileID{handler: handler})
 	return self
 }
 func (p *CloudFileServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -2736,6 +3161,54 @@ func (p *CloudFileServiceProcessor) Process(ctx context.Context, iprot, oprot th
 	oprot.WriteMessageEnd()
 	oprot.Flush(ctx)
 	return false, x
+}
+
+type cloudFileServiceProcessorUploadFile struct {
+	handler CloudFileService
+}
+
+func (p *cloudFileServiceProcessorUploadFile) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := CloudFileServiceUploadFileArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("uploadFile", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := CloudFileServiceUploadFileResult{}
+	var retval *CloudFileItem
+	if retval, err2 = p.handler.UploadFile(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing uploadFile: "+err2.Error())
+		oprot.WriteMessageBegin("uploadFile", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("uploadFile", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
 }
 
 type cloudFileServiceProcessorAdd struct {
@@ -2853,7 +3326,7 @@ func (p *cloudFileServiceProcessorRemove) Process(ctx context.Context, seqId int
 	iprot.ReadMessageEnd()
 	var err2 error
 	result := CloudFileServiceRemoveResult{}
-	if err2 = p.handler.Remove(ctx, args.Req); err2 != nil {
+	if err2 = p.handler.Remove(ctx, args.Id); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing remove: "+err2.Error())
 		oprot.WriteMessageBegin("remove", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -3271,7 +3744,7 @@ func (p *cloudFileServiceProcessorGetFileURL) Process(ctx context.Context, seqId
 	var err2 error
 	result := CloudFileServiceGetFileURLResult{}
 	var retval string
-	if retval, err2 = p.handler.GetFileURL(ctx, args.Id, args.Uid); err2 != nil {
+	if retval, err2 = p.handler.GetFileURL(ctx, args.Id); err2 != nil {
 		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing getFileURL: "+err2.Error())
 		oprot.WriteMessageBegin("getFileURL", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
@@ -3347,16 +3820,16 @@ func (p *cloudFileServiceProcessorQueryUserNamespaces) Process(ctx context.Conte
 	return true, err
 }
 
-type cloudFileServiceProcessorQueryNamespace struct {
+type cloudFileServiceProcessorLinkNamespace struct {
 	handler CloudFileService
 }
 
-func (p *cloudFileServiceProcessorQueryNamespace) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := CloudFileServiceQueryNamespaceArgs{}
+func (p *cloudFileServiceProcessorLinkNamespace) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := CloudFileServiceLinkNamespaceArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-		oprot.WriteMessageBegin("queryNamespace", thrift.EXCEPTION, seqId)
+		oprot.WriteMessageBegin("LinkNamespace", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -3365,19 +3838,16 @@ func (p *cloudFileServiceProcessorQueryNamespace) Process(ctx context.Context, s
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := CloudFileServiceQueryNamespaceResult{}
-	var retval *Namespace
-	if retval, err2 = p.handler.QueryNamespace(ctx, args.NamespaceID); err2 != nil {
-		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing queryNamespace: "+err2.Error())
-		oprot.WriteMessageBegin("queryNamespace", thrift.EXCEPTION, seqId)
+	result := CloudFileServiceLinkNamespaceResult{}
+	if err2 = p.handler.LinkNamespace(ctx, args.UserID, args.NamespaceID, args.Authority); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing LinkNamespace: "+err2.Error())
+		oprot.WriteMessageBegin("LinkNamespace", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
 		return true, err2
-	} else {
-		result.Success = retval
 	}
-	if err2 = oprot.WriteMessageBegin("queryNamespace", thrift.REPLY, seqId); err2 != nil {
+	if err2 = oprot.WriteMessageBegin("LinkNamespace", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -3393,6 +3863,400 @@ func (p *cloudFileServiceProcessorQueryNamespace) Process(ctx context.Context, s
 		return
 	}
 	return true, err
+}
+
+type cloudFileServiceProcessorGetUserIDByFileID struct {
+	handler CloudFileService
+}
+
+func (p *cloudFileServiceProcessorGetUserIDByFileID) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := CloudFileServiceGetUserIDByFileIDArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("getUserIDByFileID", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := CloudFileServiceGetUserIDByFileIDResult{}
+	var retval int64
+	if retval, err2 = p.handler.GetUserIDByFileID(ctx, args.Id); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing getUserIDByFileID: "+err2.Error())
+		oprot.WriteMessageBegin("getUserIDByFileID", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = &retval
+	}
+	if err2 = oprot.WriteMessageBegin("getUserIDByFileID", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type CloudFileServiceUploadFileArgs struct {
+	Req *UploadFileRequest `thrift:"req,1" frugal:"1,default,UploadFileRequest" json:"req"`
+}
+
+func NewCloudFileServiceUploadFileArgs() *CloudFileServiceUploadFileArgs {
+	return &CloudFileServiceUploadFileArgs{}
+}
+
+func (p *CloudFileServiceUploadFileArgs) InitDefault() {
+	*p = CloudFileServiceUploadFileArgs{}
+}
+
+var CloudFileServiceUploadFileArgs_Req_DEFAULT *UploadFileRequest
+
+func (p *CloudFileServiceUploadFileArgs) GetReq() (v *UploadFileRequest) {
+	if !p.IsSetReq() {
+		return CloudFileServiceUploadFileArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *CloudFileServiceUploadFileArgs) SetReq(val *UploadFileRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_CloudFileServiceUploadFileArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *CloudFileServiceUploadFileArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *CloudFileServiceUploadFileArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceUploadFileArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceUploadFileArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewUploadFileRequest()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *CloudFileServiceUploadFileArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("uploadFile_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceUploadFileArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *CloudFileServiceUploadFileArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CloudFileServiceUploadFileArgs(%+v)", *p)
+}
+
+func (p *CloudFileServiceUploadFileArgs) DeepEqual(ano *CloudFileServiceUploadFileArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *CloudFileServiceUploadFileArgs) Field1DeepEqual(src *UploadFileRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type CloudFileServiceUploadFileResult struct {
+	Success *CloudFileItem `thrift:"success,0,optional" frugal:"0,optional,CloudFileItem" json:"success,omitempty"`
+}
+
+func NewCloudFileServiceUploadFileResult() *CloudFileServiceUploadFileResult {
+	return &CloudFileServiceUploadFileResult{}
+}
+
+func (p *CloudFileServiceUploadFileResult) InitDefault() {
+	*p = CloudFileServiceUploadFileResult{}
+}
+
+var CloudFileServiceUploadFileResult_Success_DEFAULT *CloudFileItem
+
+func (p *CloudFileServiceUploadFileResult) GetSuccess() (v *CloudFileItem) {
+	if !p.IsSetSuccess() {
+		return CloudFileServiceUploadFileResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *CloudFileServiceUploadFileResult) SetSuccess(x interface{}) {
+	p.Success = x.(*CloudFileItem)
+}
+
+var fieldIDToName_CloudFileServiceUploadFileResult = map[int16]string{
+	0: "success",
+}
+
+func (p *CloudFileServiceUploadFileResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *CloudFileServiceUploadFileResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceUploadFileResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceUploadFileResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewCloudFileItem()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *CloudFileServiceUploadFileResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("uploadFile_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceUploadFileResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *CloudFileServiceUploadFileResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CloudFileServiceUploadFileResult(%+v)", *p)
+}
+
+func (p *CloudFileServiceUploadFileResult) DeepEqual(ano *CloudFileServiceUploadFileResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *CloudFileServiceUploadFileResult) Field0DeepEqual(src *CloudFileItem) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
 }
 
 type CloudFileServiceAddArgs struct {
@@ -4088,7 +4952,7 @@ func (p *CloudFileServiceCreateDirectoryResult) Field0DeepEqual(src *CloudFileIt
 }
 
 type CloudFileServiceRemoveArgs struct {
-	Req *RemoveRequest `thrift:"req,1" frugal:"1,default,RemoveRequest" json:"req"`
+	Id string `thrift:"id,1" frugal:"1,default,string" json:"id"`
 }
 
 func NewCloudFileServiceRemoveArgs() *CloudFileServiceRemoveArgs {
@@ -4099,24 +4963,15 @@ func (p *CloudFileServiceRemoveArgs) InitDefault() {
 	*p = CloudFileServiceRemoveArgs{}
 }
 
-var CloudFileServiceRemoveArgs_Req_DEFAULT *RemoveRequest
-
-func (p *CloudFileServiceRemoveArgs) GetReq() (v *RemoveRequest) {
-	if !p.IsSetReq() {
-		return CloudFileServiceRemoveArgs_Req_DEFAULT
-	}
-	return p.Req
+func (p *CloudFileServiceRemoveArgs) GetId() (v string) {
+	return p.Id
 }
-func (p *CloudFileServiceRemoveArgs) SetReq(val *RemoveRequest) {
-	p.Req = val
+func (p *CloudFileServiceRemoveArgs) SetId(val string) {
+	p.Id = val
 }
 
 var fieldIDToName_CloudFileServiceRemoveArgs = map[int16]string{
-	1: "req",
-}
-
-func (p *CloudFileServiceRemoveArgs) IsSetReq() bool {
-	return p.Req != nil
+	1: "id",
 }
 
 func (p *CloudFileServiceRemoveArgs) Read(iprot thrift.TProtocol) (err error) {
@@ -4139,7 +4994,7 @@ func (p *CloudFileServiceRemoveArgs) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.STRUCT {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -4179,9 +5034,10 @@ ReadStructEndError:
 }
 
 func (p *CloudFileServiceRemoveArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewRemoveRequest()
-	if err := p.Req.Read(iprot); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
+	} else {
+		p.Id = v
 	}
 	return nil
 }
@@ -4216,10 +5072,10 @@ WriteStructEndError:
 }
 
 func (p *CloudFileServiceRemoveArgs) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+	if err = oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := p.Req.Write(oprot); err != nil {
+	if err := oprot.WriteString(p.Id); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -4245,15 +5101,15 @@ func (p *CloudFileServiceRemoveArgs) DeepEqual(ano *CloudFileServiceRemoveArgs) 
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Req) {
+	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
 	return true
 }
 
-func (p *CloudFileServiceRemoveArgs) Field1DeepEqual(src *RemoveRequest) bool {
+func (p *CloudFileServiceRemoveArgs) Field1DeepEqual(src string) bool {
 
-	if !p.Req.DeepEqual(src) {
+	if strings.Compare(p.Id, src) != 0 {
 		return false
 	}
 	return true
@@ -7171,8 +8027,7 @@ func (p *CloudFileServiceCreateUserNamespaceResult) DeepEqual(ano *CloudFileServ
 }
 
 type CloudFileServiceGetFileURLArgs struct {
-	Id  string `thrift:"id,1" frugal:"1,default,string" json:"id"`
-	Uid int64  `thrift:"uid,2" frugal:"2,default,i64" json:"uid"`
+	Id string `thrift:"id,1" frugal:"1,default,string" json:"id"`
 }
 
 func NewCloudFileServiceGetFileURLArgs() *CloudFileServiceGetFileURLArgs {
@@ -7186,20 +8041,12 @@ func (p *CloudFileServiceGetFileURLArgs) InitDefault() {
 func (p *CloudFileServiceGetFileURLArgs) GetId() (v string) {
 	return p.Id
 }
-
-func (p *CloudFileServiceGetFileURLArgs) GetUid() (v int64) {
-	return p.Uid
-}
 func (p *CloudFileServiceGetFileURLArgs) SetId(val string) {
 	p.Id = val
-}
-func (p *CloudFileServiceGetFileURLArgs) SetUid(val int64) {
-	p.Uid = val
 }
 
 var fieldIDToName_CloudFileServiceGetFileURLArgs = map[int16]string{
 	1: "id",
-	2: "uid",
 }
 
 func (p *CloudFileServiceGetFileURLArgs) Read(iprot thrift.TProtocol) (err error) {
@@ -7224,16 +8071,6 @@ func (p *CloudFileServiceGetFileURLArgs) Read(iprot thrift.TProtocol) (err error
 		case 1:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				if err = iprot.Skip(fieldTypeId); err != nil {
-					goto SkipFieldError
-				}
-			}
-		case 2:
-			if fieldTypeId == thrift.I64 {
-				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else {
@@ -7280,15 +8117,6 @@ func (p *CloudFileServiceGetFileURLArgs) ReadField1(iprot thrift.TProtocol) erro
 	return nil
 }
 
-func (p *CloudFileServiceGetFileURLArgs) ReadField2(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
-		return err
-	} else {
-		p.Uid = v
-	}
-	return nil
-}
-
 func (p *CloudFileServiceGetFileURLArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("getFileURL_args"); err != nil {
@@ -7297,10 +8125,6 @@ func (p *CloudFileServiceGetFileURLArgs) Write(oprot thrift.TProtocol) (err erro
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
-			goto WriteFieldError
-		}
-		if err = p.writeField2(oprot); err != nil {
-			fieldId = 2
 			goto WriteFieldError
 		}
 
@@ -7339,23 +8163,6 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *CloudFileServiceGetFileURLArgs) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("uid", thrift.I64, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI64(p.Uid); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
-}
-
 func (p *CloudFileServiceGetFileURLArgs) String() string {
 	if p == nil {
 		return "<nil>"
@@ -7372,22 +8179,12 @@ func (p *CloudFileServiceGetFileURLArgs) DeepEqual(ano *CloudFileServiceGetFileU
 	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.Uid) {
-		return false
-	}
 	return true
 }
 
 func (p *CloudFileServiceGetFileURLArgs) Field1DeepEqual(src string) bool {
 
 	if strings.Compare(p.Id, src) != 0 {
-		return false
-	}
-	return true
-}
-func (p *CloudFileServiceGetFileURLArgs) Field2DeepEqual(src int64) bool {
-
-	if p.Uid != src {
 		return false
 	}
 	return true
@@ -7937,30 +8734,48 @@ func (p *CloudFileServiceQueryUserNamespacesResult) Field0DeepEqual(src []*Names
 	return true
 }
 
-type CloudFileServiceQueryNamespaceArgs struct {
-	NamespaceID int64 `thrift:"namespaceID,1" frugal:"1,default,i64" json:"namespaceID"`
+type CloudFileServiceLinkNamespaceArgs struct {
+	UserID      int64 `thrift:"userID,1" frugal:"1,default,i64" json:"userID"`
+	NamespaceID int64 `thrift:"namespaceID,2" frugal:"2,default,i64" json:"namespaceID"`
+	Authority   int32 `thrift:"authority,3" frugal:"3,default,i32" json:"authority"`
 }
 
-func NewCloudFileServiceQueryNamespaceArgs() *CloudFileServiceQueryNamespaceArgs {
-	return &CloudFileServiceQueryNamespaceArgs{}
+func NewCloudFileServiceLinkNamespaceArgs() *CloudFileServiceLinkNamespaceArgs {
+	return &CloudFileServiceLinkNamespaceArgs{}
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) InitDefault() {
-	*p = CloudFileServiceQueryNamespaceArgs{}
+func (p *CloudFileServiceLinkNamespaceArgs) InitDefault() {
+	*p = CloudFileServiceLinkNamespaceArgs{}
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) GetNamespaceID() (v int64) {
+func (p *CloudFileServiceLinkNamespaceArgs) GetUserID() (v int64) {
+	return p.UserID
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) GetNamespaceID() (v int64) {
 	return p.NamespaceID
 }
-func (p *CloudFileServiceQueryNamespaceArgs) SetNamespaceID(val int64) {
+
+func (p *CloudFileServiceLinkNamespaceArgs) GetAuthority() (v int32) {
+	return p.Authority
+}
+func (p *CloudFileServiceLinkNamespaceArgs) SetUserID(val int64) {
+	p.UserID = val
+}
+func (p *CloudFileServiceLinkNamespaceArgs) SetNamespaceID(val int64) {
 	p.NamespaceID = val
 }
-
-var fieldIDToName_CloudFileServiceQueryNamespaceArgs = map[int16]string{
-	1: "namespaceID",
+func (p *CloudFileServiceLinkNamespaceArgs) SetAuthority(val int32) {
+	p.Authority = val
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) Read(iprot thrift.TProtocol) (err error) {
+var fieldIDToName_CloudFileServiceLinkNamespaceArgs = map[int16]string{
+	1: "userID",
+	2: "namespaceID",
+	3: "authority",
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -7989,6 +8804,26 @@ func (p *CloudFileServiceQueryNamespaceArgs) Read(iprot thrift.TProtocol) (err e
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I32 {
+				if err = p.ReadField3(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -8009,7 +8844,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceQueryNamespaceArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceLinkNamespaceArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -8019,7 +8854,16 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) ReadField1(iprot thrift.TProtocol) error {
+func (p *CloudFileServiceLinkNamespaceArgs) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.UserID = v
+	}
+	return nil
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) ReadField2(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
@@ -8028,9 +8872,338 @@ func (p *CloudFileServiceQueryNamespaceArgs) ReadField1(iprot thrift.TProtocol) 
 	return nil
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *CloudFileServiceLinkNamespaceArgs) ReadField3(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(); err != nil {
+		return err
+	} else {
+		p.Authority = v
+	}
+	return nil
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("queryNamespace_args"); err != nil {
+	if err = oprot.WriteStructBegin("LinkNamespace_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+		if err = p.writeField3(oprot); err != nil {
+			fieldId = 3
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("userID", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.UserID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("namespaceID", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.NamespaceID); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("authority", thrift.I32, 3); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI32(p.Authority); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CloudFileServiceLinkNamespaceArgs(%+v)", *p)
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) DeepEqual(ano *CloudFileServiceLinkNamespaceArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.UserID) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.NamespaceID) {
+		return false
+	}
+	if !p.Field3DeepEqual(ano.Authority) {
+		return false
+	}
+	return true
+}
+
+func (p *CloudFileServiceLinkNamespaceArgs) Field1DeepEqual(src int64) bool {
+
+	if p.UserID != src {
+		return false
+	}
+	return true
+}
+func (p *CloudFileServiceLinkNamespaceArgs) Field2DeepEqual(src int64) bool {
+
+	if p.NamespaceID != src {
+		return false
+	}
+	return true
+}
+func (p *CloudFileServiceLinkNamespaceArgs) Field3DeepEqual(src int32) bool {
+
+	if p.Authority != src {
+		return false
+	}
+	return true
+}
+
+type CloudFileServiceLinkNamespaceResult struct {
+}
+
+func NewCloudFileServiceLinkNamespaceResult() *CloudFileServiceLinkNamespaceResult {
+	return &CloudFileServiceLinkNamespaceResult{}
+}
+
+func (p *CloudFileServiceLinkNamespaceResult) InitDefault() {
+	*p = CloudFileServiceLinkNamespaceResult{}
+}
+
+var fieldIDToName_CloudFileServiceLinkNamespaceResult = map[int16]string{}
+
+func (p *CloudFileServiceLinkNamespaceResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceLinkNamespaceResult) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("LinkNamespace_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceLinkNamespaceResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CloudFileServiceLinkNamespaceResult(%+v)", *p)
+}
+
+func (p *CloudFileServiceLinkNamespaceResult) DeepEqual(ano *CloudFileServiceLinkNamespaceResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	return true
+}
+
+type CloudFileServiceGetUserIDByFileIDArgs struct {
+	Id string `thrift:"id,1" frugal:"1,default,string" json:"id"`
+}
+
+func NewCloudFileServiceGetUserIDByFileIDArgs() *CloudFileServiceGetUserIDByFileIDArgs {
+	return &CloudFileServiceGetUserIDByFileIDArgs{}
+}
+
+func (p *CloudFileServiceGetUserIDByFileIDArgs) InitDefault() {
+	*p = CloudFileServiceGetUserIDByFileIDArgs{}
+}
+
+func (p *CloudFileServiceGetUserIDByFileIDArgs) GetId() (v string) {
+	return p.Id
+}
+func (p *CloudFileServiceGetUserIDByFileIDArgs) SetId(val string) {
+	p.Id = val
+}
+
+var fieldIDToName_CloudFileServiceGetUserIDByFileIDArgs = map[int16]string{
+	1: "id",
+}
+
+func (p *CloudFileServiceGetUserIDByFileIDArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceGetUserIDByFileIDArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CloudFileServiceGetUserIDByFileIDArgs) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Id = v
+	}
+	return nil
+}
+
+func (p *CloudFileServiceGetUserIDByFileIDArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("getUserIDByFileID_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -8057,11 +9230,11 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("namespaceID", thrift.I64, 1); err != nil {
+func (p *CloudFileServiceGetUserIDByFileIDArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.NamespaceID); err != nil {
+	if err := oprot.WriteString(p.Id); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -8074,66 +9247,66 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) String() string {
+func (p *CloudFileServiceGetUserIDByFileIDArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("CloudFileServiceQueryNamespaceArgs(%+v)", *p)
+	return fmt.Sprintf("CloudFileServiceGetUserIDByFileIDArgs(%+v)", *p)
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) DeepEqual(ano *CloudFileServiceQueryNamespaceArgs) bool {
+func (p *CloudFileServiceGetUserIDByFileIDArgs) DeepEqual(ano *CloudFileServiceGetUserIDByFileIDArgs) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.NamespaceID) {
+	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
 	return true
 }
 
-func (p *CloudFileServiceQueryNamespaceArgs) Field1DeepEqual(src int64) bool {
+func (p *CloudFileServiceGetUserIDByFileIDArgs) Field1DeepEqual(src string) bool {
 
-	if p.NamespaceID != src {
+	if strings.Compare(p.Id, src) != 0 {
 		return false
 	}
 	return true
 }
 
-type CloudFileServiceQueryNamespaceResult struct {
-	Success *Namespace `thrift:"success,0,optional" frugal:"0,optional,Namespace" json:"success,omitempty"`
+type CloudFileServiceGetUserIDByFileIDResult struct {
+	Success *int64 `thrift:"success,0,optional" frugal:"0,optional,i64" json:"success,omitempty"`
 }
 
-func NewCloudFileServiceQueryNamespaceResult() *CloudFileServiceQueryNamespaceResult {
-	return &CloudFileServiceQueryNamespaceResult{}
+func NewCloudFileServiceGetUserIDByFileIDResult() *CloudFileServiceGetUserIDByFileIDResult {
+	return &CloudFileServiceGetUserIDByFileIDResult{}
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) InitDefault() {
-	*p = CloudFileServiceQueryNamespaceResult{}
+func (p *CloudFileServiceGetUserIDByFileIDResult) InitDefault() {
+	*p = CloudFileServiceGetUserIDByFileIDResult{}
 }
 
-var CloudFileServiceQueryNamespaceResult_Success_DEFAULT *Namespace
+var CloudFileServiceGetUserIDByFileIDResult_Success_DEFAULT int64
 
-func (p *CloudFileServiceQueryNamespaceResult) GetSuccess() (v *Namespace) {
+func (p *CloudFileServiceGetUserIDByFileIDResult) GetSuccess() (v int64) {
 	if !p.IsSetSuccess() {
-		return CloudFileServiceQueryNamespaceResult_Success_DEFAULT
+		return CloudFileServiceGetUserIDByFileIDResult_Success_DEFAULT
 	}
-	return p.Success
+	return *p.Success
 }
-func (p *CloudFileServiceQueryNamespaceResult) SetSuccess(x interface{}) {
-	p.Success = x.(*Namespace)
+func (p *CloudFileServiceGetUserIDByFileIDResult) SetSuccess(x interface{}) {
+	p.Success = x.(*int64)
 }
 
-var fieldIDToName_CloudFileServiceQueryNamespaceResult = map[int16]string{
+var fieldIDToName_CloudFileServiceGetUserIDByFileIDResult = map[int16]string{
 	0: "success",
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) IsSetSuccess() bool {
+func (p *CloudFileServiceGetUserIDByFileIDResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *CloudFileServiceGetUserIDByFileIDResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -8153,7 +9326,7 @@ func (p *CloudFileServiceQueryNamespaceResult) Read(iprot thrift.TProtocol) (err
 
 		switch fieldId {
 		case 0:
-			if fieldTypeId == thrift.STRUCT {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField0(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -8182,7 +9355,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceQueryNamespaceResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CloudFileServiceGetUserIDByFileIDResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -8192,17 +9365,18 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) ReadField0(iprot thrift.TProtocol) error {
-	p.Success = NewNamespace()
-	if err := p.Success.Read(iprot); err != nil {
+func (p *CloudFileServiceGetUserIDByFileIDResult) ReadField0(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
+	} else {
+		p.Success = &v
 	}
 	return nil
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *CloudFileServiceGetUserIDByFileIDResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("queryNamespace_result"); err != nil {
+	if err = oprot.WriteStructBegin("getUserIDByFileID_result"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -8229,12 +9403,12 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *CloudFileServiceGetUserIDByFileIDResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
-		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+		if err = oprot.WriteFieldBegin("success", thrift.I64, 0); err != nil {
 			goto WriteFieldBeginError
 		}
-		if err := p.Success.Write(oprot); err != nil {
+		if err := oprot.WriteI64(*p.Success); err != nil {
 			return err
 		}
 		if err = oprot.WriteFieldEnd(); err != nil {
@@ -8248,14 +9422,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) String() string {
+func (p *CloudFileServiceGetUserIDByFileIDResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("CloudFileServiceQueryNamespaceResult(%+v)", *p)
+	return fmt.Sprintf("CloudFileServiceGetUserIDByFileIDResult(%+v)", *p)
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) DeepEqual(ano *CloudFileServiceQueryNamespaceResult) bool {
+func (p *CloudFileServiceGetUserIDByFileIDResult) DeepEqual(ano *CloudFileServiceGetUserIDByFileIDResult) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -8267,9 +9441,14 @@ func (p *CloudFileServiceQueryNamespaceResult) DeepEqual(ano *CloudFileServiceQu
 	return true
 }
 
-func (p *CloudFileServiceQueryNamespaceResult) Field0DeepEqual(src *Namespace) bool {
+func (p *CloudFileServiceGetUserIDByFileIDResult) Field0DeepEqual(src *int64) bool {
 
-	if !p.Success.DeepEqual(src) {
+	if p.Success == src {
+		return true
+	} else if p.Success == nil || src == nil {
+		return false
+	}
+	if *p.Success != *src {
 		return false
 	}
 	return true

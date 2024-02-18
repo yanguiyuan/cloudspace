@@ -45,6 +45,7 @@ import { useRouter } from 'vue-router';
 import CurrentTime from '../components/CurrentTime.vue';
 import { useToast } from "primevue/usetoast";
 import {useUserStore} from "../store/user";
+import {getUrlParams} from "../service/filemanage";
 const toast = useToast();
 const userStore=useUserStore();
 const btnmessage = ref<string>("登录")
@@ -55,6 +56,7 @@ const isMask = ref<boolean>(false)
 const isLoginActive = ref<boolean>(true)
 const isRegisterActive = ref<boolean>(false)
 const router = useRouter()
+console.log("linkNamespace",userStore.linkNamespace)
 let loginOrRegister = function () {
     if (btnmessage.value == "登录") {
         axios.post("/login", {
@@ -63,10 +65,11 @@ let loginOrRegister = function () {
         }).then((res) => {
             localStorage.setItem("token", JSON.stringify(res.data.token))
             localStorage.setItem("user", JSON.stringify(res.data.user))
-            console.log("token:", res.data.token)
-            console.log("user:", res.data)
+            const params=getUrlParams(window.location.href);
             axios.defaults.headers.common["Authorization"]="Bearer "+res.data.token
+
             if(userStore.linkNamespace){
+              userStore.user.id=0
               router.push("/link")
               return;
             }

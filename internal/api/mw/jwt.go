@@ -2,7 +2,6 @@ package mw
 
 import (
 	"context"
-	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -29,15 +28,13 @@ func InitJWT() {
 	var err error
 	JwtMiddleware, err = jwt.New(&jwt.HertzJWTMiddleware{
 		Realm:         "test zone",
-		Key:           []byte("secret key"),
+		Key:           []byte(config.GetString("api.jwt.secret")),
 		Timeout:       time.Hour,
 		MaxRefresh:    time.Hour,
 		IdentityKey:   IdentityKey,
 		TokenLookup:   "header: Authorization, query: token, cookie: jwt",
 		TokenHeadName: "Bearer",
 		LoginResponse: func(ctx context.Context, c *app.RequestContext, code int, token string, expire time.Time) {
-			claims := jwt.ExtractClaims(ctx, c)
-			fmt.Println("Claims:", claims)
 			c.JSON(http.StatusOK, utils.H{
 				"code":  errno.SuccessCode,
 				"msg":   errno.SuccessMsg,
