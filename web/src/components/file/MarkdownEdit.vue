@@ -9,7 +9,7 @@ const toast=useToast();
 
 <template>
   <Toast></Toast>
-  <Dialog maximizable class="w-[50vw]" modal v-model:visible="fileStore.dialog.markdownEdit.visible">
+  <Dialog header="编辑" maximizable class="w-[50vw]" modal v-model:visible="fileStore.dialog.markdownEdit.visible">
     <v-md-editor v-model="fileStore.dialog.markdownEdit.text" height="500px"></v-md-editor>
     <template #footer>
       <Button @click="fileStore.dialog.markdownEdit.visible=false">取消</Button>

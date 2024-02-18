@@ -21,7 +21,13 @@ export const useFileStore=defineStore({
                visible:false,
                text:"",
                editFileItem:EmptyFileItem,
-           }
+           },
+           createTextFile:{
+               visible:false,
+               text:"",
+               fileName:"",
+               parentID:"",
+           },
        },
         linkParams:DefaultLinkParams,
         namespaces:[],
@@ -71,6 +77,12 @@ export interface FileManagementState{
             visible:boolean;
             text:string;
             editFileItem:FileItem;
+        }
+        createTextFile:{
+            visible:boolean;
+            text:string;
+            fileName:string;
+            parentID:string;
         }
     }
     namespaces:Namespace[];

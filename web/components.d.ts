@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     AcountManagementDialog: typeof import('./src/components/user/AcountManagementDialog.vue')['default']
     AppTemplate: typeof import('./src/components/AppTemplate.vue')['default']
     AppTempleate: typeof import('./src/components/AppTempleate.vue')['default']
+    CreateTextFile: typeof import('./src/components/file/CreateTextFile.vue')['default']
     CurrentTime: typeof import('./src/components/CurrentTime.vue')['default']
     Drawer: typeof import('./src/components/Drawer.vue')['default']
     ElDialog: typeof import('element-plus/es')['ElDialog']

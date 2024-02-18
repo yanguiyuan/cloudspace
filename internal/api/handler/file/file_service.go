@@ -306,7 +306,6 @@ func NamespaceLink(ctx context.Context, c *app.RequestContext) {
 	claims["namespace_id"] = namespaceId
 	claims["authority"] = authority
 	claims["uid"] = id
-	fmt.Println(config.GetString("api.jwt.secret"))
 	signedString, err := token.SignedString([]byte(config.GetString("api.jwt.secret")))
 	if err != nil {
 		c.JSON(consts.StatusOK, utils.H{
@@ -475,4 +474,42 @@ func ModifyFileContent(ctx context.Context, c *app.RequestContext) {
 		"message": errno.SuccessMsg,
 	})
 
+}
+
+func CreateTextFile(ctx context.Context, c *app.RequestContext) {
+	var req file.CreateTextFileReq
+	err := c.BindAndValidate(&req)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.InvalidParamCode,
+			"message": err.Error(),
+		})
+	}
+	client, err := cloudfile.NewFileServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		return
+	}
+	r, err := client.QueryFileItemByID(ctx, req.ParentID)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	resp, err := client.CreateTextFile(ctx, req.FileName, req.ParentID, req.Content, r.NamespaceID)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+		"data":    resp,
+	})
 }

@@ -22,6 +22,7 @@ func Register(r *server.Hertz) {
 			file.GET("/:id/url", fileserver.GetFileURL)
 			file.PUT("/rename", fileserver.Rename)
 			file.PUT("/:id/content", fileserver.ModifyFileContent)
+			file.POST("/:parent_id/content", fileserver.CreateTextFile)
 		}
 		directory := user.Group("/directory")
 		{

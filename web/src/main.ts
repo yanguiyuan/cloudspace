@@ -20,6 +20,7 @@ import 'primeicons/primeicons.css'
 import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import ToastService from 'primevue/toastservice';
+
 import ConfirmationService from 'primevue/confirmationservice';
 // Prism
 import Prism from 'prismjs';

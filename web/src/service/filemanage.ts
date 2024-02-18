@@ -36,6 +36,7 @@ export const SideMenuOptionItems=[
         icon:"create-file",
         enableRouterLink:false,
         action:()=>{
+            fileStore.dialog.createTextFile.visible=true
         }
     },
     {
@@ -354,6 +355,47 @@ export async function saveFileContent(toast: ToastServiceMethods){
             detail: "保存成功",
             life: 3000
         });
+    }).catch((e)=>{
+        console.log("error:",e);
+        toast.add({
+            severity: 'error',
+        });
+    });
+}
+export async function createTextFile(toast: ToastServiceMethods){
+    const state=fileStore.dialog.createTextFile;
+    if(state.fileName==""){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "文件名不能为空",
+            life: 3000
+        });
+        return;
+    }
+    if(state.text==""){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "文件内容不能为空",
+            life: 3000
+        });
+        return;
+    }
+    const parentID=fileStore.getCurrentParentID()
+    await axios.post("/user/file/"+parentID+"/content",{
+        fileName:state.fileName,
+        content:fileStore.dialog.createTextFile.text,
+    }).then((res)=>{
+        console.log("createFile:",res)
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "保存成功",
+            life: 3000
+        });
+        fileStore.fileList.push(res.data.data);
+        fileStore.dialog.createTextFile.visible=false;
     }).catch((e)=>{
         console.log("error:",e);
         toast.add({

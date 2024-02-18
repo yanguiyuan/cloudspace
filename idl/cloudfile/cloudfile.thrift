@@ -60,7 +60,7 @@ service CloudFileService{
     CloudFileItem queryFileItemByID(1:string id)
     void update(1:UpdateRequest req)
     void rename(1:string id,2:string newName)
-    string createFileItem(1:string name,2:string ty,3:string parentID,4:i64 namespaceID)
+    CloudFileItem createFileItem(1:string name,2:string ty,3:string parentID,4:i64 namespaceID)
     i64 createNamespace(1:string name)
     void createUserNamespace(1:i64 userID,2:i64 namespaceID,3:i32 authority)
     string getFileURL(1:string id)
@@ -69,4 +69,5 @@ service CloudFileService{
     i64 getUserIDByFileID(1:string id)
     binary fetchFileData(1:string id)
     void modifyFileContent(1:string id,2:string content)
+    CloudFileItem createTextFile(1:string name,2:string parentID,3:string content,4:i64 namespaceID)
 }

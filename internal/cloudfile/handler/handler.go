@@ -259,7 +259,7 @@ func (s *CloudFileServiceImpl) Rename(ctx context.Context, id, newName string) (
 	return err
 }
 
-func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
+func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (*rpc.CloudFileItem, error) {
 	id := id.Base62()
 	switch ty {
 	case "namespace":
@@ -269,6 +269,7 @@ func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, 
 	default:
 		id = "F-" + id
 	}
+	var err error
 	var fileItem *model.FileItem
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		fileItem, err = tx.FileItem.WithContext(ctx).Where(tx.FileItem.ID.Eq(id), tx.FileItem.Name.Eq(name), tx.FileItem.Type.Eq(ty), tx.FileItem.NamespaceID.Eq(namespaceID)).FirstOrCreate()
@@ -282,9 +283,16 @@ func (s *CloudFileServiceImpl) CreateFileItem(ctx context.Context, name string, 
 		return nil
 	})
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return fileItem.ID, nil
+	return &rpc.CloudFileItem{
+		Id:          fileItem.ID,
+		FileName:    fileItem.Name,
+		FileType:    fileItem.Type,
+		NamespaceID: fileItem.NamespaceID,
+		UpdateTime:  fileItem.UpdateTime.String(),
+		CreateTime:  fileItem.CreateTime.String(),
+	}, nil
 }
 func (s *CloudFileServiceImpl) CreateNamespace(ctx context.Context, name string) (r int64, err error) {
 	namespace, err := dal.Namespace.WithContext(ctx).Where(dal.Namespace.Name.Eq(name)).FirstOrCreate()
@@ -412,4 +420,19 @@ func (s *CloudFileServiceImpl) ModifyFileContent(ctx context.Context, id string,
 		return err
 	}
 	return s.OssBucket.PutObject(fmt.Sprintf("cloud-file/namespace/%d/%s.%s", first.NamespaceID, first.ID, first.Type), bytes.NewReader([]byte(content)))
+}
+func (s *CloudFileServiceImpl) CreateTextFile(ctx context.Context, name string, parentID string, content string, namespaceID int64) (*rpc.CloudFileItem, error) {
+	t := ParseFileType(name)
+	item, err := s.CreateFileItem(ctx, name, t, parentID, namespaceID)
+	if err != nil {
+		fmt.Println("create:", err)
+		return nil, err
+	}
+	err = s.OssBucket.PutObject(fmt.Sprintf("cloud-file/namespace/%d/%s.%s", namespaceID, item.Id, t), bytes.NewReader([]byte(content)))
+	if err != nil {
+		fmt.Println("CreateTextFile:", err)
+		err = s.Remove(ctx, item.Id)
+		return nil, err
+	}
+	return item, nil
 }

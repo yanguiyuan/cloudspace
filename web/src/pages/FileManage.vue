@@ -41,6 +41,7 @@
   <ConfirmDialog></ConfirmDialog>
   <NamespaceManagementDialog></NamespaceManagementDialog>
   <MarkdownEdit></MarkdownEdit>
+  <CreateTextFile></CreateTextFile>
 </template>
 <script setup lang="ts">
 import {AssetsIconSvgService} from "../assets/assets";
@@ -58,15 +59,16 @@ import InputIcon from "primevue/inputicon";
 import OverlayPanel from "primevue/overlaypanel";
 import Button from "primevue/button";
 import {
-  onClickFileItem, initDefaultFileItemList,
-  deleteFileOrDirectory, getFileItemByID,
-  SideMenuOptionItems, renameFileOrDirectory, getUserNamespaces, editFile, canEdit, getFileURL
+  onClickFileItem,
+  deleteFileOrDirectory,
+  SideMenuOptionItems, renameFileOrDirectory,  editFile, canEdit, getFileURL
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";
 import Image from "primevue/image";
 import NamespaceManagementDialog from "../components/file/NamespaceManagementDialog.vue";
 import MarkdownEdit from "../components/file/MarkdownEdit.vue";
+import CreateTextFile from "../components/file/CreateTextFile.vue";
 const renameOp = ref();
 const toast = useToast();
 const confirm = useConfirm();

@@ -37,6 +37,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"getUserIDByFileID":   kitex.NewMethodInfo(getUserIDByFileIDHandler, newCloudFileServiceGetUserIDByFileIDArgs, newCloudFileServiceGetUserIDByFileIDResult, false),
 		"fetchFileData":       kitex.NewMethodInfo(fetchFileDataHandler, newCloudFileServiceFetchFileDataArgs, newCloudFileServiceFetchFileDataResult, false),
 		"modifyFileContent":   kitex.NewMethodInfo(modifyFileContentHandler, newCloudFileServiceModifyFileContentArgs, newCloudFileServiceModifyFileContentResult, false),
+		"createTextFile":      kitex.NewMethodInfo(createTextFileHandler, newCloudFileServiceCreateTextFileArgs, newCloudFileServiceCreateTextFileResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "rpc",
@@ -221,7 +222,7 @@ func createFileItemHandler(ctx context.Context, handler interface{}, arg, result
 	if err != nil {
 		return err
 	}
-	realResult.Success = &success
+	realResult.Success = success
 	return nil
 }
 func newCloudFileServiceCreateFileItemArgs() interface{} {
@@ -376,6 +377,24 @@ func newCloudFileServiceModifyFileContentResult() interface{} {
 	return rpc.NewCloudFileServiceModifyFileContentResult()
 }
 
+func createTextFileHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceCreateTextFileArgs)
+	realResult := result.(*rpc.CloudFileServiceCreateTextFileResult)
+	success, err := handler.(rpc.CloudFileService).CreateTextFile(ctx, realArg.Name, realArg.ParentID, realArg.Content, realArg.NamespaceID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCloudFileServiceCreateTextFileArgs() interface{} {
+	return rpc.NewCloudFileServiceCreateTextFileArgs()
+}
+
+func newCloudFileServiceCreateTextFileResult() interface{} {
+	return rpc.NewCloudFileServiceCreateTextFileResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -478,7 +497,7 @@ func (p *kClient) Rename(ctx context.Context, id string, newName_ string) (err e
 	return nil
 }
 
-func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
+func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r *rpc.CloudFileItem, err error) {
 	var _args rpc.CloudFileServiceCreateFileItemArgs
 	_args.Name = name
 	_args.Ty = ty
@@ -574,4 +593,17 @@ func (p *kClient) ModifyFileContent(ctx context.Context, id string, content stri
 		return
 	}
 	return nil
+}
+
+func (p *kClient) CreateTextFile(ctx context.Context, name string, parentID string, content string, namespaceID int64) (r *rpc.CloudFileItem, err error) {
+	var _args rpc.CloudFileServiceCreateTextFileArgs
+	_args.Name = name
+	_args.ParentID = parentID
+	_args.Content = content
+	_args.NamespaceID = namespaceID
+	var _result rpc.CloudFileServiceCreateTextFileResult
+	if err = p.c.Call(ctx, "createTextFile", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
