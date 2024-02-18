@@ -17,13 +17,13 @@ func Register(r *server.Hertz) {
 			//查询文件项列表，每个文件项的父文件项ID为id
 			file.GET("/:id/list", mw.CheckReadPermission, fileserver.QueryFileItemList)
 			file.POST("/:id/upload", fileserver.Upload)
-			file.DELETE("/:id/:name", fileserver.DeleteFileItem)
-			file.GET("/:id/url", fileserver.GetFileURL)
-			file.PUT("/rename", fileserver.Rename)
+			file.DELETE("/:id/:name", mw.CheckWritePermission, fileserver.DeleteFileItem)
+			file.GET("/:id/url", mw.CheckReadPermission, fileserver.GetFileURL)
+			file.PUT("/rename", mw.CheckWritePermission, fileserver.Rename)
 		}
 		directory := user.Group("/directory")
 		{
-			directory.POST("", fileserver.CreateDirectory)
+			directory.POST("", mw.CheckWritePermission, fileserver.CreateDirectory)
 		}
 		namespace := user.Group("/namespace")
 		{

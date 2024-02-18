@@ -58,4 +58,5 @@ service CloudFileService{
     string getFileURL(1:string id,2:i64 uid)
     list<Namespace> queryUserNamespaces(1:i64 userID)
     Namespace queryNamespace(1:i64 namespaceID)
+
 }
