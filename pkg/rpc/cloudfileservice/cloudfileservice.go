@@ -19,6 +19,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "CloudFileService"
 	handlerType := (*rpc.CloudFileService)(nil)
 	methods := map[string]kitex.MethodInfo{
+		"uploadFile":          kitex.NewMethodInfo(uploadFileHandler, newCloudFileServiceUploadFileArgs, newCloudFileServiceUploadFileResult, false),
 		"add":                 kitex.NewMethodInfo(addHandler, newCloudFileServiceAddArgs, newCloudFileServiceAddResult, false),
 		"createDirectory":     kitex.NewMethodInfo(createDirectoryHandler, newCloudFileServiceCreateDirectoryArgs, newCloudFileServiceCreateDirectoryResult, false),
 		"remove":              kitex.NewMethodInfo(removeHandler, newCloudFileServiceRemoveArgs, newCloudFileServiceRemoveResult, false),
@@ -32,7 +33,11 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		"createUserNamespace": kitex.NewMethodInfo(createUserNamespaceHandler, newCloudFileServiceCreateUserNamespaceArgs, newCloudFileServiceCreateUserNamespaceResult, false),
 		"getFileURL":          kitex.NewMethodInfo(getFileURLHandler, newCloudFileServiceGetFileURLArgs, newCloudFileServiceGetFileURLResult, false),
 		"queryUserNamespaces": kitex.NewMethodInfo(queryUserNamespacesHandler, newCloudFileServiceQueryUserNamespacesArgs, newCloudFileServiceQueryUserNamespacesResult, false),
-		"queryNamespace":      kitex.NewMethodInfo(queryNamespaceHandler, newCloudFileServiceQueryNamespaceArgs, newCloudFileServiceQueryNamespaceResult, false),
+		"LinkNamespace":       kitex.NewMethodInfo(linkNamespaceHandler, newCloudFileServiceLinkNamespaceArgs, newCloudFileServiceLinkNamespaceResult, false),
+		"getUserIDByFileID":   kitex.NewMethodInfo(getUserIDByFileIDHandler, newCloudFileServiceGetUserIDByFileIDArgs, newCloudFileServiceGetUserIDByFileIDResult, false),
+		"fetchFileData":       kitex.NewMethodInfo(fetchFileDataHandler, newCloudFileServiceFetchFileDataArgs, newCloudFileServiceFetchFileDataResult, false),
+		"modifyFileContent":   kitex.NewMethodInfo(modifyFileContentHandler, newCloudFileServiceModifyFileContentArgs, newCloudFileServiceModifyFileContentResult, false),
+		"createTextFile":      kitex.NewMethodInfo(createTextFileHandler, newCloudFileServiceCreateTextFileArgs, newCloudFileServiceCreateTextFileResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName":     "rpc",
@@ -47,6 +52,24 @@ func NewServiceInfo() *kitex.ServiceInfo {
 		Extra:           extra,
 	}
 	return svcInfo
+}
+
+func uploadFileHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceUploadFileArgs)
+	realResult := result.(*rpc.CloudFileServiceUploadFileResult)
+	success, err := handler.(rpc.CloudFileService).UploadFile(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCloudFileServiceUploadFileArgs() interface{} {
+	return rpc.NewCloudFileServiceUploadFileArgs()
+}
+
+func newCloudFileServiceUploadFileResult() interface{} {
+	return rpc.NewCloudFileServiceUploadFileResult()
 }
 
 func addHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -88,7 +111,7 @@ func newCloudFileServiceCreateDirectoryResult() interface{} {
 func removeHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*rpc.CloudFileServiceRemoveArgs)
 
-	err := handler.(rpc.CloudFileService).Remove(ctx, realArg.Req)
+	err := handler.(rpc.CloudFileService).Remove(ctx, realArg.Id)
 	if err != nil {
 		return err
 	}
@@ -200,7 +223,7 @@ func createFileItemHandler(ctx context.Context, handler interface{}, arg, result
 	if err != nil {
 		return err
 	}
-	realResult.Success = &success
+	realResult.Success = success
 	return nil
 }
 func newCloudFileServiceCreateFileItemArgs() interface{} {
@@ -250,7 +273,7 @@ func newCloudFileServiceCreateUserNamespaceResult() interface{} {
 func getFileURLHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*rpc.CloudFileServiceGetFileURLArgs)
 	realResult := result.(*rpc.CloudFileServiceGetFileURLResult)
-	success, err := handler.(rpc.CloudFileService).GetFileURL(ctx, realArg.Id, realArg.Uid)
+	success, err := handler.(rpc.CloudFileService).GetFileURL(ctx, realArg.Id)
 	if err != nil {
 		return err
 	}
@@ -283,22 +306,94 @@ func newCloudFileServiceQueryUserNamespacesResult() interface{} {
 	return rpc.NewCloudFileServiceQueryUserNamespacesResult()
 }
 
-func queryNamespaceHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*rpc.CloudFileServiceQueryNamespaceArgs)
-	realResult := result.(*rpc.CloudFileServiceQueryNamespaceResult)
-	success, err := handler.(rpc.CloudFileService).QueryNamespace(ctx, realArg.NamespaceID)
+func linkNamespaceHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceLinkNamespaceArgs)
+
+	err := handler.(rpc.CloudFileService).LinkNamespace(ctx, realArg.UserID, realArg.NamespaceID, realArg.Authority)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newCloudFileServiceLinkNamespaceArgs() interface{} {
+	return rpc.NewCloudFileServiceLinkNamespaceArgs()
+}
+
+func newCloudFileServiceLinkNamespaceResult() interface{} {
+	return rpc.NewCloudFileServiceLinkNamespaceResult()
+}
+
+func getUserIDByFileIDHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceGetUserIDByFileIDArgs)
+	realResult := result.(*rpc.CloudFileServiceGetUserIDByFileIDResult)
+	success, err := handler.(rpc.CloudFileService).GetUserIDByFileID(ctx, realArg.Id)
+	if err != nil {
+		return err
+	}
+	realResult.Success = &success
+	return nil
+}
+func newCloudFileServiceGetUserIDByFileIDArgs() interface{} {
+	return rpc.NewCloudFileServiceGetUserIDByFileIDArgs()
+}
+
+func newCloudFileServiceGetUserIDByFileIDResult() interface{} {
+	return rpc.NewCloudFileServiceGetUserIDByFileIDResult()
+}
+
+func fetchFileDataHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceFetchFileDataArgs)
+	realResult := result.(*rpc.CloudFileServiceFetchFileDataResult)
+	success, err := handler.(rpc.CloudFileService).FetchFileData(ctx, realArg.Id)
 	if err != nil {
 		return err
 	}
 	realResult.Success = success
 	return nil
 }
-func newCloudFileServiceQueryNamespaceArgs() interface{} {
-	return rpc.NewCloudFileServiceQueryNamespaceArgs()
+func newCloudFileServiceFetchFileDataArgs() interface{} {
+	return rpc.NewCloudFileServiceFetchFileDataArgs()
 }
 
-func newCloudFileServiceQueryNamespaceResult() interface{} {
-	return rpc.NewCloudFileServiceQueryNamespaceResult()
+func newCloudFileServiceFetchFileDataResult() interface{} {
+	return rpc.NewCloudFileServiceFetchFileDataResult()
+}
+
+func modifyFileContentHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceModifyFileContentArgs)
+
+	err := handler.(rpc.CloudFileService).ModifyFileContent(ctx, realArg.Id, realArg.Content)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newCloudFileServiceModifyFileContentArgs() interface{} {
+	return rpc.NewCloudFileServiceModifyFileContentArgs()
+}
+
+func newCloudFileServiceModifyFileContentResult() interface{} {
+	return rpc.NewCloudFileServiceModifyFileContentResult()
+}
+
+func createTextFileHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceCreateTextFileArgs)
+	realResult := result.(*rpc.CloudFileServiceCreateTextFileResult)
+	success, err := handler.(rpc.CloudFileService).CreateTextFile(ctx, realArg.Name, realArg.ParentID, realArg.Content, realArg.NamespaceID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCloudFileServiceCreateTextFileArgs() interface{} {
+	return rpc.NewCloudFileServiceCreateTextFileArgs()
+}
+
+func newCloudFileServiceCreateTextFileResult() interface{} {
+	return rpc.NewCloudFileServiceCreateTextFileResult()
 }
 
 type kClient struct {
@@ -309,6 +404,16 @@ func newServiceClient(c client.Client) *kClient {
 	return &kClient{
 		c: c,
 	}
+}
+
+func (p *kClient) UploadFile(ctx context.Context, req *rpc.UploadFileRequest) (r *rpc.CloudFileItem, err error) {
+	var _args rpc.CloudFileServiceUploadFileArgs
+	_args.Req = req
+	var _result rpc.CloudFileServiceUploadFileResult
+	if err = p.c.Call(ctx, "uploadFile", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
 }
 
 func (p *kClient) Add(ctx context.Context, req *rpc.AddRequest) (r *rpc.CloudFileItem, err error) {
@@ -331,9 +436,9 @@ func (p *kClient) CreateDirectory(ctx context.Context, req *rpc.CreateDirectoryR
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) Remove(ctx context.Context, req *rpc.RemoveRequest) (err error) {
+func (p *kClient) Remove(ctx context.Context, id string) (err error) {
 	var _args rpc.CloudFileServiceRemoveArgs
-	_args.Req = req
+	_args.Id = id
 	var _result rpc.CloudFileServiceRemoveResult
 	if err = p.c.Call(ctx, "remove", &_args, &_result); err != nil {
 		return
@@ -393,7 +498,7 @@ func (p *kClient) Rename(ctx context.Context, id string, newName_ string) (err e
 	return nil
 }
 
-func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r string, err error) {
+func (p *kClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64) (r *rpc.CloudFileItem, err error) {
 	var _args rpc.CloudFileServiceCreateFileItemArgs
 	_args.Name = name
 	_args.Ty = ty
@@ -428,10 +533,9 @@ func (p *kClient) CreateUserNamespace(ctx context.Context, userID int64, namespa
 	return nil
 }
 
-func (p *kClient) GetFileURL(ctx context.Context, id string, uid int64) (r string, err error) {
+func (p *kClient) GetFileURL(ctx context.Context, id string) (r string, err error) {
 	var _args rpc.CloudFileServiceGetFileURLArgs
 	_args.Id = id
-	_args.Uid = uid
 	var _result rpc.CloudFileServiceGetFileURLResult
 	if err = p.c.Call(ctx, "getFileURL", &_args, &_result); err != nil {
 		return
@@ -449,11 +553,57 @@ func (p *kClient) QueryUserNamespaces(ctx context.Context, userID int64) (r []*r
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) QueryNamespace(ctx context.Context, namespaceID int64) (r *rpc.Namespace, err error) {
-	var _args rpc.CloudFileServiceQueryNamespaceArgs
+func (p *kClient) LinkNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32) (err error) {
+	var _args rpc.CloudFileServiceLinkNamespaceArgs
+	_args.UserID = userID
 	_args.NamespaceID = namespaceID
-	var _result rpc.CloudFileServiceQueryNamespaceResult
-	if err = p.c.Call(ctx, "queryNamespace", &_args, &_result); err != nil {
+	_args.Authority = authority
+	var _result rpc.CloudFileServiceLinkNamespaceResult
+	if err = p.c.Call(ctx, "LinkNamespace", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
+
+func (p *kClient) GetUserIDByFileID(ctx context.Context, id string) (r int64, err error) {
+	var _args rpc.CloudFileServiceGetUserIDByFileIDArgs
+	_args.Id = id
+	var _result rpc.CloudFileServiceGetUserIDByFileIDResult
+	if err = p.c.Call(ctx, "getUserIDByFileID", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FetchFileData(ctx context.Context, id string) (r []byte, err error) {
+	var _args rpc.CloudFileServiceFetchFileDataArgs
+	_args.Id = id
+	var _result rpc.CloudFileServiceFetchFileDataResult
+	if err = p.c.Call(ctx, "fetchFileData", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ModifyFileContent(ctx context.Context, id string, content string) (err error) {
+	var _args rpc.CloudFileServiceModifyFileContentArgs
+	_args.Id = id
+	_args.Content = content
+	var _result rpc.CloudFileServiceModifyFileContentResult
+	if err = p.c.Call(ctx, "modifyFileContent", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
+
+func (p *kClient) CreateTextFile(ctx context.Context, name string, parentID string, content string, namespaceID int64) (r *rpc.CloudFileItem, err error) {
+	var _args rpc.CloudFileServiceCreateTextFileArgs
+	_args.Name = name
+	_args.ParentID = parentID
+	_args.Content = content
+	_args.NamespaceID = namespaceID
+	var _result rpc.CloudFileServiceCreateTextFileResult
+	if err = p.c.Call(ctx, "createTextFile", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

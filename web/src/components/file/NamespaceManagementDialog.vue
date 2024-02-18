@@ -3,13 +3,11 @@ import FloatLabel from 'primevue/floatlabel';
 
 import Dropdown from 'primevue/dropdown';
 import {onMounted, ref} from "vue";
-import {useFileStore} from "../../store/file";
+import {DefaultNamespace, Namespace, useFileStore} from "../../store/file";
 import {
   createNamespace,
-  DefaultNamespace,
   generateNamespaceJoinLink,
   getUserNamespaces,
-  Namespace
 } from "../../service/filemanage";
 import Menu from 'primevue/menu';
 import Card from "primevue/card";
@@ -18,8 +16,8 @@ const toast=useToast();
 const selectedNamespace=ref<Namespace>(DefaultNamespace);
 const selectedAuth=ref<{ label:string,code:number }>();
 const auths=ref([
-  {label:"读权限（查看文件列表，浏览文件，下载文件）",code:1},
-  {label:"写权限（创建，删除，重命名，上传文件）",code:2},
+  {label:"读权限（查看文件列表，浏览文件，下载文件）",code:2},
+  {label:"写权限（创建，删除，重命名，上传文件）",code:1},
 ])
 const visible=ref<string>("create")
 const title=ref<string>("新建命名空间");
@@ -34,8 +32,9 @@ const copyLink=async ()=>{
       toast.add({ severity: 'error', summary: '错误', detail: '请选择命名空间', life: 3000});
       return
     }
-    const res=await generateNamespaceJoinLink(selectedNamespace.value.id);
+    const res=await generateNamespaceJoinLink(selectedNamespace.value,selectedAuth.value?.code);
     console.log(res);
+    toast.add({ severity: 'info', summary: '链接复制成功', detail: res, life: 6000});
 }
 const items=ref([
   { label: '新建', icon: 'pi pi-plus', command:()=>{visible.value="create";title.value="新建命名空间"} },
@@ -71,7 +70,7 @@ const items=ref([
               <div v-if="visible=='auth'" >
                 <div>
                   <div>命名空间:</div>
-                  <Dropdown v-model="selectedNamespace" :options="fileStore.namespaces" optionLabel="name" placeholder="选择一个命名空间"  />
+                  <Dropdown v-model="selectedNamespace" :options="fileStore.namespaces.filter(it=>it.authority==0)" optionLabel="name" placeholder="选择一个命名空间"  />
                 </div>
                 <div>
                   <div>权限:</div>

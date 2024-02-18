@@ -28,7 +28,7 @@ func main() {
 	bucket, err := client.Bucket(c.GetString("cloudfile.oss.bucketName"))
 	service := handler.CloudFileServiceImpl{OssBucket: bucket}
 	addr, _ := net.ResolveTCPAddr("tcp", c.GetString("cloudfile.addr"))
-	svr := rpc.NewServer(&service, server.WithServiceAddr(addr), server.WithReadWriteTimeout(1000*1000*60*5))
+	svr := rpc.NewServer(&service, server.WithServiceAddr(addr), server.WithReadWriteTimeout(1000*1000*60*50))
 	err = svr.Run()
 
 	if err != nil {

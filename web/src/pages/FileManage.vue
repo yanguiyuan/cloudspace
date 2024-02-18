@@ -30,8 +30,8 @@
   <div ref="fileTip" id="fileTip"  class="settingTooltip hidden">
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
     <div id="renameButton" @click="canRename=true;renameFileItem=optionFileItem" class="tipMenuItem">重命名</div>
-    <div v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">编辑</div>
-    <div  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem"><a :href="fileStore.urlMap.get(optionFileItem.id)">下载</a></div>
+    <div @click="editFile(optionFileItem)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
+    <div @click="downLoad"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
   </div>
   <FileUploadDialog></FileUploadDialog>
   <FileCreateDialog></FileCreateDialog>
@@ -40,6 +40,8 @@
   </Dialog>
   <ConfirmDialog></ConfirmDialog>
   <NamespaceManagementDialog></NamespaceManagementDialog>
+  <MarkdownEdit></MarkdownEdit>
+  <CreateTextFile></CreateTextFile>
 </template>
 <script setup lang="ts">
 import {AssetsIconSvgService} from "../assets/assets";
@@ -47,7 +49,7 @@ import { ref, onUnmounted, onMounted, getCurrentInstance } from 'vue'
 import AppTemplate from "../components/AppTemplate.vue";
 import { useToast } from "primevue/usetoast";
 import FileUploadDialog from "../components/file/FileUploadDialog.vue";
-import {useFileStore} from "../store/file";
+import {DefaultFileItem, FileItem, useFileStore} from "../store/file";
 import Dialog from "primevue/dialog";
 import ConfirmDialog from "primevue/confirmdialog";
 import {useConfirm} from "primevue/useconfirm";
@@ -57,14 +59,16 @@ import InputIcon from "primevue/inputicon";
 import OverlayPanel from "primevue/overlaypanel";
 import Button from "primevue/button";
 import {
-  FileItem, onClickFileItem, getRootFileItemID, initDefaultFileItemList,
-  deleteFileOrDirectory, getFileItemByID,
-  SideMenuOptionItems, DefaultFileItem, renameFileOrDirectory, getUserNamespaces
+  onClickFileItem,
+  deleteFileOrDirectory,
+  SideMenuOptionItems, renameFileOrDirectory,  editFile, canEdit, getFileURL
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";
 import Image from "primevue/image";
 import NamespaceManagementDialog from "../components/file/NamespaceManagementDialog.vue";
+import MarkdownEdit from "../components/file/MarkdownEdit.vue";
+import CreateTextFile from "../components/file/CreateTextFile.vue";
 const renameOp = ref();
 const toast = useToast();
 const confirm = useConfirm();
@@ -82,6 +86,10 @@ const displayMenu = function (e: MouseEvent,it:FileItem) {
     el.style.display='block';
   }
   optionFileItem.value=it;
+}
+const downLoad =async function () {
+  const url=await getFileURL(optionFileItem.value.id);
+  window.open(url);
 }
 const getFileName = function (value: FileItem) {
   if (value.fileName.length > 30) {

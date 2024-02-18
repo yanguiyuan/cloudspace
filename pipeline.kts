@@ -5,7 +5,7 @@ pipeline("dev"){
     }
     parallel("tailwind"){
         workspace("./web")
-        cmd("npx tailwindcss -i./src/style.css -o./src/output.css --watch")
+        cmd("npx tailwindcss -i./src/style.css -o./src/output.css")
     }
 }
 pipeline("api"){

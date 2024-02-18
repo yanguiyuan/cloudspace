@@ -11,20 +11,25 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
+	UploadFile(ctx context.Context, req *rpc.UploadFileRequest, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error)
 	Add(ctx context.Context, req *rpc.AddRequest, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error)
 	CreateDirectory(ctx context.Context, req *rpc.CreateDirectoryRequest, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error)
-	Remove(ctx context.Context, req *rpc.RemoveRequest, callOptions ...callopt.Option) (err error)
+	Remove(ctx context.Context, id string, callOptions ...callopt.Option) (err error)
 	RemoveDirectory(ctx context.Context, id string, callOptions ...callopt.Option) (err error)
 	Query(ctx context.Context, pid string, uid int64, callOptions ...callopt.Option) (r *rpc.QueryResponse, err error)
 	QueryFileItemByID(ctx context.Context, id string, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error)
 	Update(ctx context.Context, req *rpc.UpdateRequest, callOptions ...callopt.Option) (err error)
 	Rename(ctx context.Context, id string, newName_ string, callOptions ...callopt.Option) (err error)
-	CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64, callOptions ...callopt.Option) (r string, err error)
+	CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error)
 	CreateNamespace(ctx context.Context, name string, callOptions ...callopt.Option) (r int64, err error)
 	CreateUserNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32, callOptions ...callopt.Option) (err error)
-	GetFileURL(ctx context.Context, id string, uid int64, callOptions ...callopt.Option) (r string, err error)
+	GetFileURL(ctx context.Context, id string, callOptions ...callopt.Option) (r string, err error)
 	QueryUserNamespaces(ctx context.Context, userID int64, callOptions ...callopt.Option) (r []*rpc.Namespace, err error)
-	QueryNamespace(ctx context.Context, namespaceID int64, callOptions ...callopt.Option) (r *rpc.Namespace, err error)
+	LinkNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32, callOptions ...callopt.Option) (err error)
+	GetUserIDByFileID(ctx context.Context, id string, callOptions ...callopt.Option) (r int64, err error)
+	FetchFileData(ctx context.Context, id string, callOptions ...callopt.Option) (r []byte, err error)
+	ModifyFileContent(ctx context.Context, id string, content string, callOptions ...callopt.Option) (err error)
+	CreateTextFile(ctx context.Context, name string, parentID string, content string, namespaceID int64, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -56,6 +61,11 @@ type kCloudFileServiceClient struct {
 	*kClient
 }
 
+func (p *kCloudFileServiceClient) UploadFile(ctx context.Context, req *rpc.UploadFileRequest, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.UploadFile(ctx, req)
+}
+
 func (p *kCloudFileServiceClient) Add(ctx context.Context, req *rpc.AddRequest, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Add(ctx, req)
@@ -66,9 +76,9 @@ func (p *kCloudFileServiceClient) CreateDirectory(ctx context.Context, req *rpc.
 	return p.kClient.CreateDirectory(ctx, req)
 }
 
-func (p *kCloudFileServiceClient) Remove(ctx context.Context, req *rpc.RemoveRequest, callOptions ...callopt.Option) (err error) {
+func (p *kCloudFileServiceClient) Remove(ctx context.Context, id string, callOptions ...callopt.Option) (err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.Remove(ctx, req)
+	return p.kClient.Remove(ctx, id)
 }
 
 func (p *kCloudFileServiceClient) RemoveDirectory(ctx context.Context, id string, callOptions ...callopt.Option) (err error) {
@@ -96,7 +106,7 @@ func (p *kCloudFileServiceClient) Rename(ctx context.Context, id string, newName
 	return p.kClient.Rename(ctx, id, newName_)
 }
 
-func (p *kCloudFileServiceClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64, callOptions ...callopt.Option) (r string, err error) {
+func (p *kCloudFileServiceClient) CreateFileItem(ctx context.Context, name string, ty string, parentID string, namespaceID int64, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CreateFileItem(ctx, name, ty, parentID, namespaceID)
 }
@@ -111,9 +121,9 @@ func (p *kCloudFileServiceClient) CreateUserNamespace(ctx context.Context, userI
 	return p.kClient.CreateUserNamespace(ctx, userID, namespaceID, authority)
 }
 
-func (p *kCloudFileServiceClient) GetFileURL(ctx context.Context, id string, uid int64, callOptions ...callopt.Option) (r string, err error) {
+func (p *kCloudFileServiceClient) GetFileURL(ctx context.Context, id string, callOptions ...callopt.Option) (r string, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.GetFileURL(ctx, id, uid)
+	return p.kClient.GetFileURL(ctx, id)
 }
 
 func (p *kCloudFileServiceClient) QueryUserNamespaces(ctx context.Context, userID int64, callOptions ...callopt.Option) (r []*rpc.Namespace, err error) {
@@ -121,7 +131,27 @@ func (p *kCloudFileServiceClient) QueryUserNamespaces(ctx context.Context, userI
 	return p.kClient.QueryUserNamespaces(ctx, userID)
 }
 
-func (p *kCloudFileServiceClient) QueryNamespace(ctx context.Context, namespaceID int64, callOptions ...callopt.Option) (r *rpc.Namespace, err error) {
+func (p *kCloudFileServiceClient) LinkNamespace(ctx context.Context, userID int64, namespaceID int64, authority int32, callOptions ...callopt.Option) (err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.QueryNamespace(ctx, namespaceID)
+	return p.kClient.LinkNamespace(ctx, userID, namespaceID, authority)
+}
+
+func (p *kCloudFileServiceClient) GetUserIDByFileID(ctx context.Context, id string, callOptions ...callopt.Option) (r int64, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetUserIDByFileID(ctx, id)
+}
+
+func (p *kCloudFileServiceClient) FetchFileData(ctx context.Context, id string, callOptions ...callopt.Option) (r []byte, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FetchFileData(ctx, id)
+}
+
+func (p *kCloudFileServiceClient) ModifyFileContent(ctx context.Context, id string, content string, callOptions ...callopt.Option) (err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.ModifyFileContent(ctx, id, content)
+}
+
+func (p *kCloudFileServiceClient) CreateTextFile(ctx context.Context, name string, parentID string, content string, namespaceID int64, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CreateTextFile(ctx, name, parentID, content, namespaceID)
 }

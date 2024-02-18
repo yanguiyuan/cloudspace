@@ -1,61 +1,15 @@
 import {ToastServiceMethods} from "primevue/toastservice";
 import axios from "../axios/axios";
-import {useFileStore} from "../store/file";
+import {FileItem, LinkParams, Namespace, useFileStore} from "../store/file";
 import {ConfirmationOptions} from "primevue/confirmationoptions";
-import {useRouter} from "vue-router";
-export interface FileManagementState{
-    dialog:{
-        upload:{
-            visible:boolean;
-        };
-        createDirectory:{
-            visible:boolean;
-        };
-        imagePreview:{
-            visible:boolean;
-            url:string;
-        };
-        namespace:{
-            visible:boolean;
-        }
-    }
-    namespaces:Namespace[];
-    breadcrumbs:FileItem[];
-    fileList:FileItem[];
-    urlMap:Map<string,string>
-}
-export interface FileItem{
-    id:string;
-    fileName:string;
-    fileType:string;
-    createTime:string;
-    updateTime:string;
-}
+import {useUserStore} from "../store/user";
+import router from "../router/router";
+
 export interface ConfirmMethods{
     require:(option: ConfirmationOptions)=>void;
     close:()=>void;
 }
-export interface Namespace{
-    id:number;
-    name:string;
-    rootID:string;
-    authority:number;
-    updateTime:string;
-}
-export const DefaultNamespace:Namespace={
-    id:0,
-    name:"未知",
-    rootID:"",
-    authority:0,
-    updateTime:""
-}
-export const DefaultFileItem:FileItem={
-    id:"",
-    fileName:"",
-    fileType:"",
-    createTime:"",
-    updateTime:"",
-}
+
 const fileStore=useFileStore();
 export const SideMenuOptionItems=[
     {
@@ -82,6 +36,7 @@ export const SideMenuOptionItems=[
         icon:"create-file",
         enableRouterLink:false,
         action:()=>{
+            fileStore.dialog.createTextFile.visible=true
         }
     },
     {
@@ -96,7 +51,7 @@ export const SideMenuOptionItems=[
 ];
 
 export async function deleteFile(file:FileItem,toast: ToastServiceMethods):Promise<any> {
-    const res=axios.delete("/user/file/"+file.id+"/"+file.fileName,).then((res)=>{
+    const res=axios.delete("/user/file/"+file.id).then((res)=>{
         fileStore.fileList.splice(fileStore.fileList.indexOf(file),1);
         toast.add({
             severity: 'success',
@@ -115,8 +70,20 @@ export async function deleteFile(file:FileItem,toast: ToastServiceMethods):Promi
     });
     return res;
 }
+export function initLinkParams(){
+    if(fileStore.linkParams.user_id!=0){
+        return
+    }
+    const userStore=useUserStore();
+    fileStore.linkParams=getUrlParams(window.location.href);
+    userStore.linkNamespace=true;
+    if(userStore.user.id==fileStore.linkParams.user_id){
+        console.log("跳转")
+        router.push("/login")
+    }
+}
 export async function deleteDirectory(file:FileItem,toast: ToastServiceMethods):Promise<any> {
-    const res=await axios.delete("/user/file/dir/"+file.id+"/"+file.fileName,).then((res)=>{
+    const res=await axios.delete("/user/directory/"+file.id).then((res)=>{
         fileStore.fileList.splice(fileStore.fileList.indexOf(file),1);
         toast.add({
             severity: 'success',
@@ -203,7 +170,6 @@ export function getCurrentBreadcrumbsPath():string{
     return path;
 }
 export async function createFolder(folderName:string,toast: ToastServiceMethods) {
-    console.log("createFolder:",)
     const res=await axios.post("/user/directory",{
         parentID:fileStore.getCurrentParentID(),
         directoryName:folderName,
@@ -225,19 +191,6 @@ export async function createFolder(folderName:string,toast: ToastServiceMethods)
         });
     })
     fileStore.fileList.push(res.data);
-}
-export async function getRootFileItemID():Promise<string> {
-    const router=useRouter();
-    const id =await axios.get("/user/file/root").then((res) => {
-        return res.data.id;
-    }).catch((e) => {
-        if(e.response&&e.response.status==401){
-            router.push("/login");
-        }
-        console.log("error:",e);
-    })
-    console.log("id:",id);
-    return id;
 }
 export async function getFileItemByID(id:string):Promise<FileItem> {
     const resp=await axios.get("/user/file/"+id).then((res)=>{
@@ -284,8 +237,12 @@ export async function renameFileOrDirectory(file:FileItem,toast: ToastServiceMet
 }
 export async function getUserNamespaces():Promise<Namespace[]> {
     const resp=await axios.get("/user/namespace/list").then((res)=>{
+        console.log("namespace-list:",res);
         return res.data.data;
     }).catch((e)=>{
+        if(e.response.data.code==401){
+            router.push("/login");
+        }
         console.log("error:",e);
     });
     return resp;
@@ -319,17 +276,130 @@ export async function createNamespace(name:string,toast: ToastServiceMethods){
         });
     });
 }
-export async function generateNamespaceJoinLink(id:number):Promise<any> {
-    const resp=await axios.get("/user/namespace/"+id.toString()+"/link").then((res)=>{
+export async function generateNamespaceJoinLink(it:Namespace,auth:number):Promise<any> {
+    const resp=await axios.get("/user/namespace/"+it.id.toString()+"/link?name="+it.name+"&authority="+auth.toString()).then((res)=>{
         return res.data.data;
     }).catch((e)=>{
         console.log("error:",e);
     });
     return resp;
 }
-export function getUrlParams(url:string):any {
+export function getUrlParams(url:string):LinkParams {
     let urlStr = url.split('?')[1]
     const urlSearchParams = new URLSearchParams(urlStr)
     const result = Object.fromEntries(urlSearchParams.entries())
-    return result
+    return {
+        user_id:parseInt(result.user_id),
+        namespace_id:parseInt(result.namespace_id),
+        name:result.name,
+        authority:parseInt(result.authority),
+        token:result.token,
+    }
+}
+export async function linkNamespace(id:number,auth:number,token:string,toast: ToastServiceMethods){
+    const resp=await axios.post("/user/namespace/"+id.toString()+"/link?token="+token+"&authority="+auth.toString()).then((res)=>{
+        return res.data;
+    }).catch((e)=>{
+        console.log("error:",e);
+    });
+    if(resp&&resp.code==0){
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "加入命名空间成功",
+            life: 3000
+        });
+    }else{
+        console.log("resp:",resp);
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "加入命名空间失败",
+            life: 3000
+        })
+    }
+}
+export function canEdit(file:FileItem):boolean{
+    const stringArray: string[] = ["png","jpg","exe","directory"];
+    return !stringArray.includes(file.fileType);
+}
+export async function  getFileURL(id:string){
+    let url=fileStore.urlMap.get(id);
+    if(url==undefined){
+        const resp:string=await axios.get("/user/file/"+id+"/url").then((res)=>{
+            return res.data.data;
+        }).catch((e)=>{
+            console.log("error:",e);
+        })
+        url=resp
+    }
+    return url
+}
+export async function editFile(file:FileItem){
+    fileStore.dialog.markdownEdit.visible=true
+    fileStore.dialog.markdownEdit.editFileItem=file;
+    await axios.get("/user/file/"+file.id+"/content").then((res)=>{
+        fileStore.dialog.markdownEdit.text=res.data.data;
+        console.log("res:",res.data.data)
+    }).catch((e)=>{
+        console.log("error:",e);
+    })
+}
+export async function saveFileContent(toast: ToastServiceMethods){
+    await axios.put("/user/file/"+fileStore.dialog.markdownEdit.editFileItem.id+"/content",{
+        content:fileStore.dialog.markdownEdit.text,
+    }).then((res)=>{
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "保存成功",
+            life: 3000
+        });
+    }).catch((e)=>{
+        console.log("error:",e);
+        toast.add({
+            severity: 'error',
+        });
+    });
+}
+export async function createTextFile(toast: ToastServiceMethods){
+    const state=fileStore.dialog.createTextFile;
+    if(state.fileName==""){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "文件名不能为空",
+            life: 3000
+        });
+        return;
+    }
+    if(state.text==""){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "文件内容不能为空",
+            life: 3000
+        });
+        return;
+    }
+    const parentID=fileStore.getCurrentParentID()
+    await axios.post("/user/file/"+parentID+"/content",{
+        fileName:state.fileName,
+        content:fileStore.dialog.createTextFile.text,
+    }).then((res)=>{
+        console.log("createFile:",res)
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "保存成功",
+            life: 3000
+        });
+        fileStore.fileList.push(res.data.data);
+        fileStore.dialog.createTextFile.visible=false;
+    }).catch((e)=>{
+        console.log("error:",e);
+        toast.add({
+            severity: 'error',
+        });
+    });
 }
