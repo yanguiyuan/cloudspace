@@ -3,7 +3,7 @@
 import AppTemplate from "../components/AppTemplate.vue";
 import {AssetsIconSvgService} from "../assets/assets";
 import {onMounted, reactive, ref} from "vue";
-import {getUsers} from "../service/admin";
+import {getUsers, resetPassword} from "../service/admin";
 import {useAdminStore} from "../store/admin";
 
 import DataTable from "primevue/datatable";
@@ -11,15 +11,17 @@ import Column from "primevue/column";
 import Password from "primevue/password";
 import FloatLabel from "primevue/floatlabel";
 import {User} from "../service/user";
+import {useToast} from "primevue/usetoast";
 const iconService=AssetsIconSvgService.getInstance();
 const adminStore=useAdminStore();
 const resetPasswordVisible=ref(false)
+const toast=useToast();
 const password=reactive({
   newPassword:"",confirmPassword:"",username:""
 })
-const resetPassword=(data:User)=>{
-  password.username=data.username;
-  resetPasswordVisible.value=true;
+const openResetPasswordDialog=(data:User)=>{
+  adminStore.selectedUser=data;
+  adminStore.dialog.resetPassword.visible=true
 }
 onMounted(()=>{
   getUsers(0,10)
@@ -27,18 +29,23 @@ onMounted(()=>{
 </script>
 
 <template>
-  <Dialog header="重置密码" v-model:visible="resetPasswordVisible">
+  <Toast></Toast>
+  <Dialog header="重置密码" v-model:visible="adminStore.dialog.resetPassword.visible">
     <div class="mb-5">
-      用户：{{password.username}}
+      用户：{{adminStore.selectedUser.username}}
     </div>
     <FloatLabel class="mt-6">
-      <Password toggleMask v-model="password.newPassword" inputId="newPassword" />
+      <Password toggleMask v-model="adminStore.dialog.resetPassword.newPassword" inputId="newPassword" />
       <label for="newPassword">新密码</label>
     </FloatLabel>
     <FloatLabel class="mt-6">
-      <Password toggleMask v-model="password.confirmPassword" inputId="confirmPassword" />
+      <Password toggleMask v-model="adminStore.dialog.resetPassword.confirmPassword" inputId="confirmPassword" />
       <label for="confirmPassword">确认密码</label>
     </FloatLabel>
+    <template #footer>
+      <Button label="取消" @click="adminStore.dialog.resetPassword.visible=false" class="mr-2" />
+      <Button label="确定" @click="resetPassword(toast)" class="mr-2" />
+    </template>
   </Dialog>
   <AppTemplate>
     <template #header>
@@ -91,7 +98,7 @@ onMounted(()=>{
           },
         }" style="flex: 0 0 4rem">
           <template #body="{ data }">
-            <Button label="重置密码" type="button" @click="resetPassword(data)" text size="small" />
+            <Button label="重置密码" type="button" @click="openResetPasswordDialog(data)" text size="small" />
           </template>
         </Column>
       </DataTable>

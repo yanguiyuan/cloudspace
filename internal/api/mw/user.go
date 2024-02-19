@@ -44,8 +44,7 @@ func CheckReadPermission(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	//如果权限为0或1，就有读权限
-	if authority < 2 {
-		fmt.Println("User is authorized to read the file")
+	if authority > 2 {
 		// 如果没有用户信息，返回未授权错误
 		c.String(http.StatusUnauthorized, "Unauthorized") // 返回未授权错误
 		// 终止请求处理流程
@@ -80,7 +79,6 @@ func CheckWritePermission(ctx context.Context, c *app.RequestContext) {
 	}
 	//如果权限为0或2，就有写权限
 	if authority > 1 {
-		fmt.Println("User is authorized to write the file")
 		// 如果没有用户信息，返回未授权错误
 		c.String(http.StatusUnauthorized, "Unauthorized") // 返回未授权错误
 		// 终止请求处理流程

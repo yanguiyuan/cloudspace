@@ -15,3 +15,7 @@ type ResetPasswordReq struct {
 	OldPassword string `json:"oldPassword,omitempty"`
 	NewPassword string `json:"newPassword,omitempty"`
 }
+type AdminResetPasswordReq struct {
+	ID          int64  `json:"id,omitempty" path:"id"`
+	NewPassword string `json:"newPassword,omitempty"`
+}

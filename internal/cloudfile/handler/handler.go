@@ -454,7 +454,6 @@ func (s *CloudFileServiceImpl) QueryUserNamespaceAuthority(ctx context.Context, 
 	err = dal.UserNamespace.WithContext(ctx).
 		Select(dal.UserNamespace.Authority).
 		Where(dal.UserNamespace.UserID.Eq(userID), dal.UserNamespace.NamespaceID.Eq(namespaceID)).
-		Debug().
 		Scan(&r)
 	//dal.Namespace.
 	return r, err

@@ -188,5 +188,28 @@ func ResetPassword(ctx context.Context, c *app.RequestContext) {
 }
 
 func AdminResetPassword(ctx context.Context, c *app.RequestContext) {
-
+	var req user.AdminResetPasswordReq
+	err := c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	client, err := NewUserServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		hlog.Error(err)
+		return
+	}
+	err = client.ResetPassword(ctx, req.ID, req.NewPassword)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+	})
 }
