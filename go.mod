@@ -12,7 +12,7 @@ require (
 	github.com/yanguiyuan/yuan v0.1.3
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gen v0.3.24
-	gorm.io/gorm v1.25.5
+	gorm.io/gorm v1.25.7
 	gorm.io/plugin/dbresolver v1.5.0
 )
 
@@ -47,6 +47,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
+	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/gls v0.0.0-20220109145502-612d0167dce5 // indirect
@@ -80,6 +81,7 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/datatypes v1.1.1-0.20230130040222-c43177d3cf8c // indirect
+	gorm.io/driver/sqlite v1.5.5 // indirect
 	gorm.io/hints v1.1.0 // indirect
 )
 

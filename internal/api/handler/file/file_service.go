@@ -225,7 +225,7 @@ func Rename(ctx context.Context, c *app.RequestContext) {
 }
 
 func QueryUserNamespaces(ctx context.Context, c *app.RequestContext) {
-	identity, b := c.Get(mw.IdentityKey)
+	identity, b := c.Get(mw.IdentityKey) //*
 	if !b {
 		c.String(consts.StatusUnauthorized, "未登录")
 	}
@@ -234,7 +234,7 @@ func QueryUserNamespaces(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusInternalServerError, err.Error())
 		return
 	}
-	resp, err := client.QueryUserNamespaces(ctx, identity.(int64))
+	resp, err := client.QueryUserNamespaces(ctx, identity.(int64)) //*
 	if err != nil {
 		c.JSON(consts.StatusOK, utils.H{
 			"code":    errno.ServiceErrCode,
