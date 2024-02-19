@@ -12,6 +12,11 @@ export const DefaultUserState:UserState={
         },
         gender:{
             visible:false,
+        },
+        password:{
+            oldPassword:"",
+            newPassword:"",
+            confirmPassword:"",
         }
     },
     user:{

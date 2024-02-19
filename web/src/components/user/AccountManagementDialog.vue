@@ -2,16 +2,21 @@
 import {useUserStore} from "../../store/user";
 import Dialog from "primevue/dialog";
 import {onMounted, ref} from "vue";
-import {FetchUserInfo, modifyUserInfo} from "../../service/user";
+import {FetchUserInfo, modifyPassword, modifyUserInfo} from "../../service/user";
 import {useToast} from "primevue/usetoast";
 import RadioButton from "primevue/radiobutton";
-import {getUserNamespaces} from "../../service/filemanage";
+import Card from "primevue/card";
+import {ToastServiceMethods} from "primevue/toastservice";
+import FloatLabel from "primevue/floatlabel";
+import Password from "primevue/password";
 const toast=useToast();
 const userStore = useUserStore();
 const copy=async (content:string)=>{
   await navigator.clipboard.writeText(content);
   toast.add({severity:'success',summary:'复制成功',detail:'复制成功',life:3000});
 }
+
+const visible=ref<string>("info")
 onMounted(async ()=>{
   const user=await FetchUserInfo();
   userStore.setUser(user);
@@ -27,10 +32,11 @@ onMounted(async ()=>{
     </template>
     <div class="flex border-t border-solid border-t-gray-300 p-2 ">
       <div class="mr-3 mt-3 ">
-        <div class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">个人信息</div>
-        <div class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">账号设置</div>
+        <div @click="visible='info'" class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">个人信息</div>
+        <div @click="visible='password'" class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">修改密码</div>
+<!--        <div @click="visible='setting'" class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">账号设置</div>-->
       </div>
-      <div class="bg-[rgb(235,235,235)] p-3 rounded-2xl shadow">
+      <div v-if="visible==='info'" class="bg-[rgb(235,235,235)] p-3 rounded-2xl shadow">
         <div class="border-b border-solid border-b-gray-400 flex p-2">
           <div class="w-20 font-bold">
             用户ID:
@@ -99,6 +105,26 @@ onMounted(async ()=>{
           </div>
         </div>
       </div>
+          <Card v-if="visible==='password'">
+            <template #header>
+              <h2 class="ml-5 mt-2 text-2xl border-b border-solid border-b-gray-300">修改密码</h2>
+            </template>
+            <template #content>
+              <FloatLabel >
+                <Password toggleMask v-model="userStore.input.password.oldPassword" inputId="oldPassword" />
+                <label for="oldPassword">旧密码</label>
+              </FloatLabel>
+              <FloatLabel class="mt-6">
+                <Password toggleMask v-model="userStore.input.password.newPassword" inputId="newPassword" />
+                <label for="newPassword">新密码</label>
+              </FloatLabel>
+              <FloatLabel class="mt-6">
+                <Password toggleMask v-model="userStore.input.password.confirmPassword" inputId="confirmPassword" />
+                <label for="confirmPassword">确认密码</label>
+              </FloatLabel>
+              <Button label="确定" class="p-2 mt-3 text-center" @click="modifyPassword(toast)"></Button>
+            </template>
+          </Card>
     </div>
   </Dialog>
 </template>

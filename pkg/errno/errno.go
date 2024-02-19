@@ -12,6 +12,7 @@ const (
 	UsernameOrPasswordErrorCode
 	NotFoundCode
 	InvalidParamCode
+	UserPasswordErrCode
 )
 
 const (
@@ -21,6 +22,7 @@ const (
 	UsernameOrPasswordErrorMsg = "Username or password error"
 	NotFoundMsg                = "Not found"
 	InvalidParamMsg            = "Invalid param"
+	UserPasswordErrMsg         = "User password error"
 )
 
 var (
@@ -30,6 +32,7 @@ var (
 	UsernameOrPasswordError = NewErrNo(UsernameOrPasswordErrorCode, UsernameOrPasswordErrorMsg)
 	NotFound                = NewErrNo(NotFoundCode, NotFoundMsg)
 	InvalidParam            = NewErrNo(InvalidParamCode, InvalidParamMsg)
+	UserPasswordErr         = NewErrNo(UserPasswordErrCode, UserPasswordErrMsg)
 )
 
 type ErrNo struct {

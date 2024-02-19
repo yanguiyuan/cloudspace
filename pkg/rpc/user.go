@@ -1042,6 +1042,8 @@ type UserService interface {
 	UpdateUser(ctx context.Context, user *User) (err error)
 
 	GetUsers(ctx context.Context, offset int32, limit int32) (r []*User, err error)
+
+	ResetPassword(ctx context.Context, id int64, password string) (err error)
 }
 
 type UserServiceClient struct {
@@ -1118,6 +1120,16 @@ func (p *UserServiceClient) GetUsers(ctx context.Context, offset int32, limit in
 	}
 	return _result.GetSuccess(), nil
 }
+func (p *UserServiceClient) ResetPassword(ctx context.Context, id int64, password string) (err error) {
+	var _args UserServiceResetPasswordArgs
+	_args.Id = id
+	_args.Password = password
+	var _result UserServiceResetPasswordResult
+	if err = p.Client_().Call(ctx, "ResetPassword", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
 
 type UserServiceProcessor struct {
 	processorMap map[string]thrift.TProcessorFunction
@@ -1144,6 +1156,7 @@ func NewUserServiceProcessor(handler UserService) *UserServiceProcessor {
 	self.AddToProcessorMap("GetUser", &userServiceProcessorGetUser{handler: handler})
 	self.AddToProcessorMap("UpdateUser", &userServiceProcessorUpdateUser{handler: handler})
 	self.AddToProcessorMap("GetUsers", &userServiceProcessorGetUsers{handler: handler})
+	self.AddToProcessorMap("ResetPassword", &userServiceProcessorResetPassword{handler: handler})
 	return self
 }
 func (p *UserServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -1384,6 +1397,51 @@ func (p *userServiceProcessorGetUsers) Process(ctx context.Context, seqId int32,
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("GetUsers", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type userServiceProcessorResetPassword struct {
+	handler UserService
+}
+
+func (p *userServiceProcessorResetPassword) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := UserServiceResetPasswordArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("ResetPassword", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := UserServiceResetPasswordResult{}
+	if err2 = p.handler.ResetPassword(ctx, args.Id, args.Password); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing ResetPassword: "+err2.Error())
+		oprot.WriteMessageBegin("ResetPassword", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	}
+	if err2 = oprot.WriteMessageBegin("ResetPassword", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -3230,6 +3288,323 @@ func (p *UserServiceGetUsersResult) Field0DeepEqual(src []*User) bool {
 		if !v.DeepEqual(_src) {
 			return false
 		}
+	}
+	return true
+}
+
+type UserServiceResetPasswordArgs struct {
+	Id       int64  `thrift:"id,1" frugal:"1,default,i64" json:"id"`
+	Password string `thrift:"password,2" frugal:"2,default,string" json:"password"`
+}
+
+func NewUserServiceResetPasswordArgs() *UserServiceResetPasswordArgs {
+	return &UserServiceResetPasswordArgs{}
+}
+
+func (p *UserServiceResetPasswordArgs) InitDefault() {
+	*p = UserServiceResetPasswordArgs{}
+}
+
+func (p *UserServiceResetPasswordArgs) GetId() (v int64) {
+	return p.Id
+}
+
+func (p *UserServiceResetPasswordArgs) GetPassword() (v string) {
+	return p.Password
+}
+func (p *UserServiceResetPasswordArgs) SetId(val int64) {
+	p.Id = val
+}
+func (p *UserServiceResetPasswordArgs) SetPassword(val string) {
+	p.Password = val
+}
+
+var fieldIDToName_UserServiceResetPasswordArgs = map[int16]string{
+	1: "id",
+	2: "password",
+}
+
+func (p *UserServiceResetPasswordArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_UserServiceResetPasswordArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UserServiceResetPasswordArgs) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.Id = v
+	}
+	return nil
+}
+
+func (p *UserServiceResetPasswordArgs) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.Password = v
+	}
+	return nil
+}
+
+func (p *UserServiceResetPasswordArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("ResetPassword_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserServiceResetPasswordArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.Id); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *UserServiceResetPasswordArgs) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("password", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Password); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *UserServiceResetPasswordArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceResetPasswordArgs(%+v)", *p)
+}
+
+func (p *UserServiceResetPasswordArgs) DeepEqual(ano *UserServiceResetPasswordArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Id) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.Password) {
+		return false
+	}
+	return true
+}
+
+func (p *UserServiceResetPasswordArgs) Field1DeepEqual(src int64) bool {
+
+	if p.Id != src {
+		return false
+	}
+	return true
+}
+func (p *UserServiceResetPasswordArgs) Field2DeepEqual(src string) bool {
+
+	if strings.Compare(p.Password, src) != 0 {
+		return false
+	}
+	return true
+}
+
+type UserServiceResetPasswordResult struct {
+}
+
+func NewUserServiceResetPasswordResult() *UserServiceResetPasswordResult {
+	return &UserServiceResetPasswordResult{}
+}
+
+func (p *UserServiceResetPasswordResult) InitDefault() {
+	*p = UserServiceResetPasswordResult{}
+}
+
+var fieldIDToName_UserServiceResetPasswordResult = map[int16]string{}
+
+func (p *UserServiceResetPasswordResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *UserServiceResetPasswordResult) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("ResetPassword_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *UserServiceResetPasswordResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("UserServiceResetPasswordResult(%+v)", *p)
+}
+
+func (p *UserServiceResetPasswordResult) DeepEqual(ano *UserServiceResetPasswordResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
 	}
 	return true
 }

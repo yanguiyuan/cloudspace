@@ -34,6 +34,7 @@ const copyLink=async ()=>{
     }
     const res=await generateNamespaceJoinLink(selectedNamespace.value,selectedAuth.value?.code);
     console.log(res);
+    await navigator.clipboard.writeText(res);
     toast.add({ severity: 'info', summary: '链接复制成功', detail: res, life: 6000});
 }
 const items=ref([

@@ -250,7 +250,11 @@ func (s *CloudFileServiceImpl) RemoveDirectory(ctx context.Context, id string) (
 // Rename implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Rename(ctx context.Context, id, newName string) (err error) {
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
-		_, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).Update(dal.FileItem.Name, newName)
+		t := ParseFileType(newName)
+		_, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).Updates(&model.FileItem{
+			Name: newName,
+			Type: t,
+		})
 		if err != nil {
 			return err
 		}
@@ -333,7 +337,6 @@ func (s *CloudFileServiceImpl) QueryUserNamespaces(ctx context.Context, uid int6
 		LeftJoin(dal.UserNamespace, dal.Namespace.ID.EqCol(dal.UserNamespace.NamespaceID)).
 		LeftJoin(dal.FileItem, dal.FileItem.NamespaceID.EqCol(dal.UserNamespace.NamespaceID), dal.FileItem.Type.Eq(Namespace)).
 		Where(dal.UserNamespace.UserID.Eq(uid)).
-		Debug().
 		Scan(&res)
 	if err != nil {
 		return nil, err

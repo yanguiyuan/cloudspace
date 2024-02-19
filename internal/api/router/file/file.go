@@ -12,6 +12,7 @@ func Register(r *server.Hertz) {
 	{
 		file := user.Group("/file")
 		{
+			file.GET("/:id/check", fileserver.CheckFileLock)
 			//查询文件项根据id
 			file.GET("/:id", fileserver.QueryFileItemByID)
 			file.GET("/:id/content", fileserver.FetchFileContent)

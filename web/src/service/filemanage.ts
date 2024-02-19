@@ -11,6 +11,7 @@ export interface ConfirmMethods{
 }
 
 const fileStore=useFileStore();
+const userStore=useUserStore();
 export const SideMenuOptionItems=[
     {
         tooltip:"文件上传",
@@ -234,6 +235,8 @@ export async function renameFileOrDirectory(file:FileItem,toast: ToastServiceMet
             life: 3000
         });
     });
+    await unlockFile(file,toast);
+    console.log("解锁")
 }
 export async function getUserNamespaces():Promise<Namespace[]> {
     const resp=await axios.get("/user/namespace/list").then((res)=>{
@@ -335,12 +338,73 @@ export async function  getFileURL(id:string){
     }
     return url
 }
-export async function editFile(file:FileItem){
+export async function lockFile(file:FileItem,toast: ToastServiceMethods){
+    const username=userStore.user.username;
+    if(username=="未知"){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "请先登录",
+            life: 3000
+        });
+        return false
+    }
+    const resp=await axios.get("/user/file/"+file.id+"/check?username="+userStore.user.username).then((res)=>{
+        return res.data;
+    }).catch((e)=>{
+        console.log("error:",e);
+    });
+    console.log(resp)
+    if(resp.data=="locked"){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail:resp.message,
+            life: 3000
+        });
+        return false
+    }
+    return true
+}
+export async function unlockFile(file:FileItem,toast: ToastServiceMethods){
+    const username=userStore.user.username;
+    if(username=="未知"){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "请先登录",
+            life: 3000
+        });
+        return false
+    }
+    const resp=await axios.get("/user/file/"+file.id+"/check?username="+userStore.user.username).then((res)=>{
+        return res.data;
+    }).catch((e)=>{
+        console.log("error:",e);
+    });
+    if(resp.data!="unlock"){
+        console.log("resp:",resp);
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail:resp.message,
+            life: 3000
+        })
+        return false
+    }
+    return true
+}
+export async function editFile(file:FileItem,toast: ToastServiceMethods){
+    const locked=await lockFile(file,toast);
+    if(!locked){
+        return
+    }
     fileStore.dialog.markdownEdit.visible=true
     fileStore.dialog.markdownEdit.editFileItem=file;
-    await axios.get("/user/file/"+file.id+"/content").then((res)=>{
-        fileStore.dialog.markdownEdit.text=res.data.data;
-        console.log("res:",res.data.data)
+    await axios.get("/user/file/"+file.id+"/content").then(async (res) => {
+        fileStore.dialog.markdownEdit.text = res.data.data;
+        // await unlockFile(file, toast);
+        console.log("res:", res.data.data)
     }).catch((e)=>{
         console.log("error:",e);
     })
@@ -348,7 +412,8 @@ export async function editFile(file:FileItem){
 export async function saveFileContent(toast: ToastServiceMethods){
     await axios.put("/user/file/"+fileStore.dialog.markdownEdit.editFileItem.id+"/content",{
         content:fileStore.dialog.markdownEdit.text,
-    }).then((res)=>{
+    }).then(async (res) => {
+        await unlockFile(fileStore.dialog.markdownEdit.editFileItem, toast);
         toast.add({
             severity: 'success',
             summary: '成功',

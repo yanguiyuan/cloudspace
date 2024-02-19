@@ -2,17 +2,44 @@
 
 import AppTemplate from "../components/AppTemplate.vue";
 import {AssetsIconSvgService} from "../assets/assets";
-import {onMounted} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {getUsers} from "../service/admin";
 import {useAdminStore} from "../store/admin";
+
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Password from "primevue/password";
+import FloatLabel from "primevue/floatlabel";
+import {User} from "../service/user";
 const iconService=AssetsIconSvgService.getInstance();
 const adminStore=useAdminStore();
+const resetPasswordVisible=ref(false)
+const password=reactive({
+  newPassword:"",confirmPassword:"",username:""
+})
+const resetPassword=(data:User)=>{
+  password.username=data.username;
+  resetPasswordVisible.value=true;
+}
 onMounted(()=>{
   getUsers(0,10)
 })
 </script>
 
 <template>
+  <Dialog header="重置密码" v-model:visible="resetPasswordVisible">
+    <div class="mb-5">
+      用户：{{password.username}}
+    </div>
+    <FloatLabel class="mt-6">
+      <Password toggleMask v-model="password.newPassword" inputId="newPassword" />
+      <label for="newPassword">新密码</label>
+    </FloatLabel>
+    <FloatLabel class="mt-6">
+      <Password toggleMask v-model="password.confirmPassword" inputId="confirmPassword" />
+      <label for="confirmPassword">确认密码</label>
+    </FloatLabel>
+  </Dialog>
   <AppTemplate>
     <template #header>
       <div class="flex items-center">
@@ -21,11 +48,53 @@ onMounted(()=>{
       </div>
     </template>
     <template #content>
-      <div v-for="it in adminStore.users">
-        <div>
-          {{it.username}}
-        </div>
-      </div>
+      <DataTable :value="adminStore.users" :pt="{
+        bodyRow:{
+          style:{
+            background: 'rgb(235, 235, 235)'
+          }
+        },
+      }">
+        <Column :pt="{
+          headerCell:{
+            style:{
+              background: 'rgb(235, 235, 235)'
+            }
+          },
+        }" field="id" header="ID"></Column>
+        <Column :pt="{
+          headerCell:{
+            style:{
+              background: 'rgb(235, 235, 235)'
+            }
+          },
+        }" field="username" header="用户名"></Column>
+        <Column :pt="{
+          headerCell:{
+            style:{
+              background: 'rgb(235, 235, 235)'
+            }
+          },
+        }" field="gender" header="性别"></Column>
+        <Column :pt="{
+          headerCell:{
+            style:{
+              background: 'rgb(235, 235, 235)'
+            }
+          },
+        }" field="email" header="邮箱"></Column>
+        <Column :pt="{
+          headerCell:{
+            style:{
+              background: 'rgb(235, 235, 235)'
+            }
+          },
+        }" style="flex: 0 0 4rem">
+          <template #body="{ data }">
+            <Button label="重置密码" type="button" @click="resetPassword(data)" text size="small" />
+          </template>
+        </Column>
+      </DataTable>
     </template>
   </AppTemplate>
 </template>

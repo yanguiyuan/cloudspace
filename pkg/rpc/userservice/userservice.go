@@ -19,11 +19,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*rpc.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"UserLogin":    kitex.NewMethodInfo(userLoginHandler, newUserServiceUserLoginArgs, newUserServiceUserLoginResult, false),
-		"UserRegister": kitex.NewMethodInfo(userRegisterHandler, newUserServiceUserRegisterArgs, newUserServiceUserRegisterResult, false),
-		"GetUser":      kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
-		"UpdateUser":   kitex.NewMethodInfo(updateUserHandler, newUserServiceUpdateUserArgs, newUserServiceUpdateUserResult, false),
-		"GetUsers":     kitex.NewMethodInfo(getUsersHandler, newUserServiceGetUsersArgs, newUserServiceGetUsersResult, false),
+		"UserLogin":     kitex.NewMethodInfo(userLoginHandler, newUserServiceUserLoginArgs, newUserServiceUserLoginResult, false),
+		"UserRegister":  kitex.NewMethodInfo(userRegisterHandler, newUserServiceUserRegisterArgs, newUserServiceUserRegisterResult, false),
+		"GetUser":       kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
+		"UpdateUser":    kitex.NewMethodInfo(updateUserHandler, newUserServiceUpdateUserArgs, newUserServiceUpdateUserResult, false),
+		"GetUsers":      kitex.NewMethodInfo(getUsersHandler, newUserServiceGetUsersArgs, newUserServiceGetUsersResult, false),
+		"ResetPassword": kitex.NewMethodInfo(resetPasswordHandler, newUserServiceResetPasswordArgs, newUserServiceResetPasswordResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "rpc",
@@ -129,6 +130,24 @@ func newUserServiceGetUsersResult() interface{} {
 	return rpc.NewUserServiceGetUsersResult()
 }
 
+func resetPasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.UserServiceResetPasswordArgs)
+
+	err := handler.(rpc.UserService).ResetPassword(ctx, realArg.Id, realArg.Password)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newUserServiceResetPasswordArgs() interface{} {
+	return rpc.NewUserServiceResetPasswordArgs()
+}
+
+func newUserServiceResetPasswordResult() interface{} {
+	return rpc.NewUserServiceResetPasswordResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -190,4 +209,15 @@ func (p *kClient) GetUsers(ctx context.Context, offset int32, limit int32) (r []
 		return
 	}
 	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) ResetPassword(ctx context.Context, id int64, password string) (err error) {
+	var _args rpc.UserServiceResetPasswordArgs
+	_args.Id = id
+	_args.Password = password
+	var _result rpc.UserServiceResetPasswordResult
+	if err = p.c.Call(ctx, "ResetPassword", &_args, &_result); err != nil {
+		return
+	}
+	return nil
 }

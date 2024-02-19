@@ -26,6 +26,11 @@ export interface UserState{
         gender:{
             visible:boolean;
         }
+        password:{
+            oldPassword:string;
+            newPassword:string;
+            confirmPassword:string;
+        }
     },
     user:User,
     linkNamespace:boolean
@@ -54,7 +59,7 @@ const checkEmail=(s:string):boolean=>{
 }
 export const modifyUserInfo=async function (toast: ToastServiceMethods):Promise<void> {
     if (!checkEmail(userStore.user.email)){
-        toast.add({severity:'error', summary: '修改失败', detail: '邮箱格式不正确', life: 3000});
+        toast.add({severity:'error', summary: '修改失败', detail: '邮箱格式不正确,请修改邮箱', life: 3000});
         return
     }
     const res=await axios.put("/user/info",userStore.user).then((res)=>{
@@ -82,4 +87,25 @@ export const logout=async function ():Promise<void> {
     }).catch(err=>{
         console.log(err);
     });
+}
+export const modifyPassword=async (toast:ToastServiceMethods)=>{
+    if(userStore.input.password.newPassword!==userStore.input.password.confirmPassword){
+        toast.add({severity:'error', summary: '修改失败', detail: '两次输入的密码不一致', life: 3000});
+        return
+    }
+    await axios.put("/user/"+userStore.user.id+"/password",{
+        oldPassword:userStore.input.password.oldPassword,
+        newPassword:userStore.input.password.newPassword,
+    }).then((res)=>{
+        if(res.data.code===0){
+            userStore.input.password.oldPassword="";
+            userStore.input.password.newPassword="";
+            userStore.input.password.confirmPassword="";
+            toast.add({severity:'success', summary: '修改成功', detail: '修改成功', life: 3000});
+        }else{
+            toast.add({severity:'error', summary: '修改失败', detail: '修改失败', life: 3000});
+        }
+    }).catch(err=>{
+        console.log(err);
+    })
 }

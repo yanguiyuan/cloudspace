@@ -144,3 +144,49 @@ func GetUsers(ctx context.Context, c *app.RequestContext) {
 		"data":    r,
 	})
 }
+
+func ResetPassword(ctx context.Context, c *app.RequestContext) {
+	var req user.ResetPasswordReq
+	err := c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	client, err := NewUserServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		hlog.Error(err)
+		return
+	}
+	u, err := client.GetUser(ctx, req.ID)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	if u.Password != req.OldPassword {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.UserPasswordErrCode,
+			"message": errno.UserPasswordErrMsg,
+		})
+		return
+	}
+	err = client.ResetPassword(ctx, req.ID, req.NewPassword)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+	})
+}
+
+func AdminResetPassword(ctx context.Context, c *app.RequestContext) {
+
+}

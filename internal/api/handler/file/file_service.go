@@ -7,6 +7,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/muesli/cache2go"
 	"github.com/yanguiyuan/cloudspace/internal/api/handler"
 	"github.com/yanguiyuan/cloudspace/internal/api/model/file"
 	"github.com/yanguiyuan/cloudspace/internal/api/mw"
@@ -18,6 +19,8 @@ import (
 	"strconv"
 	"time"
 )
+
+var cache = cache2go.Cache("fileWrite")
 
 // Query .
 // @router /files/:parent_id [GET]
@@ -511,5 +514,51 @@ func CreateTextFile(ctx context.Context, c *app.RequestContext) {
 		"code":    errno.SuccessCode,
 		"message": errno.SuccessMsg,
 		"data":    resp,
+	})
+}
+
+func CheckFileLock(ctx context.Context, c *app.RequestContext) {
+	id := c.Param("id")
+	username := c.Query("username")
+	if cache.Exists(id) {
+		value, err := cache.Value(id)
+		if err != nil {
+			return
+		}
+		if username == value.Data().(string) {
+			_, err := cache.Delete(id)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			c.JSON(consts.StatusOK, utils.H{
+				"code":    errno.SuccessCode,
+				"message": id + "已解锁",
+				"data":    "unlock",
+			})
+			return
+		}
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.SuccessCode,
+			"message": value.Data().(string) + "正在修改中，请稍后重试",
+			"data":    "locked",
+		})
+		return
+	}
+	cache.Add(id, 0, username)
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": "文件成功被锁定",
+		"data":    "lock",
+	})
+}
+func CheckLock(ctx context.Context, c *app.RequestContext) {
+	cache.Foreach(func(key interface{}, item *cache2go.CacheItem) {
+		fmt.Println(key, item.Data())
+	})
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+		"data":    cache,
 	})
 }

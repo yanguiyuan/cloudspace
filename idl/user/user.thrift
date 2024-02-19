@@ -24,4 +24,5 @@ service UserService{
    User GetUser(1:i64 id)
    void UpdateUser(1:User user)
    list<User> GetUsers(1:i32 offset,2:i32 limit)
+   void ResetPassword(1:i64 id,2:string password)
 }

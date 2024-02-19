@@ -25,12 +25,12 @@
   <Toast></Toast>
   <OverlayPanel ref="renameOp">
     <span class="font-medium text-900 block mb-2">是否确定重命名为{{renameFileItem.fileName}}</span>
-    <Button @click="fileRename" size="small">确定</Button>
+    <Button id="renameConfirm" @click="fileRename" size="small">确定</Button>
   </OverlayPanel>
   <div ref="fileTip" id="fileTip"  class="settingTooltip hidden">
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
-    <div id="renameButton" @click="canRename=true;renameFileItem=optionFileItem" class="tipMenuItem">重命名</div>
-    <div @click="editFile(optionFileItem)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
+    <div id="renameButton" @click="doRename" class="tipMenuItem">重命名</div>
+    <div @click="editFile(optionFileItem,toast)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
     <div @click="downLoad"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
   </div>
   <FileUploadDialog></FileUploadDialog>
@@ -61,7 +61,7 @@ import Button from "primevue/button";
 import {
   onClickFileItem,
   deleteFileOrDirectory,
-  SideMenuOptionItems, renameFileOrDirectory,  editFile, canEdit, getFileURL
+  SideMenuOptionItems, renameFileOrDirectory, editFile, canEdit, getFileURL, unlockFile, lockFile
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";
@@ -69,6 +69,8 @@ import Image from "primevue/image";
 import NamespaceManagementDialog from "../components/file/NamespaceManagementDialog.vue";
 import MarkdownEdit from "../components/file/MarkdownEdit.vue";
 import CreateTextFile from "../components/file/CreateTextFile.vue";
+const testVisible=ref(true)
+const previewContent=ref<string>("## Hello")
 const renameOp = ref();
 const toast = useToast();
 const confirm = useConfirm();
@@ -87,9 +89,33 @@ const displayMenu = function (e: MouseEvent,it:FileItem) {
   }
   optionFileItem.value=it;
 }
+const doRename = async function () {
+
+  renameFileItem.value=optionFileItem.value;
+  const b=await lockFile(optionFileItem.value,toast);
+  if(b){
+    canRename.value=true;
+  }
+}
 const downLoad =async function () {
   const url=await getFileURL(optionFileItem.value.id);
-  window.open(url);
+  var downloadLink = document.createElement('a');
+
+  // 设置链接的 href 属性为文件 URL
+  downloadLink.href = url;
+
+  // 设置下载的文件名，如果服务器没有提供文件名，则需要手动设置
+  downloadLink.download = optionFileItem.value.fileName;
+
+  // 将链接添加到 DOM 中
+  document.body.appendChild(downloadLink);
+
+  // 模拟点击链接以触发下载
+  downloadLink.click();
+
+  // 删除添加到 DOM 的链接元素
+  document.body.removeChild(downloadLink);
+  console.log("xiazai")
 }
 const getFileName = function (value: FileItem) {
   if (value.fileName.length > 30) {
@@ -99,19 +125,22 @@ const getFileName = function (value: FileItem) {
 }
 const fileRename = async function () {
     renameOp.value.hide();
+    canRename.value=false;
     await renameFileOrDirectory(renameFileItem.value,toast);
 }
-const handleClickOutside = function (e: MouseEvent) {
+const handleClickOutside = async function (e: MouseEvent) {
   const target = e.target as HTMLElement;
-  if(app==null){
+  if (app == null) {
     return;
   }
   const tips = app.refs.fileTip as HTMLElement;
-  if (!target.closest('#file-options') && tips.style.display=="block") {
-    tips.style.display='none';
+  if (!target.closest('#file-options') && tips.style.display == "block") {
+    tips.style.display = 'none';
   }
-  if (!target.closest('#renameButton')&&!target.closest('#renameInput') && canRename.value) {
-    canRename.value=false;
+  if (!target.closest('#renameButton') &&!target.closest('#renameConfirm')&& !target.closest('#renameInput') && canRename.value) {
+    canRename.value = false;
+    await unlockFile(renameFileItem.value, toast)
+    console.log("解锁")
   }
 }
 const toggle = (event:MouseEvent) => {
