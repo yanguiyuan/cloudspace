@@ -19,25 +19,27 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "CloudFileService"
 	handlerType := (*rpc.CloudFileService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"uploadFile":          kitex.NewMethodInfo(uploadFileHandler, newCloudFileServiceUploadFileArgs, newCloudFileServiceUploadFileResult, false),
-		"add":                 kitex.NewMethodInfo(addHandler, newCloudFileServiceAddArgs, newCloudFileServiceAddResult, false),
-		"createDirectory":     kitex.NewMethodInfo(createDirectoryHandler, newCloudFileServiceCreateDirectoryArgs, newCloudFileServiceCreateDirectoryResult, false),
-		"remove":              kitex.NewMethodInfo(removeHandler, newCloudFileServiceRemoveArgs, newCloudFileServiceRemoveResult, false),
-		"removeDirectory":     kitex.NewMethodInfo(removeDirectoryHandler, newCloudFileServiceRemoveDirectoryArgs, newCloudFileServiceRemoveDirectoryResult, false),
-		"query":               kitex.NewMethodInfo(queryHandler, newCloudFileServiceQueryArgs, newCloudFileServiceQueryResult, false),
-		"queryFileItemByID":   kitex.NewMethodInfo(queryFileItemByIDHandler, newCloudFileServiceQueryFileItemByIDArgs, newCloudFileServiceQueryFileItemByIDResult, false),
-		"update":              kitex.NewMethodInfo(updateHandler, newCloudFileServiceUpdateArgs, newCloudFileServiceUpdateResult, false),
-		"rename":              kitex.NewMethodInfo(renameHandler, newCloudFileServiceRenameArgs, newCloudFileServiceRenameResult, false),
-		"createFileItem":      kitex.NewMethodInfo(createFileItemHandler, newCloudFileServiceCreateFileItemArgs, newCloudFileServiceCreateFileItemResult, false),
-		"createNamespace":     kitex.NewMethodInfo(createNamespaceHandler, newCloudFileServiceCreateNamespaceArgs, newCloudFileServiceCreateNamespaceResult, false),
-		"createUserNamespace": kitex.NewMethodInfo(createUserNamespaceHandler, newCloudFileServiceCreateUserNamespaceArgs, newCloudFileServiceCreateUserNamespaceResult, false),
-		"getFileURL":          kitex.NewMethodInfo(getFileURLHandler, newCloudFileServiceGetFileURLArgs, newCloudFileServiceGetFileURLResult, false),
-		"queryUserNamespaces": kitex.NewMethodInfo(queryUserNamespacesHandler, newCloudFileServiceQueryUserNamespacesArgs, newCloudFileServiceQueryUserNamespacesResult, false),
-		"LinkNamespace":       kitex.NewMethodInfo(linkNamespaceHandler, newCloudFileServiceLinkNamespaceArgs, newCloudFileServiceLinkNamespaceResult, false),
-		"getUserIDByFileID":   kitex.NewMethodInfo(getUserIDByFileIDHandler, newCloudFileServiceGetUserIDByFileIDArgs, newCloudFileServiceGetUserIDByFileIDResult, false),
-		"fetchFileData":       kitex.NewMethodInfo(fetchFileDataHandler, newCloudFileServiceFetchFileDataArgs, newCloudFileServiceFetchFileDataResult, false),
-		"modifyFileContent":   kitex.NewMethodInfo(modifyFileContentHandler, newCloudFileServiceModifyFileContentArgs, newCloudFileServiceModifyFileContentResult, false),
-		"createTextFile":      kitex.NewMethodInfo(createTextFileHandler, newCloudFileServiceCreateTextFileArgs, newCloudFileServiceCreateTextFileResult, false),
+		"uploadFile":                  kitex.NewMethodInfo(uploadFileHandler, newCloudFileServiceUploadFileArgs, newCloudFileServiceUploadFileResult, false),
+		"add":                         kitex.NewMethodInfo(addHandler, newCloudFileServiceAddArgs, newCloudFileServiceAddResult, false),
+		"createDirectory":             kitex.NewMethodInfo(createDirectoryHandler, newCloudFileServiceCreateDirectoryArgs, newCloudFileServiceCreateDirectoryResult, false),
+		"remove":                      kitex.NewMethodInfo(removeHandler, newCloudFileServiceRemoveArgs, newCloudFileServiceRemoveResult, false),
+		"removeDirectory":             kitex.NewMethodInfo(removeDirectoryHandler, newCloudFileServiceRemoveDirectoryArgs, newCloudFileServiceRemoveDirectoryResult, false),
+		"query":                       kitex.NewMethodInfo(queryHandler, newCloudFileServiceQueryArgs, newCloudFileServiceQueryResult, false),
+		"queryFileItemByID":           kitex.NewMethodInfo(queryFileItemByIDHandler, newCloudFileServiceQueryFileItemByIDArgs, newCloudFileServiceQueryFileItemByIDResult, false),
+		"update":                      kitex.NewMethodInfo(updateHandler, newCloudFileServiceUpdateArgs, newCloudFileServiceUpdateResult, false),
+		"rename":                      kitex.NewMethodInfo(renameHandler, newCloudFileServiceRenameArgs, newCloudFileServiceRenameResult, false),
+		"createFileItem":              kitex.NewMethodInfo(createFileItemHandler, newCloudFileServiceCreateFileItemArgs, newCloudFileServiceCreateFileItemResult, false),
+		"createNamespace":             kitex.NewMethodInfo(createNamespaceHandler, newCloudFileServiceCreateNamespaceArgs, newCloudFileServiceCreateNamespaceResult, false),
+		"createUserNamespace":         kitex.NewMethodInfo(createUserNamespaceHandler, newCloudFileServiceCreateUserNamespaceArgs, newCloudFileServiceCreateUserNamespaceResult, false),
+		"getFileURL":                  kitex.NewMethodInfo(getFileURLHandler, newCloudFileServiceGetFileURLArgs, newCloudFileServiceGetFileURLResult, false),
+		"queryUserNamespaces":         kitex.NewMethodInfo(queryUserNamespacesHandler, newCloudFileServiceQueryUserNamespacesArgs, newCloudFileServiceQueryUserNamespacesResult, false),
+		"LinkNamespace":               kitex.NewMethodInfo(linkNamespaceHandler, newCloudFileServiceLinkNamespaceArgs, newCloudFileServiceLinkNamespaceResult, false),
+		"getUserIDByFileID":           kitex.NewMethodInfo(getUserIDByFileIDHandler, newCloudFileServiceGetUserIDByFileIDArgs, newCloudFileServiceGetUserIDByFileIDResult, false),
+		"fetchFileData":               kitex.NewMethodInfo(fetchFileDataHandler, newCloudFileServiceFetchFileDataArgs, newCloudFileServiceFetchFileDataResult, false),
+		"modifyFileContent":           kitex.NewMethodInfo(modifyFileContentHandler, newCloudFileServiceModifyFileContentArgs, newCloudFileServiceModifyFileContentResult, false),
+		"createTextFile":              kitex.NewMethodInfo(createTextFileHandler, newCloudFileServiceCreateTextFileArgs, newCloudFileServiceCreateTextFileResult, false),
+		"getAuthority":                kitex.NewMethodInfo(getAuthorityHandler, newCloudFileServiceGetAuthorityArgs, newCloudFileServiceGetAuthorityResult, false),
+		"queryUserNamespaceAuthority": kitex.NewMethodInfo(queryUserNamespaceAuthorityHandler, newCloudFileServiceQueryUserNamespaceAuthorityArgs, newCloudFileServiceQueryUserNamespaceAuthorityResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName":     "rpc",
@@ -396,6 +398,42 @@ func newCloudFileServiceCreateTextFileResult() interface{} {
 	return rpc.NewCloudFileServiceCreateTextFileResult()
 }
 
+func getAuthorityHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceGetAuthorityArgs)
+	realResult := result.(*rpc.CloudFileServiceGetAuthorityResult)
+	success, err := handler.(rpc.CloudFileService).GetAuthority(ctx, realArg.UserID, realArg.FileID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = &success
+	return nil
+}
+func newCloudFileServiceGetAuthorityArgs() interface{} {
+	return rpc.NewCloudFileServiceGetAuthorityArgs()
+}
+
+func newCloudFileServiceGetAuthorityResult() interface{} {
+	return rpc.NewCloudFileServiceGetAuthorityResult()
+}
+
+func queryUserNamespaceAuthorityHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.CloudFileServiceQueryUserNamespaceAuthorityArgs)
+	realResult := result.(*rpc.CloudFileServiceQueryUserNamespaceAuthorityResult)
+	success, err := handler.(rpc.CloudFileService).QueryUserNamespaceAuthority(ctx, realArg.UserID, realArg.NamespaceID)
+	if err != nil {
+		return err
+	}
+	realResult.Success = &success
+	return nil
+}
+func newCloudFileServiceQueryUserNamespaceAuthorityArgs() interface{} {
+	return rpc.NewCloudFileServiceQueryUserNamespaceAuthorityArgs()
+}
+
+func newCloudFileServiceQueryUserNamespaceAuthorityResult() interface{} {
+	return rpc.NewCloudFileServiceQueryUserNamespaceAuthorityResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -604,6 +642,28 @@ func (p *kClient) CreateTextFile(ctx context.Context, name string, parentID stri
 	_args.NamespaceID = namespaceID
 	var _result rpc.CloudFileServiceCreateTextFileResult
 	if err = p.c.Call(ctx, "createTextFile", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetAuthority(ctx context.Context, userID int64, fileID string) (r int32, err error) {
+	var _args rpc.CloudFileServiceGetAuthorityArgs
+	_args.UserID = userID
+	_args.FileID = fileID
+	var _result rpc.CloudFileServiceGetAuthorityResult
+	if err = p.c.Call(ctx, "getAuthority", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryUserNamespaceAuthority(ctx context.Context, userID int64, namespaceID int64) (r int32, err error) {
+	var _args rpc.CloudFileServiceQueryUserNamespaceAuthorityArgs
+	_args.UserID = userID
+	_args.NamespaceID = namespaceID
+	var _result rpc.CloudFileServiceQueryUserNamespaceAuthorityResult
+	if err = p.c.Call(ctx, "queryUserNamespaceAuthority", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

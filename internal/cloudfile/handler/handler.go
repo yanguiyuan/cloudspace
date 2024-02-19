@@ -436,3 +436,23 @@ func (s *CloudFileServiceImpl) CreateTextFile(ctx context.Context, name string, 
 	}
 	return item, nil
 }
+
+func (s *CloudFileServiceImpl) GetAuthority(ctx context.Context, userID int64, fileID string) (r int32, err error) {
+	err = dal.UserNamespace.WithContext(ctx).
+		Select(dal.UserNamespace.Authority).
+		LeftJoin(dal.FileItem, dal.FileItem.NamespaceID.EqCol(dal.UserNamespace.NamespaceID), dal.FileItem.Type.Eq(Namespace)).
+		Where(dal.UserNamespace.UserID.Eq(userID), dal.FileItem.ID.Eq(fileID)).
+		Scan(&r)
+	//dal.Namespace.
+	return r, err
+}
+
+func (s *CloudFileServiceImpl) QueryUserNamespaceAuthority(ctx context.Context, userID int64, namespaceID int64) (r int32, err error) {
+	err = dal.UserNamespace.WithContext(ctx).
+		Select(dal.UserNamespace.Authority).
+		Where(dal.UserNamespace.UserID.Eq(userID), dal.UserNamespace.NamespaceID.Eq(namespaceID)).
+		Debug().
+		Scan(&r)
+	//dal.Namespace.
+	return r, err
+}

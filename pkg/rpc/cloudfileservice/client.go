@@ -30,6 +30,8 @@ type Client interface {
 	FetchFileData(ctx context.Context, id string, callOptions ...callopt.Option) (r []byte, err error)
 	ModifyFileContent(ctx context.Context, id string, content string, callOptions ...callopt.Option) (err error)
 	CreateTextFile(ctx context.Context, name string, parentID string, content string, namespaceID int64, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error)
+	GetAuthority(ctx context.Context, userID int64, fileID string, callOptions ...callopt.Option) (r int32, err error)
+	QueryUserNamespaceAuthority(ctx context.Context, userID int64, namespaceID int64, callOptions ...callopt.Option) (r int32, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -154,4 +156,14 @@ func (p *kCloudFileServiceClient) ModifyFileContent(ctx context.Context, id stri
 func (p *kCloudFileServiceClient) CreateTextFile(ctx context.Context, name string, parentID string, content string, namespaceID int64, callOptions ...callopt.Option) (r *rpc.CloudFileItem, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.CreateTextFile(ctx, name, parentID, content, namespaceID)
+}
+
+func (p *kCloudFileServiceClient) GetAuthority(ctx context.Context, userID int64, fileID string, callOptions ...callopt.Option) (r int32, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetAuthority(ctx, userID, fileID)
+}
+
+func (p *kCloudFileServiceClient) QueryUserNamespaceAuthority(ctx context.Context, userID int64, namespaceID int64, callOptions ...callopt.Option) (r int32, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryUserNamespaceAuthority(ctx, userID, namespaceID)
 }

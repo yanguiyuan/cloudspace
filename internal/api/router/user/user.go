@@ -15,6 +15,6 @@ func Register(r *server.Hertz) {
 		user.GET("/info", userserver.UserInfo)
 		user.PUT("/info", userserver.ModifyUserInfo)
 		///list/0/3
-		user.GET("/list/:offset/:limit", userserver.GetUsers)
+		user.GET("/list/:offset/:limit", mw.CheckAdminPermission, userserver.GetUsers)
 	}
 }
