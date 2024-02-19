@@ -18,7 +18,8 @@ func Register(r *server.Hertz) {
 	}
 	admin := root.Group("/admin", mw.JwtMiddleware.MiddlewareFunc())
 	{
-		admin.GET("/list/:offset/:limit", userserver.GetUsers)
 		admin.PUT("/:id/password", userserver.AdminResetPassword)
+		///list/0/3
+		user.GET("/list/:offset/:limit", mw.CheckAdminPermission, userserver.GetUsers)
 	}
 }
