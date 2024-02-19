@@ -4,11 +4,11 @@ cloudfile:
     model: "./model"
     dal: "./internal/cloudfile/dal"
   mysql:
-    dsn: "root:yanguiyuan@tcp(localhost:3306)/cloud_file?charset=utf8&parseTime=True&loc=Local&timeout=100s"
+    dsn: "root:yanguiyuan@tcp(yanguiyuan.cn:32167)/cloud_file?charset=utf8&parseTime=True&loc=Local&timeout=100s"
   oss:
     endpoint: "https://oss-cn-hangzhou.aliyuncs.com"
-    accessKeyID: "LTAI5tCZenyLGTYY2NDGP2Ge"
-    accessKeySecret: "eN32dnGnJ6XqeehDgkeXjwW4384cXA"
+    accessKeyID: "LTAI5t7hRTRtYV6eHocZahHv"
+    accessKeySecret: "7v0v6KWjWr8U7mZCUt9yux2g6RdEbh"
     bucketName: "bucket-cloud-file"
 user:
   addr: "localhost:8081"
@@ -16,7 +16,7 @@ user:
     model: "./model"
     dal: "./internal/user/dal"
   mysql:
-    dsn: "root:yanguiyuan@tcp(localhost:3306)/auth?charset=utf8&parseTime=True&loc=Local&timeout=100s"
+    dsn: "root:yanguiyuan@tcp(yanguiyuan.cn:32167)/auth?charset=utf8&parseTime=True&loc=Local&timeout=100s"
 api:
   port: 8888
   cors:
@@ -31,7 +31,9 @@ api:
     allowHeaders:
       - Origin
       - Content-Type
+      - Content-Length
       - Authorization
     exposeHeaders:
       - "Content-Length"
+      - "Content-Type"
     maxAge: 3600

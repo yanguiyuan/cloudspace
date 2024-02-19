@@ -26,14 +26,11 @@ export interface UserState{
         gender:{
             visible:boolean;
         }
-<<<<<<< HEAD
         password:{
             oldPassword:string;
             newPassword:string;
             confirmPassword:string;
         }
-=======
->>>>>>> 641946dc (test)
     },
     user:User,
     linkNamespace:boolean
@@ -62,11 +59,8 @@ const checkEmail=(s:string):boolean=>{
 }
 export const modifyUserInfo=async function (toast: ToastServiceMethods):Promise<void> {
     if (!checkEmail(userStore.user.email)){
-<<<<<<< HEAD
         toast.add({severity:'error', summary: '修改失败', detail: '邮箱格式不正确,请修改邮箱', life: 3000});
-=======
         toast.add({severity:'error', summary: '修改失败', detail: '邮箱格式不正确', life: 3000});
->>>>>>> 641946dc (test)
         return
     }
     const res=await axios.put("/user/info",userStore.user).then((res)=>{
@@ -94,7 +88,6 @@ export const logout=async function ():Promise<void> {
     }).catch(err=>{
         console.log(err);
     });
-<<<<<<< HEAD
 }
 export const modifyPassword=async (toast:ToastServiceMethods)=>{
     if(userStore.input.password.newPassword!==userStore.input.password.confirmPassword){
@@ -116,6 +109,4 @@ export const modifyPassword=async (toast:ToastServiceMethods)=>{
     }).catch(err=>{
         console.log(err);
     })
-=======
->>>>>>> 641946dc (test)
 }

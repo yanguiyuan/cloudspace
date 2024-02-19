@@ -94,10 +94,7 @@ func (s *UserServiceImpl) GetUsers(ctx context.Context, offset int32, limit int3
 	}
 	return res, nil
 }
-<<<<<<< HEAD
 func (s *UserServiceImpl) ResetPassword(ctx context.Context, id int64, password string) (err error) {
 	_, err = dal.User.WithContext(ctx).Where(dal.User.ID.Eq(id)).Updates(map[string]interface{}{"password": password})
 	return err
 }
-=======
->>>>>>> 641946dc (test)

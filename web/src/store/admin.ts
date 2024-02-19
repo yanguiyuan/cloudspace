@@ -5,8 +5,7 @@ import {AdminState} from "../service/admin";
 export const useAdminStore=defineStore({
     id:"admin",
     state:():AdminState=>({
-<<<<<<< HEAD
-       users:[],
+        users:[],
         selectedUser:{
             id:0,
             username:"未知",
@@ -18,19 +17,16 @@ export const useAdminStore=defineStore({
             updateTime:""
         },
         dialog:{
-           resetPassword:{
-               visible:false,
-               newPassword:"",
-               confirmPassword:""
-           }
+            resetPassword:{
+                visible:false,
+                newPassword:"",
+                confirmPassword:""
+            }
         }
-=======
-       users:[]
->>>>>>> 641946dc (test)
     }),
     actions:{
-       setUsers(users:User[]){
-           this.users=users
-       },
+        setUsers(users:User[]){
+            this.users=users
+        },
     }
 })

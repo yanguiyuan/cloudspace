@@ -16,10 +16,7 @@ type Client interface {
 	GetUser(ctx context.Context, id int64, callOptions ...callopt.Option) (r *rpc.User, err error)
 	UpdateUser(ctx context.Context, user *rpc.User, callOptions ...callopt.Option) (err error)
 	GetUsers(ctx context.Context, offset int32, limit int32, callOptions ...callopt.Option) (r []*rpc.User, err error)
-<<<<<<< HEAD
 	ResetPassword(ctx context.Context, id int64, password string, callOptions ...callopt.Option) (err error)
-=======
->>>>>>> 641946dc (test)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -75,11 +72,8 @@ func (p *kUserServiceClient) GetUsers(ctx context.Context, offset int32, limit i
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetUsers(ctx, offset, limit)
 }
-<<<<<<< HEAD
 
 func (p *kUserServiceClient) ResetPassword(ctx context.Context, id int64, password string, callOptions ...callopt.Option) (err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ResetPassword(ctx, id, password)
 }
-=======
->>>>>>> 641946dc (test)

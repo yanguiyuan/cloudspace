@@ -25,30 +25,18 @@
   <Toast></Toast>
   <OverlayPanel ref="renameOp">
     <span class="font-medium text-900 block mb-2">是否确定重命名为{{renameFileItem.fileName}}</span>
-<<<<<<< HEAD
     <Button id="renameConfirm" @click="fileRename" size="small">确定</Button>
-  </OverlayPanel>
-  <div ref="fileTip" id="fileTip"  class="settingTooltip hidden">
-    <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
-    <div id="renameButton" @click="doRename" class="tipMenuItem">重命名</div>
-    <div @click="editFile(optionFileItem,toast)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
-=======
-    <Button @click="fileRename" size="small">确定</Button>
   </OverlayPanel>
   <div ref="fileTip" id="fileTip"  class="settingTooltip hidden">
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
     <div id="renameButton" @click="canRename=true;renameFileItem=optionFileItem" class="tipMenuItem">重命名</div>
     <div @click="editFile(optionFileItem)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
->>>>>>> 641946dc (test)
     <div @click="downLoad"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
   </div>
   <FileUploadDialog></FileUploadDialog>
   <FileCreateDialog></FileCreateDialog>
   <Dialog v-model:visible="fileStore.dialog.imagePreview.visible">
-<<<<<<< HEAD
     <Image preview width="500" height="600"  :src="fileStore.dialog.imagePreview.url" alt="图片预览"/>
-=======
-     <Image preview width="500" height="600"  :src="fileStore.dialog.imagePreview.url" alt="图片预览"/>
   </Dialog>
   <Dialog v-model:visible="fileStore.dialog.pdfPreview.visible">
       <div style="width:1000px;height:800px">
@@ -60,7 +48,6 @@
   </Dialog>
   <Dialog v-model:visible="fileStore.dialog.markdownPreview.visible">
       <v-md-preview :text="fileStore.dialog.markdownPreview.text" height="500px"></v-md-preview>
->>>>>>> 641946dc (test)
   </Dialog>
   <ConfirmDialog></ConfirmDialog>
   <NamespaceManagementDialog></NamespaceManagementDialog>
@@ -85,11 +72,7 @@ import Button from "primevue/button";
 import {
   onClickFileItem,
   deleteFileOrDirectory,
-<<<<<<< HEAD
   SideMenuOptionItems, renameFileOrDirectory, editFile, canEdit, getFileURL, unlockFile, lockFile
-=======
-  SideMenuOptionItems, renameFileOrDirectory,  editFile, canEdit, getFileURL
->>>>>>> 641946dc (test)
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";
@@ -97,11 +80,8 @@ import Image from "primevue/image";
 import NamespaceManagementDialog from "../components/file/NamespaceManagementDialog.vue";
 import MarkdownEdit from "../components/file/MarkdownEdit.vue";
 import CreateTextFile from "../components/file/CreateTextFile.vue";
-<<<<<<< HEAD
 const testVisible=ref(true)
 const previewContent=ref<string>("## Hello")
-=======
->>>>>>> 641946dc (test)
 const renameOp = ref();
 const toast = useToast();
 const confirm = useConfirm();
@@ -120,7 +100,6 @@ const displayMenu = function (e: MouseEvent,it:FileItem) {
   }
   optionFileItem.value=it;
 }
-<<<<<<< HEAD
 const doRename = async function () {
 
   renameFileItem.value=optionFileItem.value;
@@ -130,29 +109,24 @@ const doRename = async function () {
   }
 }
 const downLoad =async function () {
-  const url=await getFileURL(optionFileItem.value.id);
-  var downloadLink = document.createElement('a');
+    const url = await getFileURL(optionFileItem.value.id);
+    var downloadLink = document.createElement('a');
 
-  // 设置链接的 href 属性为文件 URL
-  downloadLink.href = url;
+    // 设置链接的 href 属性为文件 URL
+    downloadLink.href = url;
 
-  // 设置下载的文件名，如果服务器没有提供文件名，则需要手动设置
-  downloadLink.download = optionFileItem.value.fileName;
+    // 设置下载的文件名，如果服务器没有提供文件名，则需要手动设置
+    downloadLink.download = optionFileItem.value.fileName;
 
-  // 将链接添加到 DOM 中
-  document.body.appendChild(downloadLink);
+    // 将链接添加到 DOM 中
+    document.body.appendChild(downloadLink);
 
-  // 模拟点击链接以触发下载
-  downloadLink.click();
+    // 模拟点击链接以触发下载
+    downloadLink.click();
 
-  // 删除添加到 DOM 的链接元素
-  document.body.removeChild(downloadLink);
-  console.log("xiazai")
-=======
-const downLoad =async function () {
-  const url=await getFileURL(optionFileItem.value.id);
-  window.open(url);
->>>>>>> 641946dc (test)
+    // 删除添加到 DOM 的链接元素
+    document.body.removeChild(downloadLink);
+    console.log("xiazai")
 }
 const getFileName = function (value: FileItem) {
   if (value.fileName.length > 30) {
@@ -162,7 +136,6 @@ const getFileName = function (value: FileItem) {
 }
 const fileRename = async function () {
     renameOp.value.hide();
-<<<<<<< HEAD
     canRename.value=false;
     await renameFileOrDirectory(renameFileItem.value,toast);
 }
@@ -176,26 +149,13 @@ const handleClickOutside = async function (e: MouseEvent) {
     tips.style.display = 'none';
   }
   if (!target.closest('#renameButton') &&!target.closest('#renameConfirm')&& !target.closest('#renameInput') && canRename.value) {
-    canRename.value = false;
-    await unlockFile(renameFileItem.value, toast)
-    console.log("解锁")
-=======
-    await renameFileOrDirectory(renameFileItem.value,toast);
-}
-const handleClickOutside = function (e: MouseEvent) {
-  const target = e.target as HTMLElement;
-  if(app==null){
-    return;
-  }
-  const tips = app.refs.fileTip as HTMLElement;
-  if (!target.closest('#file-options') && tips.style.display=="block") {
-    tips.style.display='none';
-  }
-  if (!target.closest('#renameButton')&&!target.closest('#renameInput') && canRename.value) {
-    canRename.value=false;
->>>>>>> 641946dc (test)
+      canRename.value = false;
+      await unlockFile(renameFileItem.value, toast)
+      console.log("解锁")
+      await renameFileOrDirectory(renameFileItem.value, toast);
   }
 }
+
 const toggle = (event:MouseEvent) => {
   renameOp.value.toggle(event);
 }

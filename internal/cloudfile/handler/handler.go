@@ -250,15 +250,11 @@ func (s *CloudFileServiceImpl) RemoveDirectory(ctx context.Context, id string) (
 // Rename implements the CloudFileServiceImpl interface.
 func (s *CloudFileServiceImpl) Rename(ctx context.Context, id, newName string) (err error) {
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
-<<<<<<< HEAD
 		t := ParseFileType(newName)
 		_, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).Updates(&model.FileItem{
 			Name: newName,
 			Type: t,
 		})
-=======
-		_, err := tx.FileItem.WithContext(ctx).Where(dal.FileItem.ID.Eq(id)).Update(dal.FileItem.Name, newName)
->>>>>>> 641946dc (test)
 		if err != nil {
 			return err
 		}
@@ -341,10 +337,6 @@ func (s *CloudFileServiceImpl) QueryUserNamespaces(ctx context.Context, uid int6
 		LeftJoin(dal.UserNamespace, dal.Namespace.ID.EqCol(dal.UserNamespace.NamespaceID)).
 		LeftJoin(dal.FileItem, dal.FileItem.NamespaceID.EqCol(dal.UserNamespace.NamespaceID), dal.FileItem.Type.Eq(Namespace)).
 		Where(dal.UserNamespace.UserID.Eq(uid)).
-<<<<<<< HEAD
-=======
-		Debug().
->>>>>>> 641946dc (test)
 		Scan(&res)
 	if err != nil {
 		return nil, err
@@ -447,7 +439,6 @@ func (s *CloudFileServiceImpl) CreateTextFile(ctx context.Context, name string, 
 	}
 	return item, nil
 }
-<<<<<<< HEAD
 
 func (s *CloudFileServiceImpl) GetAuthority(ctx context.Context, userID int64, fileID string) (r int32, err error) {
 	err = dal.UserNamespace.WithContext(ctx).
@@ -467,5 +458,3 @@ func (s *CloudFileServiceImpl) QueryUserNamespaceAuthority(ctx context.Context, 
 	//dal.Namespace.
 	return r, err
 }
-=======
->>>>>>> 641946dc (test)

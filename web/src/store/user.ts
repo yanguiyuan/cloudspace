@@ -11,15 +11,12 @@ export const DefaultUserState:UserState={
             visible:false,
         },
         gender:{
-            visible:false,
-<<<<<<< HEAD
+            visible:false
         },
         password:{
             oldPassword:"",
             newPassword:"",
             confirmPassword:"",
-=======
->>>>>>> 641946dc (test)
         }
     },
     user:{

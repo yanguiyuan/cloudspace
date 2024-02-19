@@ -2,7 +2,6 @@
 
 import AppTemplate from "../components/AppTemplate.vue";
 import {AssetsIconSvgService} from "../assets/assets";
-<<<<<<< HEAD
 import {onMounted, reactive, ref} from "vue";
 import {getUsers, resetPassword} from "../service/admin";
 import {useAdminStore} from "../store/admin";
@@ -24,20 +23,12 @@ const openResetPasswordDialog=(data:User)=>{
   adminStore.selectedUser=data;
   adminStore.dialog.resetPassword.visible=true
 }
-=======
-import {onMounted} from "vue";
-import {getUsers} from "../service/admin";
-import {useAdminStore} from "../store/admin";
-const iconService=AssetsIconSvgService.getInstance();
-const adminStore=useAdminStore();
->>>>>>> 641946dc (test)
 onMounted(()=>{
   getUsers(0,10)
 })
 </script>
 
 <template>
-<<<<<<< HEAD
   <Toast></Toast>
   <Dialog header="重置密码" v-model:visible="adminStore.dialog.resetPassword.visible">
     <div class="mb-5">
@@ -56,8 +47,6 @@ onMounted(()=>{
       <Button label="确定" @click="resetPassword(toast)" class="mr-2" />
     </template>
   </Dialog>
-=======
->>>>>>> 641946dc (test)
   <AppTemplate>
     <template #header>
       <div class="flex items-center">
@@ -66,7 +55,6 @@ onMounted(()=>{
       </div>
     </template>
     <template #content>
-<<<<<<< HEAD
       <DataTable :value="adminStore.users" :pt="{
         bodyRow:{
           style:{
@@ -114,13 +102,6 @@ onMounted(()=>{
           </template>
         </Column>
       </DataTable>
-=======
-      <div v-for="it in adminStore.users">
-        <div>
-          {{it.username}}
-        </div>
-      </div>
->>>>>>> 641946dc (test)
     </template>
   </AppTemplate>
 </template>

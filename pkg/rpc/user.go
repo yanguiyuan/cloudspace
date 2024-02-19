@@ -1042,11 +1042,8 @@ type UserService interface {
 	UpdateUser(ctx context.Context, user *User) (err error)
 
 	GetUsers(ctx context.Context, offset int32, limit int32) (r []*User, err error)
-<<<<<<< HEAD
 
 	ResetPassword(ctx context.Context, id int64, password string) (err error)
-=======
->>>>>>> 641946dc (test)
 }
 
 type UserServiceClient struct {
@@ -1123,7 +1120,6 @@ func (p *UserServiceClient) GetUsers(ctx context.Context, offset int32, limit in
 	}
 	return _result.GetSuccess(), nil
 }
-<<<<<<< HEAD
 func (p *UserServiceClient) ResetPassword(ctx context.Context, id int64, password string) (err error) {
 	var _args UserServiceResetPasswordArgs
 	_args.Id = id
@@ -1134,8 +1130,6 @@ func (p *UserServiceClient) ResetPassword(ctx context.Context, id int64, passwor
 	}
 	return nil
 }
-=======
->>>>>>> 641946dc (test)
 
 type UserServiceProcessor struct {
 	processorMap map[string]thrift.TProcessorFunction
@@ -1162,10 +1156,7 @@ func NewUserServiceProcessor(handler UserService) *UserServiceProcessor {
 	self.AddToProcessorMap("GetUser", &userServiceProcessorGetUser{handler: handler})
 	self.AddToProcessorMap("UpdateUser", &userServiceProcessorUpdateUser{handler: handler})
 	self.AddToProcessorMap("GetUsers", &userServiceProcessorGetUsers{handler: handler})
-<<<<<<< HEAD
 	self.AddToProcessorMap("ResetPassword", &userServiceProcessorResetPassword{handler: handler})
-=======
->>>>>>> 641946dc (test)
 	return self
 }
 func (p *UserServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -1423,7 +1414,6 @@ func (p *userServiceProcessorGetUsers) Process(ctx context.Context, seqId int32,
 	return true, err
 }
 
-<<<<<<< HEAD
 type userServiceProcessorResetPassword struct {
 	handler UserService
 }
@@ -1469,8 +1459,6 @@ func (p *userServiceProcessorResetPassword) Process(ctx context.Context, seqId i
 	return true, err
 }
 
-=======
->>>>>>> 641946dc (test)
 type UserServiceUserLoginArgs struct {
 	Username string `thrift:"username,1" frugal:"1,default,string" json:"username"`
 	Password string `thrift:"password,2" frugal:"2,default,string" json:"password"`
@@ -3303,7 +3291,6 @@ func (p *UserServiceGetUsersResult) Field0DeepEqual(src []*User) bool {
 	}
 	return true
 }
-<<<<<<< HEAD
 
 type UserServiceResetPasswordArgs struct {
 	Id       int64  `thrift:"id,1" frugal:"1,default,i64" json:"id"`
@@ -3621,5 +3608,3 @@ func (p *UserServiceResetPasswordResult) DeepEqual(ano *UserServiceResetPassword
 	}
 	return true
 }
-=======
->>>>>>> 641946dc (test)

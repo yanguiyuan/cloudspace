@@ -19,20 +19,12 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*rpc.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-<<<<<<< HEAD
 		"UserLogin":     kitex.NewMethodInfo(userLoginHandler, newUserServiceUserLoginArgs, newUserServiceUserLoginResult, false),
 		"UserRegister":  kitex.NewMethodInfo(userRegisterHandler, newUserServiceUserRegisterArgs, newUserServiceUserRegisterResult, false),
 		"GetUser":       kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
 		"UpdateUser":    kitex.NewMethodInfo(updateUserHandler, newUserServiceUpdateUserArgs, newUserServiceUpdateUserResult, false),
 		"GetUsers":      kitex.NewMethodInfo(getUsersHandler, newUserServiceGetUsersArgs, newUserServiceGetUsersResult, false),
 		"ResetPassword": kitex.NewMethodInfo(resetPasswordHandler, newUserServiceResetPasswordArgs, newUserServiceResetPasswordResult, false),
-=======
-		"UserLogin":    kitex.NewMethodInfo(userLoginHandler, newUserServiceUserLoginArgs, newUserServiceUserLoginResult, false),
-		"UserRegister": kitex.NewMethodInfo(userRegisterHandler, newUserServiceUserRegisterArgs, newUserServiceUserRegisterResult, false),
-		"GetUser":      kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
-		"UpdateUser":   kitex.NewMethodInfo(updateUserHandler, newUserServiceUpdateUserArgs, newUserServiceUpdateUserResult, false),
-		"GetUsers":     kitex.NewMethodInfo(getUsersHandler, newUserServiceGetUsersArgs, newUserServiceGetUsersResult, false),
->>>>>>> 641946dc (test)
 	}
 	extra := map[string]interface{}{
 		"PackageName": "rpc",
@@ -138,7 +130,6 @@ func newUserServiceGetUsersResult() interface{} {
 	return rpc.NewUserServiceGetUsersResult()
 }
 
-<<<<<<< HEAD
 func resetPasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*rpc.UserServiceResetPasswordArgs)
 
@@ -157,8 +148,6 @@ func newUserServiceResetPasswordResult() interface{} {
 	return rpc.NewUserServiceResetPasswordResult()
 }
 
-=======
->>>>>>> 641946dc (test)
 type kClient struct {
 	c client.Client
 }
@@ -221,7 +210,6 @@ func (p *kClient) GetUsers(ctx context.Context, offset int32, limit int32) (r []
 	}
 	return _result.GetSuccess(), nil
 }
-<<<<<<< HEAD
 
 func (p *kClient) ResetPassword(ctx context.Context, id int64, password string) (err error) {
 	var _args rpc.UserServiceResetPasswordArgs
@@ -233,5 +221,3 @@ func (p *kClient) ResetPassword(ctx context.Context, id int64, password string) 
 	}
 	return nil
 }
-=======
->>>>>>> 641946dc (test)

@@ -144,7 +144,6 @@ func GetUsers(ctx context.Context, c *app.RequestContext) {
 		"data":    r,
 	})
 }
-<<<<<<< HEAD
 
 func ResetPassword(ctx context.Context, c *app.RequestContext) {
 	var req user.ResetPasswordReq
@@ -214,5 +213,3 @@ func AdminResetPassword(ctx context.Context, c *app.RequestContext) {
 		"message": errno.SuccessMsg,
 	})
 }
-=======
->>>>>>> 641946dc (test)
