@@ -2269,6 +2269,7 @@ func (p *UserServiceGetUsersResult) field0Length() int {
 	return l
 }
 
+<<<<<<< HEAD
 func (p *UserServiceResetPasswordArgs) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
@@ -2526,6 +2527,8 @@ func (p *UserServiceResetPasswordResult) BLength() int {
 	return l
 }
 
+=======
+>>>>>>> 641946dc (test)
 func (p *UserServiceUserLoginArgs) GetFirstArgument() interface{} {
 	return p.Username
 }
@@ -2565,6 +2568,7 @@ func (p *UserServiceGetUsersArgs) GetFirstArgument() interface{} {
 func (p *UserServiceGetUsersResult) GetResult() interface{} {
 	return p.Success
 }
+<<<<<<< HEAD
 
 func (p *UserServiceResetPasswordArgs) GetFirstArgument() interface{} {
 	return p.Id
@@ -2573,3 +2577,5 @@ func (p *UserServiceResetPasswordArgs) GetFirstArgument() interface{} {
 func (p *UserServiceResetPasswordResult) GetResult() interface{} {
 	return nil
 }
+=======
+>>>>>>> 641946dc (test)

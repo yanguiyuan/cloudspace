@@ -2,6 +2,7 @@ package mw
 
 import (
 	"context"
+<<<<<<< HEAD
 	"fmt"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
@@ -159,4 +160,11 @@ func CheckAllPermission(ctx context.Context, c *app.RequestContext) {
 		c.Abort()
 		return
 	}
+=======
+	"github.com/cloudwego/hertz/pkg/app"
+)
+
+func CheckReadPermission(ctx context.Context, c *app.RequestContext) {
+
+>>>>>>> 641946dc (test)
 }

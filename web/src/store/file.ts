@@ -14,6 +14,21 @@ export const useFileStore=defineStore({
                visible:false,
                url:"",
            },
+<<<<<<< HEAD
+=======
+           pdfPreview:{
+             visible:false,
+             url:"",
+           },
+           txtPreview:{
+               visible:false,
+               text:"",
+           },
+           markdownPreview:{
+               visible:false,
+               text:"",
+           },
+>>>>>>> 641946dc (test)
            namespace:{
                visible:false
            },
@@ -70,6 +85,21 @@ export interface FileManagementState{
             visible:boolean;
             url:string;
         };
+<<<<<<< HEAD
+=======
+        pdfPreview:{
+          visible:boolean;
+          url:string;
+        };
+        txtPreview:{
+            visible:boolean;
+            text:string;
+        };
+        markdownPreview:{
+            visible:boolean;
+            text:string;
+        };
+>>>>>>> 641946dc (test)
         namespace:{
             visible:boolean;
         };

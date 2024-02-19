@@ -4,6 +4,10 @@ import {FileItem, LinkParams, Namespace, useFileStore} from "../store/file";
 import {ConfirmationOptions} from "primevue/confirmationoptions";
 import {useUserStore} from "../store/user";
 import router from "../router/router";
+<<<<<<< HEAD
+=======
+import marked from "marked";
+>>>>>>> 641946dc (test)
 
 export interface ConfirmMethods{
     require:(option: ConfirmationOptions)=>void;
@@ -11,7 +15,10 @@ export interface ConfirmMethods{
 }
 
 const fileStore=useFileStore();
+<<<<<<< HEAD
 const userStore=useUserStore();
+=======
+>>>>>>> 641946dc (test)
 export const SideMenuOptionItems=[
     {
         tooltip:"文件上传",
@@ -161,6 +168,65 @@ export  async function onClickFileItem (it:FileItem) {
         }
         fileStore.dialog.imagePreview.visible=true;
         fileStore.dialog.imagePreview.url=url;
+<<<<<<< HEAD
+=======
+    }else if(it.fileType=="pdf"){
+        const urlMap=fileStore.urlMap;
+        let url=urlMap.get(it.id);
+        if(url==undefined){
+            const resp=await axios.get("/user/file/"+it.id+"/url").then((res)=>{
+                return res.data;
+            }).catch((e)=>{
+                console.log("error:",e);
+            })
+            if(resp&&resp.code==0){
+                urlMap.set(it.id,resp.data);
+                fileStore.dialog.pdfPreview.visible=true;
+                fileStore.dialog.pdfPreview.url=resp.data;
+            }
+            return;
+        }
+        fileStore.dialog.pdfPreview.visible=true;
+        fileStore.dialog.pdfPreview.url=url;
+    }else if(it.fileType=="md"){
+        const urlMap=fileStore.urlMap;
+        let url=urlMap.get(it.id);
+        if(url==undefined){
+            const resp=await axios.get("/user/file/"+it.id+"/content").then((res)=>{
+                return res.data;
+            }).catch((e)=>{
+                console.log("error:",e);
+            })
+            if(resp&&resp.code==0){
+                urlMap.set(it.id,resp.data);
+                fileStore.dialog.markdownPreview.visible=true;
+                fileStore.dialog.markdownPreview.text=resp.data;
+            }
+            return;
+        }
+        fileStore.dialog.markdownPreview.visible=true;
+        fileStore.dialog.markdownPreview.text=url;
+    }else if(it.fileType=="txt"){
+        const urlMap=fileStore.urlMap;
+        let url=urlMap.get(it.id);
+        if(url==undefined){
+            const resp=await axios.get("/user/file/"+it.id+"/content").then((res)=>{
+                return res.data;
+            }).catch((e)=>{
+                console.log("error:",e);
+            })
+            if(resp&&resp.code==0){
+                urlMap.set(it.id,resp.data);
+                fileStore.dialog.txtPreview.visible=true;
+                fileStore.dialog.txtPreview.text=resp.data;
+            }
+            return;
+        }
+        fileStore.dialog.txtPreview.visible=true;
+        fileStore.dialog.txtPreview.text=url;
+    }else{
+        console.log("fileType error")
+>>>>>>> 641946dc (test)
     }
 }
 export function getCurrentBreadcrumbsPath():string{
@@ -235,8 +301,11 @@ export async function renameFileOrDirectory(file:FileItem,toast: ToastServiceMet
             life: 3000
         });
     });
+<<<<<<< HEAD
     await unlockFile(file,toast);
     console.log("解锁")
+=======
+>>>>>>> 641946dc (test)
 }
 export async function getUserNamespaces():Promise<Namespace[]> {
     const resp=await axios.get("/user/namespace/list").then((res)=>{
@@ -338,6 +407,7 @@ export async function  getFileURL(id:string){
     }
     return url
 }
+<<<<<<< HEAD
 export async function lockFile(file:FileItem,toast: ToastServiceMethods){
     const username=userStore.user.username;
     if(username=="未知"){
@@ -405,6 +475,14 @@ export async function editFile(file:FileItem,toast: ToastServiceMethods){
         fileStore.dialog.markdownEdit.text = res.data.data;
         // await unlockFile(file, toast);
         console.log("res:", res.data.data)
+=======
+export async function editFile(file:FileItem){
+    fileStore.dialog.markdownEdit.visible=true
+    fileStore.dialog.markdownEdit.editFileItem=file;
+    await axios.get("/user/file/"+file.id+"/content").then((res)=>{
+        fileStore.dialog.markdownEdit.text=res.data.data;
+        console.log("res:",res.data.data)
+>>>>>>> 641946dc (test)
     }).catch((e)=>{
         console.log("error:",e);
     })
@@ -412,8 +490,12 @@ export async function editFile(file:FileItem,toast: ToastServiceMethods){
 export async function saveFileContent(toast: ToastServiceMethods){
     await axios.put("/user/file/"+fileStore.dialog.markdownEdit.editFileItem.id+"/content",{
         content:fileStore.dialog.markdownEdit.text,
+<<<<<<< HEAD
     }).then(async (res) => {
         await unlockFile(fileStore.dialog.markdownEdit.editFileItem, toast);
+=======
+    }).then((res)=>{
+>>>>>>> 641946dc (test)
         toast.add({
             severity: 'success',
             summary: '成功',

@@ -7,7 +7,10 @@ import (
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/golang-jwt/jwt/v4"
+<<<<<<< HEAD
 	"github.com/muesli/cache2go"
+=======
+>>>>>>> 641946dc (test)
 	"github.com/yanguiyuan/cloudspace/internal/api/handler"
 	"github.com/yanguiyuan/cloudspace/internal/api/model/file"
 	"github.com/yanguiyuan/cloudspace/internal/api/mw"
@@ -20,8 +23,11 @@ import (
 	"time"
 )
 
+<<<<<<< HEAD
 var cache = cache2go.Cache("fileWrite")
 
+=======
+>>>>>>> 641946dc (test)
 // Query .
 // @router /files/:parent_id [GET]
 func QueryFileItemList(ctx context.Context, c *app.RequestContext) {
@@ -228,7 +234,11 @@ func Rename(ctx context.Context, c *app.RequestContext) {
 }
 
 func QueryUserNamespaces(ctx context.Context, c *app.RequestContext) {
+<<<<<<< HEAD
 	identity, b := c.Get(mw.IdentityKey) //*
+=======
+	identity, b := c.Get(mw.IdentityKey)
+>>>>>>> 641946dc (test)
 	if !b {
 		c.String(consts.StatusUnauthorized, "未登录")
 	}
@@ -237,7 +247,11 @@ func QueryUserNamespaces(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusInternalServerError, err.Error())
 		return
 	}
+<<<<<<< HEAD
 	resp, err := client.QueryUserNamespaces(ctx, identity.(int64)) //*
+=======
+	resp, err := client.QueryUserNamespaces(ctx, identity.(int64))
+>>>>>>> 641946dc (test)
 	if err != nil {
 		c.JSON(consts.StatusOK, utils.H{
 			"code":    errno.ServiceErrCode,
@@ -516,6 +530,7 @@ func CreateTextFile(ctx context.Context, c *app.RequestContext) {
 		"data":    resp,
 	})
 }
+<<<<<<< HEAD
 
 func CheckFileLock(ctx context.Context, c *app.RequestContext) {
 	id := c.Param("id")
@@ -562,3 +577,5 @@ func CheckLock(ctx context.Context, c *app.RequestContext) {
 		"data":    cache,
 	})
 }
+=======
+>>>>>>> 641946dc (test)

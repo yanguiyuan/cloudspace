@@ -9,6 +9,7 @@ type GetUsersReq struct {
 	Offset int32 `json:"offset,omitempty" path:"offset"`
 	Limit  int32 `json:"limit,omitempty" path:"limit"`
 }
+<<<<<<< HEAD
 
 type ResetPasswordReq struct {
 	ID          int64  `json:"id,omitempty" path:"id"`
@@ -19,3 +20,5 @@ type AdminResetPasswordReq struct {
 	ID          int64  `json:"id,omitempty" path:"id"`
 	NewPassword string `json:"newPassword,omitempty"`
 }
+=======
+>>>>>>> 641946dc (test)

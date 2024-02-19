@@ -2,6 +2,7 @@ import axios from "../axios/axios";
 import {User} from "./user";
 import {useAdminStore} from "../store/admin";
 import router from "../router/router";
+<<<<<<< HEAD
 import {ToastServiceMethods} from "primevue/toastservice";
 export interface AdminState {
     users:User[];
@@ -13,6 +14,10 @@ export interface AdminState {
             confirmPassword:string
         }
     }
+=======
+export interface AdminState {
+    users:User[];
+>>>>>>> 641946dc (test)
 }
 const adminStore=useAdminStore();
 export const getUsers=async function (offset:number,limit:number):Promise<void> {
@@ -26,6 +31,7 @@ export const getUsers=async function (offset:number,limit:number):Promise<void> 
         console.log(err);
     });
     adminStore.setUsers(res);
+<<<<<<< HEAD
 }
 export const resetPassword=async function (toast:ToastServiceMethods):Promise<void> {
     if(adminStore.dialog.resetPassword.confirmPassword!==adminStore.dialog.resetPassword.newPassword){
@@ -48,4 +54,6 @@ export const resetPassword=async function (toast:ToastServiceMethods):Promise<vo
         console.log(err);
     });
 
+=======
+>>>>>>> 641946dc (test)
 }

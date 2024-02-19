@@ -20,8 +20,14 @@ import 'primeicons/primeicons.css'
 import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
 import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import ToastService from 'primevue/toastservice';
+<<<<<<< HEAD
 
 import ConfirmationService from 'primevue/confirmationservice';
+=======
+import ConfirmationService from 'primevue/confirmationservice';
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+>>>>>>> 641946dc (test)
 // Prism
 import Prism from 'prismjs';
 // 代码高亮
@@ -48,6 +54,12 @@ app.use(createPinia()).use(router).use(ElementPlus).use(VMdPreview).use(VMdEdito
 app.use(PrimeVue);
 app.use(ToastService);
 app.use(ConfirmationService);
+<<<<<<< HEAD
+=======
+app.use(VMdEditor);
+app.use(VMdPreview);
+app.use(mavonEditor);
+>>>>>>> 641946dc (test)
 app.component("Dialog",Dialog);
 app.component('Toast', Toast);
 app.component("InputText",InputText);

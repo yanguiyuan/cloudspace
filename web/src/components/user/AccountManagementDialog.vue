@@ -2,6 +2,7 @@
 import {useUserStore} from "../../store/user";
 import Dialog from "primevue/dialog";
 import {onMounted, ref} from "vue";
+<<<<<<< HEAD
 import {FetchUserInfo, modifyPassword, modifyUserInfo} from "../../service/user";
 import {useToast} from "primevue/usetoast";
 import RadioButton from "primevue/radiobutton";
@@ -9,14 +10,23 @@ import Card from "primevue/card";
 import {ToastServiceMethods} from "primevue/toastservice";
 import FloatLabel from "primevue/floatlabel";
 import Password from "primevue/password";
+=======
+import {FetchUserInfo, modifyUserInfo} from "../../service/user";
+import {useToast} from "primevue/usetoast";
+import RadioButton from "primevue/radiobutton";
+import {getUserNamespaces} from "../../service/filemanage";
+>>>>>>> 641946dc (test)
 const toast=useToast();
 const userStore = useUserStore();
 const copy=async (content:string)=>{
   await navigator.clipboard.writeText(content);
   toast.add({severity:'success',summary:'复制成功',detail:'复制成功',life:3000});
 }
+<<<<<<< HEAD
 
 const visible=ref<string>("info")
+=======
+>>>>>>> 641946dc (test)
 onMounted(async ()=>{
   const user=await FetchUserInfo();
   userStore.setUser(user);
@@ -32,11 +42,18 @@ onMounted(async ()=>{
     </template>
     <div class="flex border-t border-solid border-t-gray-300 p-2 ">
       <div class="mr-3 mt-3 ">
+<<<<<<< HEAD
         <div @click="visible='info'" class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">个人信息</div>
         <div @click="visible='password'" class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">修改密码</div>
 <!--        <div @click="visible='setting'" class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">账号设置</div>-->
       </div>
       <div v-if="visible==='info'" class="bg-[rgb(235,235,235)] p-3 rounded-2xl shadow">
+=======
+        <div class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">个人信息</div>
+        <div class="m-1 p-2 rounded hover:bg-blue-500 hover:text-gray-50">账号设置</div>
+      </div>
+      <div class="bg-[rgb(235,235,235)] p-3 rounded-2xl shadow">
+>>>>>>> 641946dc (test)
         <div class="border-b border-solid border-b-gray-400 flex p-2">
           <div class="w-20 font-bold">
             用户ID:
@@ -105,6 +122,7 @@ onMounted(async ()=>{
           </div>
         </div>
       </div>
+<<<<<<< HEAD
           <Card v-if="visible==='password'">
             <template #header>
               <h2 class="ml-5 mt-2 text-2xl border-b border-solid border-b-gray-300">修改密码</h2>
@@ -125,6 +143,8 @@ onMounted(async ()=>{
               <Button label="确定" class="p-2 mt-3 text-center" @click="modifyPassword(toast)"></Button>
             </template>
           </Card>
+=======
+>>>>>>> 641946dc (test)
     </div>
   </Dialog>
 </template>

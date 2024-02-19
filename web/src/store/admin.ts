@@ -5,6 +5,7 @@ import {AdminState} from "../service/admin";
 export const useAdminStore=defineStore({
     id:"admin",
     state:():AdminState=>({
+<<<<<<< HEAD
        users:[],
         selectedUser:{
             id:0,
@@ -23,6 +24,9 @@ export const useAdminStore=defineStore({
                confirmPassword:""
            }
         }
+=======
+       users:[]
+>>>>>>> 641946dc (test)
     }),
     actions:{
        setUsers(users:User[]){
