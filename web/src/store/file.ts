@@ -41,6 +41,7 @@ export const useFileStore=defineStore({
                parentID:"",
            },
        },
+        clickedFileItem:EmptyFileItem,
         linkParams:DefaultLinkParams,
         namespaces:[],
         breadcrumbs:[],
@@ -109,6 +110,7 @@ export interface FileManagementState{
             parentID:string;
         }
     }
+    clickedFileItem:FileItem;
     namespaces:Namespace[];
     breadcrumbs:FileItem[];
     fileList:FileItem[];

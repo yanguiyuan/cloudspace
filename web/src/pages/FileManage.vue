@@ -30,23 +30,25 @@
   <div ref="fileTip" id="fileTip"  class="settingTooltip hidden">
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
     <div id="renameButton" @click="canRename=true;renameFileItem=optionFileItem" class="tipMenuItem">重命名</div>
-    <div @click="editFile(optionFileItem)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
+    <div @click="editFile(optionFileItem,toast)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
     <div @click="downLoad"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
   </div>
   <FileUploadDialog></FileUploadDialog>
   <FileCreateDialog></FileCreateDialog>
-  <Dialog v-model:visible="fileStore.dialog.imagePreview.visible">
+  <Dialog :header="fileStore.clickedFileItem.fileName"  v-model:visible="fileStore.dialog.imagePreview.visible">
     <Image preview width="500" height="600"  :src="fileStore.dialog.imagePreview.url" alt="图片预览"/>
   </Dialog>
-  <Dialog v-model:visible="fileStore.dialog.pdfPreview.visible">
+  <Dialog :header="fileStore.clickedFileItem.fileName" v-model:visible="fileStore.dialog.pdfPreview.visible">
       <div style="width:1000px;height:800px">
-          <iframe :src="fileStore.dialog.pdfPreview.url" width="100%" height="100%"></iframe>
+          <object type="application/pdf" :data="fileStore.dialog.pdfPreview.url" width="100%" height="100%">
+            <p>如果您的浏览器不支持 PDF 预览，请下载 PDF 查看。</p>
+          </object>
       </div>
   </Dialog>
-  <Dialog v-model:visible="fileStore.dialog.txtPreview.visible">
+  <Dialog :header="fileStore.clickedFileItem.fileName" v-model:visible="fileStore.dialog.txtPreview.visible">
       <v-md-preview :text="fileStore.dialog.txtPreview.text" height="500px"></v-md-preview>
   </Dialog>
-  <Dialog v-model:visible="fileStore.dialog.markdownPreview.visible">
+  <Dialog :header="fileStore.clickedFileItem.fileName" maximizable class="w-[50vw]" v-model:visible="fileStore.dialog.markdownPreview.visible">
       <v-md-preview :text="fileStore.dialog.markdownPreview.text" height="500px"></v-md-preview>
   </Dialog>
   <ConfirmDialog></ConfirmDialog>
@@ -80,8 +82,6 @@ import Image from "primevue/image";
 import NamespaceManagementDialog from "../components/file/NamespaceManagementDialog.vue";
 import MarkdownEdit from "../components/file/MarkdownEdit.vue";
 import CreateTextFile from "../components/file/CreateTextFile.vue";
-const testVisible=ref(true)
-const previewContent=ref<string>("## Hello")
 const renameOp = ref();
 const toast = useToast();
 const confirm = useConfirm();

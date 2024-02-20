@@ -134,6 +134,7 @@ export async function onClickBreadcrumbs(it:FileItem,key:number) {
     }
 }
 export  async function onClickFileItem (it:FileItem) {
+    fileStore.clickedFileItem=it;
     if(it.fileType=="directory"){
         fileStore.fileList=[];
         fileStore.breadcrumbs.push(it);
