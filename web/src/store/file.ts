@@ -14,6 +14,18 @@ export const useFileStore=defineStore({
                visible:false,
                url:"",
            },
+           pdfPreview:{
+             visible:false,
+             url:"",
+           },
+           txtPreview:{
+               visible:false,
+               text:"",
+           },
+           markdownPreview:{
+               visible:false,
+               text:"",
+           },
            namespace:{
                visible:false
            },
@@ -69,6 +81,18 @@ export interface FileManagementState{
         imagePreview:{
             visible:boolean;
             url:string;
+        };
+        pdfPreview:{
+          visible:boolean;
+          url:string;
+        };
+        txtPreview:{
+            visible:boolean;
+            text:string;
+        };
+        markdownPreview:{
+            visible:boolean;
+            text:string;
         };
         namespace:{
             visible:boolean;

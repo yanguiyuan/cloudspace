@@ -60,6 +60,7 @@ const checkEmail=(s:string):boolean=>{
 export const modifyUserInfo=async function (toast: ToastServiceMethods):Promise<void> {
     if (!checkEmail(userStore.user.email)){
         toast.add({severity:'error', summary: '修改失败', detail: '邮箱格式不正确,请修改邮箱', life: 3000});
+        toast.add({severity:'error', summary: '修改失败', detail: '邮箱格式不正确', life: 3000});
         return
     }
     const res=await axios.put("/user/info",userStore.user).then((res)=>{
