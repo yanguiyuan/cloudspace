@@ -20,6 +20,7 @@ struct User{
 }
 service UserService{
    i64 UserLogin(1:string username,2:string password)
+
    i64 UserRegister(1:string username,2:string password)
    User GetUser(1:i64 id)
    void UpdateUser(1:User user)

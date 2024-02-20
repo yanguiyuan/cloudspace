@@ -5,7 +5,7 @@ DROP TABLE  IF EXISTS users CASCADE ;
 CREATE TABLE IF NOT EXISTS users
 (
     `id`          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `username`    VARCHAR(25)                                                    NOT NULL,
+    `username`    VARCHAR(25)  UNIQUE                                                  NOT NULL,
     `password`    VARCHAR(255)                                                    NOT NULL,
     `gender`      VARCHAR(10)  DEFAULT 'unknown'                                 NOT NULL,
     `email`       VARCHAR(25)                                                     NOT NULL,
