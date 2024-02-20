@@ -161,6 +161,62 @@ export  async function onClickFileItem (it:FileItem) {
         }
         fileStore.dialog.imagePreview.visible=true;
         fileStore.dialog.imagePreview.url=url;
+    }else if(it.fileType=="pdf"){
+        const urlMap=fileStore.urlMap;
+        let url=urlMap.get(it.id);
+        if(url==undefined){
+            const resp=await axios.get("/user/file/"+it.id+"/url").then((res)=>{
+                return res.data;
+            }).catch((e)=>{
+                console.log("error:",e);
+            })
+            if(resp&&resp.code==0){
+                urlMap.set(it.id,resp.data);
+                fileStore.dialog.pdfPreview.visible=true;
+                fileStore.dialog.pdfPreview.url=resp.data;
+            }
+            return;
+        }
+        fileStore.dialog.pdfPreview.visible=true;
+        fileStore.dialog.pdfPreview.url=url;
+    }else if(it.fileType=="md"){
+        const urlMap=fileStore.urlMap;
+        let url=urlMap.get(it.id);
+        if(url==undefined){
+            const resp=await axios.get("/user/file/"+it.id+"/content").then((res)=>{
+                return res.data;
+            }).catch((e)=>{
+                console.log("error:",e);
+            })
+            if(resp&&resp.code==0){
+                urlMap.set(it.id,resp.data);
+                fileStore.dialog.markdownPreview.visible=true;
+                fileStore.dialog.markdownPreview.text=resp.data;
+            }
+            return;
+        }
+        fileStore.dialog.markdownPreview.visible=true;
+        fileStore.dialog.markdownPreview.text=url;
+    }else if(it.fileType=="txt"){
+        const urlMap=fileStore.urlMap;
+        let url=urlMap.get(it.id);
+        if(url==undefined){
+            const resp=await axios.get("/user/file/"+it.id+"/content").then((res)=>{
+                return res.data;
+            }).catch((e)=>{
+                console.log("error:",e);
+            })
+            if(resp&&resp.code==0){
+                urlMap.set(it.id,resp.data);
+                fileStore.dialog.txtPreview.visible=true;
+                fileStore.dialog.txtPreview.text=resp.data;
+            }
+            return;
+        }
+        fileStore.dialog.txtPreview.visible=true;
+        fileStore.dialog.txtPreview.text=url;
+    }else{
+        console.log("fileType error")
     }
 }
 export function getCurrentBreadcrumbsPath():string{
