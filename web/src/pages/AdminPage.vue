@@ -14,17 +14,13 @@ import {User} from "../service/user";
 import {useToast} from "primevue/usetoast";
 const iconService=AssetsIconSvgService.getInstance();
 const adminStore=useAdminStore();
-const resetPasswordVisible=ref(false)
 const toast=useToast();
-const password=reactive({
-  newPassword:"",confirmPassword:"",username:""
-})
 const openResetPasswordDialog=(data:User)=>{
   adminStore.selectedUser=data;
   adminStore.dialog.resetPassword.visible=true
 }
 onMounted(()=>{
-  getUsers(0,10)
+  getUsers(0,10,toast)
 })
 </script>
 

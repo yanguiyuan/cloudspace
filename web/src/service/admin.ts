@@ -15,9 +15,12 @@ export interface AdminState {
     }
 }
 const adminStore=useAdminStore();
-export const getUsers=async function (offset:number,limit:number):Promise<void> {
+export const getUsers=async function (offset:number,limit:number,toast: ToastServiceMethods):Promise<void> {
     const res=await axios.get("/user/list/"+offset+"/"+limit).then((res)=>{
-        console.log("users:",res.data)
+        if(res.data.code!=0){
+            toast.add({severity:'error',summary:'获取用户列表失败',detail:res.data.message,life:3000});
+            router.push("/")
+        }
         return res.data.data;
     }).catch(err=>{
         if (err.response.status===401){
