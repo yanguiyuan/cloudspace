@@ -23,8 +23,6 @@ import ToastService from 'primevue/toastservice';
 
 
 import ConfirmationService from 'primevue/confirmationservice';
-// import mavonEditor from 'mavon-editor'
-// import 'mavon-editor/dist/css/index.css'
 // Prism
 import Prism from 'prismjs';
 // 代码高亮
@@ -53,7 +51,6 @@ app.use(ToastService);
 app.use(ConfirmationService);
 app.use(VMdEditor);
 app.use(VMdPreview);
-// app.use(mavonEditor);
 app.component("Dialog",Dialog);
 app.component('Toast', Toast);
 app.component("InputText",InputText);

@@ -380,7 +380,7 @@ export async function linkNamespace(id:number,auth:number,token:string,toast: To
     }
 }
 export function canEdit(file:FileItem):boolean{
-    const stringArray: string[] = ["png","jpg","exe","directory"];
+    const stringArray: string[] = ["png","jpg","exe","directory","pdf"];
     return !stringArray.includes(file.fileType);
 }
 export async function  getFileURL(id:string){
@@ -470,7 +470,7 @@ export async function saveFileContent(toast: ToastServiceMethods){
     await axios.put("/user/file/"+fileStore.dialog.markdownEdit.editFileItem.id+"/content",{
         content:fileStore.dialog.markdownEdit.text,
     }).then(async (res) => {
-        await unlockFile(fileStore.dialog.markdownEdit.editFileItem, toast);
+        fileStore.dialog.markdownEdit.visible=false;
         toast.add({
             severity: 'success',
             summary: '成功',

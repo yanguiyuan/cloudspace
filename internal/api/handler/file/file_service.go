@@ -57,7 +57,6 @@ func Upload(ctx context.Context, c *app.RequestContext) {
 	form, _ := c.MultipartForm()
 	files := form.File["data"]
 	parentID := c.Param("id")
-	fmt.Println("pd:", parentID)
 	client, err := cloudfile.NewFileServiceClient()
 	if err != nil {
 		c.String(consts.StatusInternalServerError, err.Error())

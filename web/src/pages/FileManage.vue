@@ -29,7 +29,7 @@
   </OverlayPanel>
   <div ref="fileTip" id="fileTip"  class="settingTooltip hidden">
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
-    <div id="renameButton" @click="canRename=true;renameFileItem=optionFileItem" class="tipMenuItem">重命名</div>
+    <div id="renameButton" @click="doRename" class="tipMenuItem">重命名</div>
     <div @click="editFile(optionFileItem,toast)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
     <div @click="downLoad"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
   </div>
