@@ -41,7 +41,7 @@ func (s *UserServiceImpl) UserRegister(ctx context.Context, username string, pas
 		if err != nil {
 			return err
 		}
-		err = client.CreateUserNamespace(ctx, user.ID, namespaceID, 0)
+		err = client.CreateUserNamespace(ctx, user.ID, namespaceID, 1)
 		if err != nil {
 			return err
 		}

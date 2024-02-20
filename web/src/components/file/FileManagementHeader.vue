@@ -37,21 +37,21 @@ const items=ref<MenuItem>([{
   ]
 }])
 const addOwnerNamespace=(n:Namespace)=>{
-  if(n.authority==0){
+  if(n.authority==1){
     items.value[0].items[0][0].items.push({
       label:n.name,
       command:async ()=>{
         await changeNamespace(n.rootID)
       }
     });
-  }else if(n.authority==1){
+  }else if(n.authority==2){
     items.value[0].items[1][0].items.push({
       label:n.name,
       command:async ()=>{
         await changeNamespace(n.rootID)
       }
     });
-  }else if(n.authority==2){
+  }else if(n.authority==3){
     items.value[0].items[2][0].items.push({
       label:n.name,
       command:async ()=>{
@@ -62,7 +62,6 @@ const addOwnerNamespace=(n:Namespace)=>{
 }
 onMounted(async ()=>{
   const namespaces=await getUserNamespaces();
-  console.log("namespaces:",namespaces);
   fileStore.setNamespaceList(namespaces)
   for (const namespace of namespaces) {
     addOwnerNamespace(namespace);

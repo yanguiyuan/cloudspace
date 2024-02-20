@@ -443,7 +443,7 @@ func (s *CloudFileServiceImpl) CreateTextFile(ctx context.Context, name string, 
 func (s *CloudFileServiceImpl) GetAuthority(ctx context.Context, userID int64, fileID string) (r int32, err error) {
 	err = dal.UserNamespace.WithContext(ctx).
 		Select(dal.UserNamespace.Authority).
-		LeftJoin(dal.FileItem, dal.FileItem.NamespaceID.EqCol(dal.UserNamespace.NamespaceID), dal.FileItem.Type.Eq(Namespace)).
+		LeftJoin(dal.FileItem, dal.FileItem.NamespaceID.EqCol(dal.UserNamespace.NamespaceID)).
 		Where(dal.UserNamespace.UserID.Eq(userID), dal.FileItem.ID.Eq(fileID)).
 		Scan(&r)
 	//dal.Namespace.

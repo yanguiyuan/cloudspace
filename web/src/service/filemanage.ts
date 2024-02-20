@@ -52,7 +52,16 @@ export const SideMenuOptionItems=[
 ];
 
 export async function deleteFile(file:FileItem,toast: ToastServiceMethods):Promise<any> {
-    const res=axios.delete("/user/file/"+file.id).then((res)=>{
+    axios.delete("/user/file/"+file.id).then((res)=>{
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: res.data.message,
+                life: 3000
+            });
+            return
+        }
         fileStore.fileList.splice(fileStore.fileList.indexOf(file),1);
         toast.add({
             severity: 'success',
@@ -60,7 +69,6 @@ export async function deleteFile(file:FileItem,toast: ToastServiceMethods):Promi
             detail: "删除文件成功",
             life: 3000
         });
-        return res.data
     }).catch((e)=>{
         toast.add({
             severity: 'error',
@@ -69,7 +77,6 @@ export async function deleteFile(file:FileItem,toast: ToastServiceMethods):Promi
             life: 3000
         });
     });
-    return res;
 }
 export function initLinkParams(){
     if(fileStore.linkParams.user_id!=0){
@@ -181,41 +188,27 @@ export  async function onClickFileItem (it:FileItem) {
         fileStore.dialog.pdfPreview.visible=true;
         fileStore.dialog.pdfPreview.url=url;
     }else if(it.fileType=="md"){
-        const urlMap=fileStore.urlMap;
-        let url=urlMap.get(it.id);
-        if(url==undefined){
             const resp=await axios.get("/user/file/"+it.id+"/content").then((res)=>{
                 return res.data;
             }).catch((e)=>{
                 console.log("error:",e);
             })
             if(resp&&resp.code==0){
-                urlMap.set(it.id,resp.data);
                 fileStore.dialog.markdownPreview.visible=true;
                 fileStore.dialog.markdownPreview.text=resp.data;
             }
             return;
-        }
-        fileStore.dialog.markdownPreview.visible=true;
-        fileStore.dialog.markdownPreview.text=url;
-    }else if(it.fileType=="txt"){
-        const urlMap=fileStore.urlMap;
-        let url=urlMap.get(it.id);
-        if(url==undefined){
+    }else if(it.fileType=="txt"||it.fileType=="html"||it.fileType=="json"||it.fileType=="xml"||it.fileType=="js"||canEdit(it)){
             const resp=await axios.get("/user/file/"+it.id+"/content").then((res)=>{
                 return res.data;
             }).catch((e)=>{
                 console.log("error:",e);
             })
             if(resp&&resp.code==0){
-                urlMap.set(it.id,resp.data);
                 fileStore.dialog.txtPreview.visible=true;
                 fileStore.dialog.txtPreview.text=resp.data;
             }
             return;
-        }
-        fileStore.dialog.txtPreview.visible=true;
-        fileStore.dialog.txtPreview.text=url;
     }else{
         console.log("fileType error")
     }
@@ -273,10 +266,19 @@ export async function initDefaultFileItemList(id:string):Promise<void> {
     }
 }
 export async function renameFileOrDirectory(file:FileItem,toast: ToastServiceMethods){
-    await axios.put("/user/file/rename",{
-        id:file.id,
+    await axios.put("/user/file/"+file.id+"/rename",{
         newName:file.fileName,
     }).then((res)=>{
+        if(res.data.code!=0){
+            file.fileName=fileStore.rename.oldName;
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail:res.data.message,
+                life: 3000
+            });
+            return;
+        }
         toast.add({
             severity: 'success',
             summary: '成功',
@@ -285,6 +287,7 @@ export async function renameFileOrDirectory(file:FileItem,toast: ToastServiceMet
         });
         return res.data
     }).catch((e)=>{
+        console.log("rename-error:",e)
         toast.add({
             severity: 'error',
             summary: '错误',
@@ -471,6 +474,15 @@ export async function saveFileContent(toast: ToastServiceMethods){
         content:fileStore.dialog.markdownEdit.text,
     }).then(async (res) => {
         fileStore.dialog.markdownEdit.visible=false;
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: res.data.message,
+                life: 3000
+            });
+            return
+        }
         toast.add({
             severity: 'success',
             summary: '成功',
@@ -479,9 +491,14 @@ export async function saveFileContent(toast: ToastServiceMethods){
         });
     }).catch((e)=>{
         console.log("error:",e);
-        toast.add({
-            severity: 'error',
-        });
+        if(e.response.status==401){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: "请先登录",
+                life: 3000
+            });
+        }
     });
 }
 export async function createTextFile(toast: ToastServiceMethods){
@@ -509,7 +526,15 @@ export async function createTextFile(toast: ToastServiceMethods){
         fileName:state.fileName,
         content:fileStore.dialog.createTextFile.text,
     }).then((res)=>{
-        console.log("createFile:",res)
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: res.data.message,
+                life: 3000
+            });
+            return
+        }
         toast.add({
             severity: 'success',
             summary: '成功',
@@ -524,4 +549,25 @@ export async function createTextFile(toast: ToastServiceMethods){
             severity: 'error',
         });
     });
+}
+export async function downloadFile(file:FileItem,toast: ToastServiceMethods){
+    const resp=await axios.get("/user/file/"+file.id+"/download").then((res)=>{
+
+        var blob = new Blob([res.data]);
+        var url = window.URL.createObjectURL(blob); // 创建 url 并指向 blob
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = file.fileName;
+        a.click();
+        window.URL.revokeObjectURL(url); // 释放该 url
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "下载成功",
+            life: 3000
+        });
+        return res.data;
+    }).catch(e=>{
+        console.log("error:",e);
+    })
 }

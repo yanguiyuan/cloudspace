@@ -12,6 +12,7 @@ func Register(r *server.Hertz) {
 	{
 		file := user.Group("/file")
 		{
+			file.GET("/:id/download", mw.CheckReadPermission, fileserver.Download)
 			file.GET("/:id/check", fileserver.CheckFileLock)
 			//查询文件项根据id
 			file.GET("/:id", mw.CheckReadPermission, fileserver.QueryFileItemByID)
@@ -21,9 +22,9 @@ func Register(r *server.Hertz) {
 			file.POST("/:id/upload", fileserver.Upload)
 			file.DELETE("/:id", mw.CheckWritePermission, fileserver.DeleteFileItem)
 			file.GET("/:id/url", mw.CheckReadPermission, fileserver.GetFileURL)
-			file.PUT("/rename", mw.CheckWritePermission, fileserver.Rename)
+			file.PUT("/:id/rename", mw.CheckWritePermission, fileserver.Rename)
 			file.PUT("/:id/content", mw.CheckWritePermission, fileserver.ModifyFileContent)
-			file.POST("/:parent_id/content", mw.CheckWritePermission, fileserver.CreateTextFile)
+			file.POST("/:id/content", mw.CheckWritePermission, fileserver.CreateTextFile)
 		}
 		directory := user.Group("/directory")
 		{

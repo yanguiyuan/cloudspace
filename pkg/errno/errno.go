@@ -13,6 +13,10 @@ const (
 	NotFoundCode
 	InvalidParamCode
 	UserPasswordErrCode
+	NoWritePermissionCode
+	NoReadPermissionCode
+	NoAdminPermissionCode
+	NoAllPermissionCode
 )
 
 const (
@@ -23,6 +27,10 @@ const (
 	NotFoundMsg                = "Not found"
 	InvalidParamMsg            = "Invalid param"
 	UserPasswordErrMsg         = "User password error"
+	NoWritePermissionMsg       = "No write permission"
+	NoReadPermissionMsg        = "No read permission"
+	NoAdminPermissionMsg       = "No admin permission"
+	NoAllPermissionMsg         = "No all permission"
 )
 
 var (

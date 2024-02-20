@@ -561,3 +561,32 @@ func CheckLock(ctx context.Context, c *app.RequestContext) {
 		"data":    cache,
 	})
 }
+
+func Download(ctx context.Context, c *app.RequestContext) {
+	id := c.Param("id")
+	client, err := cloudfile.NewFileServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		return
+	}
+	data, err := client.FetchFileData(ctx, id)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	it, err := client.QueryFileItemByID(ctx, id)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.Header("Content-Disposition", "attachment; filename="+it.FileName)
+	c.Data(consts.StatusOK, "application/octet-stream", data)
+}

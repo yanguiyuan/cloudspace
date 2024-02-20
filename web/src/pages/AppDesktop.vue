@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import {AssetsIconSvgService} from "../assets/assets";
 import {reactive} from "vue";
+import {useUserStore} from "../store/user";
 interface AppProp {
   icon:string,
   title:string,

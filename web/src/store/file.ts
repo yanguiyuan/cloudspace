@@ -41,11 +41,14 @@ export const useFileStore=defineStore({
                parentID:"",
            },
        },
+        rename:{
+           oldName:""
+        },
         clickedFileItem:EmptyFileItem,
         linkParams:DefaultLinkParams,
         namespaces:[],
         breadcrumbs:[],
-        fileList:[EmptyFileItem,EmptyFileItem,EmptyFileItem,EmptyFileItem,EmptyFileItem,EmptyFileItem,EmptyFileItem,EmptyFileItem,EmptyFileItem,EmptyFileItem],
+        fileList:[],
         urlMap:new Map<string, string>()
     }),
     actions:{
@@ -109,6 +112,9 @@ export interface FileManagementState{
             fileName:string;
             parentID:string;
         }
+    }
+    rename:{
+        oldName:string;
     }
     clickedFileItem:FileItem;
     namespaces:Namespace[];

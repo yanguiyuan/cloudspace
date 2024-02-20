@@ -1,7 +1,7 @@
 package file
 
 type RenameReq struct {
-	ID      string `json:"ID,omitempty"`
+	ID      string `json:"ID,omitempty" path:"id"`
 	NewName string `json:"newName,omitempty"`
 }
 type ModifyFileContentReq struct {
@@ -9,7 +9,7 @@ type ModifyFileContentReq struct {
 	Content string `json:"content,omitempty"`
 }
 type CreateTextFileReq struct {
-	ParentID string `json:"parentID,omitempty" path:"parent_id"`
+	ParentID string `json:"parentID,omitempty" path:"id"`
 	FileName string `json:"fileName,omitempty"`
 	Content  string `json:"content,omitempty"`
 }

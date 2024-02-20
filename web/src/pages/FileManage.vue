@@ -31,7 +31,7 @@
     <div @click="deleteFileOrDirectory(optionFileItem,toast,confirm)" class="tipMenuItem">删除</div>
     <div id="renameButton" @click="doRename" class="tipMenuItem">重命名</div>
     <div @click="editFile(optionFileItem,toast)" v-if="canEdit(optionFileItem)" class="tipMenuItem">编辑</div>
-    <div @click="downLoad"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
+    <div @click="downloadFile(optionFileItem,toast)"  v-if="optionFileItem?.fileType!='directory'" class="tipMenuItem">下载</div>
   </div>
   <FileUploadDialog></FileUploadDialog>
   <FileCreateDialog></FileCreateDialog>
@@ -74,7 +74,7 @@ import Button from "primevue/button";
 import {
   onClickFileItem,
   deleteFileOrDirectory,
-  SideMenuOptionItems, renameFileOrDirectory, editFile, canEdit, getFileURL, unlockFile, lockFile
+  SideMenuOptionItems, renameFileOrDirectory, editFile, canEdit, getFileURL, unlockFile, lockFile, downloadFile
 } from "../service/filemanage";
 import FileCreateDialog from "../components/file/FileCreateDialog.vue";
 import FileManagementHeader from "../components/file/FileManagementHeader.vue";
@@ -103,31 +103,13 @@ const displayMenu = function (e: MouseEvent,it:FileItem) {
 const doRename = async function () {
 
   renameFileItem.value=optionFileItem.value;
+  fileStore.rename.oldName=optionFileItem.value.fileName;
   const b=await lockFile(optionFileItem.value,toast);
   if(b){
     canRename.value=true;
   }
 }
-const downLoad =async function () {
-    const url = await getFileURL(optionFileItem.value.id);
-    var downloadLink = document.createElement('a');
 
-    // 设置链接的 href 属性为文件 URL
-    downloadLink.href = url;
-
-    // 设置下载的文件名，如果服务器没有提供文件名，则需要手动设置
-    downloadLink.download = optionFileItem.value.fileName;
-
-    // 将链接添加到 DOM 中
-    document.body.appendChild(downloadLink);
-
-    // 模拟点击链接以触发下载
-    downloadLink.click();
-
-    // 删除添加到 DOM 的链接元素
-    document.body.removeChild(downloadLink);
-    console.log("xiazai")
-}
 const getFileName = function (value: FileItem) {
   if (value.fileName.length > 30) {
     return value.fileName.slice(0, 30)+"...";
@@ -152,7 +134,6 @@ const handleClickOutside = async function (e: MouseEvent) {
       canRename.value = false;
       await unlockFile(renameFileItem.value, toast)
       console.log("解锁")
-      await renameFileOrDirectory(renameFileItem.value, toast);
   }
 }
 
