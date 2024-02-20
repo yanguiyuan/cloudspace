@@ -70,9 +70,6 @@ service CloudFileService{
     binary fetchFileData(1:string id)
     void modifyFileContent(1:string id,2:string content)
     CloudFileItem createTextFile(1:string name,2:string parentID,3:string content,4:i64 namespaceID)
-<<<<<<< HEAD
     i32 getAuthority(1:i64 userID,2:string fileID)
     i32 queryUserNamespaceAuthority(1:i64 userID,2:i64 namespaceID)
-=======
->>>>>>> 641946dc (test)
 }
