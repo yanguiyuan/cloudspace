@@ -1,0 +1,37 @@
+cloudfile:
+  addr: "localhost:8080"
+  gorm-gen:
+    model: "./model"
+    dal: "./internal/cloudfile/dal"
+  mysql:
+    dsn: "root:yanguiyuan@tcp(localhost:3306)/cloud_file?charset=utf8&parseTime=True&loc=Local&timeout=100s"
+  oss:
+    endpoint: "https://oss-cn-hangzhou.aliyuncs.com"
+    accessKeyID: "LTAI5tCZenyLGTYY2NDGP2Ge"
+    accessKeySecret: "eN32dnGnJ6XqeehDgkeXjwW4384cXA"
+    bucketName: "bucket-cloud-file"
+user:
+  addr: "localhost:8081"
+  gorm-gen:
+    model: "./model"
+    dal: "./internal/user/dal"
+  mysql:
+    dsn: "root:yanguiyuan@tcp(localhost:3306)/auth?charset=utf8&parseTime=True&loc=Local&timeout=100s"
+api:
+  port: 8888
+  cors:
+    allowOrigins:
+      - "*"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+    allowHeaders:
+      - Origin
+      - Content-Type
+      - Authorization
+    exposeHeaders:
+      - "Content-Length"
+    maxAge: 3600
