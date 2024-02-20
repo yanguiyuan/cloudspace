@@ -11,8 +11,8 @@
 */
 
   *,
-::before,
-::after {
+  ::before,
+  ::after {
     box-sizing: border-box;
     /* 1 */
     border-width: 0;
@@ -24,7 +24,7 @@
   }
 
   ::before,
-::after {
+  ::after {
     --tw-content: '';
   }
 
@@ -45,7 +45,7 @@
     -moz-tab-size: 4;
     /* 3 */
     -o-tab-size: 4;
-       tab-size: 4;
+    tab-size: 4;
     /* 3 */
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     /* 4 */
@@ -88,7 +88,7 @@ Add the correct text decoration in Chrome, Edge, and Safari.
 
   abbr:where([title]) {
     -webkit-text-decoration: underline dotted;
-            text-decoration: underline dotted;
+    text-decoration: underline dotted;
   }
 
   /*
@@ -96,11 +96,11 @@ Remove the default font size and weight for headings.
 */
 
   h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-size: inherit;
     font-weight: inherit;
   }
@@ -119,7 +119,7 @@ Add the correct font weight in Edge and Safari.
 */
 
   b,
-strong {
+  strong {
     font-weight: bolder;
   }
 
@@ -131,9 +131,9 @@ strong {
 */
 
   code,
-kbd,
-samp,
-pre {
+  kbd,
+  samp,
+  pre {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     /* 1 */
     font-feature-settings: normal;
@@ -157,7 +157,7 @@ Prevent `sub` and `sup` elements from affecting the line height in all browsers.
 */
 
   sub,
-sup {
+  sup {
     font-size: 75%;
     line-height: 0;
     position: relative;
@@ -194,10 +194,10 @@ sup {
 */
 
   button,
-input,
-optgroup,
-select,
-textarea {
+  input,
+  optgroup,
+  select,
+  textarea {
     font-family: inherit;
     /* 1 */
     font-feature-settings: inherit;
@@ -223,7 +223,7 @@ Remove the inheritance of text transform in Edge and Firefox.
 */
 
   button,
-select {
+  select {
     text-transform: none;
   }
 
@@ -233,9 +233,9 @@ select {
 */
 
   button,
-[type='button'],
-[type='reset'],
-[type='submit'] {
+  [type='button'],
+  [type='reset'],
+  [type='submit'] {
     -webkit-appearance: button;
     /* 1 */
     background-color: transparent;
@@ -273,7 +273,7 @@ Correct the cursor style of increment and decrement buttons in Safari.
 */
 
   ::-webkit-inner-spin-button,
-::-webkit-outer-spin-button {
+  ::-webkit-outer-spin-button {
     height: auto;
   }
 
@@ -322,18 +322,18 @@ Removes the default spacing and border for appropriate elements.
 */
 
   blockquote,
-dl,
-dd,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-figure,
-p,
-pre {
+  dl,
+  dd,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  hr,
+  figure,
+  p,
+  pre {
     margin: 0;
   }
 
@@ -347,8 +347,8 @@ pre {
   }
 
   ol,
-ul,
-menu {
+  ul,
+  menu {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -383,7 +383,7 @@ Prevent resizing textareas horizontally by default.
   }
 
   input::placeholder,
-textarea::placeholder {
+  textarea::placeholder {
     opacity: 1;
     /* 1 */
     color: #9ca3af;
@@ -395,7 +395,7 @@ Set the default cursor for buttons.
 */
 
   button,
-[role="button"] {
+  [role="button"] {
     cursor: pointer;
   }
 
@@ -414,13 +414,13 @@ Make sure disabled buttons don't get the pointer cursor.
 */
 
   img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
     display: block;
     /* 1 */
     vertical-align: middle;
@@ -432,7 +432,7 @@ Constrain images and videos to the parent width and preserve their intrinsic asp
 */
 
   img,
-video {
+  video {
     max-width: 100%;
     height: auto;
   }
@@ -1672,8 +1672,8 @@ video {
 
   .select-none{
     -webkit-user-select: none;
-       -moz-user-select: none;
-            user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
 
   .resize{
@@ -1686,8 +1686,8 @@ video {
 
   .appearance-none{
     -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 
   .flex-row{
@@ -2992,7 +2992,7 @@ video {
 
   .backdrop-filter{
     -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
-            backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
   }
 
   .\!transition-none{
