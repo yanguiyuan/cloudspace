@@ -27,7 +27,7 @@ func main() {
 	// 填写存储空间名称。
 	bucket, err := client.Bucket(c.GetString("cloudfile.oss.bucketName"))
 	service := handler.CloudFileServiceImpl{OssBucket: bucket}
-	addr, _ := net.ResolveTCPAddr("tcp", c.GetString("cloudfile.addr"))
+	addr, _ := net.ResolveTCPAddr("tcp", ":"+c.GetString("cloudfile.port"))
 	svr := rpc.NewServer(&service, server.WithServiceAddr(addr), server.WithReadWriteTimeout(1000*1000*60*50))
 	err = svr.Run()
 

@@ -19,7 +19,7 @@ func main() {
 		log.Println(err.Error())
 	}
 	dal.SetDefault(db)
-	addr, _ := net.ResolveTCPAddr("tcp", c.GetString("user.addr"))
+	addr, _ := net.ResolveTCPAddr("tcp", ":"+c.GetString("user.port"))
 	svr := rpc.NewServer(new(user.UserServiceImpl), server.WithServiceAddr(addr), server.WithReadWriteTimeout(1000*1000*10))
 
 	err = svr.Run()
