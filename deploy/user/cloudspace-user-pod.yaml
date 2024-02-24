@@ -8,7 +8,7 @@ spec:
   containers:
     - name: cloudspace-server-user
       imagePullPolicy: Never
-      image: cloudspace-server-user
+      image: cloudspace-server-user:1
       ports:
         - containerPort: 8081
 

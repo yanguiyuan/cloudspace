@@ -8,7 +8,7 @@ spec:
   containers:
     - name: cloudspace-server-api
       imagePullPolicy: Never
-      image: cloudspace-server-api
+      image: cloudspace-server-api:1
       ports:
         - containerPort: 8888
 ---
@@ -24,4 +24,4 @@ spec:
     - protocol: TCP
       port: 8888
       targetPort: 8888
-      nodePort: 38888
+      nodePort: 31888
