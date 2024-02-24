@@ -8,4 +8,6 @@ COPY pkg pkg
 COPY go.mod go.mod
 RUN go env -w GOPROXY=https://goproxy.cn
 RUN go mod tidy
-CMD ["go","run","/go/src/cmd/user"]
+RUN go build ./cmd/user
+EXPOSE 8081
+ENTRYPOINT ["./user"]

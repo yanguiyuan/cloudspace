@@ -8,4 +8,6 @@ COPY pkg pkg
 COPY go.mod go.mod
 RUN go env -w GOPROXY=https://goproxy.cn
 RUN go mod tidy
-CMD ["go","run","/go/src/cmd/cloudfile"]
+RUN go build ./cmd/cloudfile
+EXPOSE 8080
+ENTRYPOINT ["./cloudfile"]
