@@ -12,7 +12,7 @@ import {onMounted, ref} from "vue";
 import {MenuItem} from "primevue/menuitem";
 const iconService=AssetsIconSvgService.getInstance();
 const fileStore=useFileStore();
-const items=ref<MenuItem>([{
+const items=ref<MenuItem[]>([{
   label:"命名空间",
   icon:"pi pi-box",
   items:[

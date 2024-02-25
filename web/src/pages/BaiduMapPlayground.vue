@@ -1,13 +1,13 @@
 <template>
-    <AppTempleate>
+    <AppTemplate>
         <template #content>
             <div id="map"></div>
         </template>
-    </AppTempleate>
+    </AppTemplate>
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import AppTempleate from '../components/AppTempleate.vue';
+import AppTemplate from '../components/AppTemplate.vue';
 
 onMounted(() => {
     var map = new BMapGL.Map("map");

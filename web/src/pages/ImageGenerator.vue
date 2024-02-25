@@ -1,5 +1,5 @@
 <template>
-    <AppTempleate>
+    <AppTemplate>
         <template #content>
             <div class="chat-container">
                 <div class="img-container">
@@ -16,13 +16,12 @@
                 </svg>
             </div>
         </template>
-    </AppTempleate>
+    </AppTemplate>
 </template>
 <script lang="ts" setup>
-import AppTempleate from '../components/AppTempleate.vue';
+import AppTemplate from '../components/AppTemplate.vue';
 import {cf as axios} from '../axios/axios';
 import { ref } from 'vue';
-import { ElMessage } from 'element-plus';
 const myQuestion = ref<string>("")
 const imgUrl=ref<string>("https://oaidalleapiprodscus.blob.core.windows.net/private/org-wrgyM1Dsxobdhme1NXVgAaeS/user-0QR7SXLgImhxicLK2q2fUGmW/img-HgfKglK1H05uvrHkJOV3zrU5.png?st=2023-03-15T11%3A48%3A47Z&se=2023-03-15T13%3A48%3A47Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-03-14T21%3A12%3A40Z&ske=2023-03-15T21%3A12%3A40Z&sks=b&skv=2021-08-06&sig=/fyZwsxXXX5lkUzi4xYzAVhawhyvFL3J8NRdxi9Nn3g%3D")
 // 替换为你的 API 密钥

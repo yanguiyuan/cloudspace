@@ -1,5 +1,5 @@
 <template>
-    <AppTempleate>
+    <AppTemplate>
         <template #content>
             <el-table row-click style="border-radius: 5px;width: 100%;" :data="tableData" >
                 <el-table-column prop="id" label="序号"/>
@@ -100,10 +100,10 @@
                 <div class="tooltip">创建</div>
             </div>
         </template>
-    </AppTempleate>
+    </AppTemplate>
 </template>
 <script lang="ts" setup>
-import AppTempleate from '../components/AppTempleate.vue';
+import AppTemplate from '../components/AppTemplate.vue';
 import {js} from'../axios/axios.js';
 import { reactive,ref } from 'vue';
 import YMaskCard from '../components/YMaskCard.vue';
