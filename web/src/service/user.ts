@@ -3,6 +3,7 @@ import {useUserStore} from "../store/user";
 import {ToastServiceMethods} from "primevue/toastservice";
 import {useFileStore} from "../store/file";
 import router from "../router/router";
+
 export interface User {
     id:number;
     username:string;
@@ -95,8 +96,8 @@ export const modifyPassword=async (toast:ToastServiceMethods)=>{
         return
     }
     await axios.put("/user/"+userStore.user.id+"/password",{
-        oldPassword:userStore.input.password.oldPassword,
-        newPassword:userStore.input.password.newPassword,
+        oldPassword:await hashPassword(userStore.input.password.oldPassword),
+        newPassword:await hashPassword(userStore.input.password.newPassword),
     }).then((res)=>{
         if(res.data.code===0){
             userStore.input.password.oldPassword="";
@@ -108,5 +109,14 @@ export const modifyPassword=async (toast:ToastServiceMethods)=>{
         }
     }).catch(err=>{
         console.log(err);
+    })
+}
+export async function hashPassword(password: string): Promise<string> {
+    // 生成 salt (盐)
+    return await crypto.subtle.digest("SHA-512", new TextEncoder().encode(password)).then(function (digest) {
+        const uint8Array = new Uint8Array(digest);
+        return Array.from(uint8Array)
+            .map(byte => byte.toString(16).padStart(2, '0'))
+            .join('').slice(0, 60)
     })
 }

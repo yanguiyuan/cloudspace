@@ -1,5 +1,5 @@
 import axios from "../axios/axios";
-import {User} from "./user";
+import {hashPassword, User} from "./user";
 import {useAdminStore} from "../store/admin";
 import router from "../router/router";
 import {ToastServiceMethods} from "primevue/toastservice";
@@ -36,7 +36,7 @@ export const resetPassword=async function (toast:ToastServiceMethods):Promise<vo
         return;
     }
     const res=await axios.put("/admin/user/"+adminStore.selectedUser.id+"/password",{
-        newPassword:adminStore.dialog.resetPassword.newPassword
+        newPassword:await hashPassword(adminStore.dialog.resetPassword.newPassword)
     }).then((res)=>{
         console.log("users:",res.data)
         toast.add({severity:'success',summary:'重置密码成功',detail:'修改密码成功',life:3000});

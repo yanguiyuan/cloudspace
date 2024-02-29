@@ -16,6 +16,7 @@ type Client interface {
 	GetUser(ctx context.Context, id int64, callOptions ...callopt.Option) (r *rpc.User, err error)
 	UpdateUser(ctx context.Context, user *rpc.User, callOptions ...callopt.Option) (err error)
 	GetUsers(ctx context.Context, offset int32, limit int32, callOptions ...callopt.Option) (r []*rpc.User, err error)
+	QueryUsersInBatches(ctx context.Context, ids []int64, callOptions ...callopt.Option) (r []*rpc.User, err error)
 	ResetPassword(ctx context.Context, id int64, password string, callOptions ...callopt.Option) (err error)
 }
 
@@ -71,6 +72,11 @@ func (p *kUserServiceClient) UpdateUser(ctx context.Context, user *rpc.User, cal
 func (p *kUserServiceClient) GetUsers(ctx context.Context, offset int32, limit int32, callOptions ...callopt.Option) (r []*rpc.User, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetUsers(ctx, offset, limit)
+}
+
+func (p *kUserServiceClient) QueryUsersInBatches(ctx context.Context, ids []int64, callOptions ...callopt.Option) (r []*rpc.User, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.QueryUsersInBatches(ctx, ids)
 }
 
 func (p *kUserServiceClient) ResetPassword(ctx context.Context, id int64, password string, callOptions ...callopt.Option) (err error) {

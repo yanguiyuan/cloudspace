@@ -1,6 +1,6 @@
 import {ToastServiceMethods} from "primevue/toastservice";
 import axios from "../axios/axios";
-import {FileItem, LinkParams, Namespace, useFileStore} from "../store/file";
+import {EmptyNamespaceUser, FileItem, LinkParams, Namespace, useFileStore} from "../store/file";
 import {ConfirmationOptions} from "primevue/confirmationoptions";
 import {useUserStore} from "../store/user";
 import router from "../router/router";
@@ -221,10 +221,19 @@ export function getCurrentBreadcrumbsPath():string{
     return path;
 }
 export async function createFolder(folderName:string,toast: ToastServiceMethods) {
-    const res=await axios.post("/user/directory",{
-        parentID:fileStore.getCurrentParentID(),
+    const res=await axios.post("/user/directory/"+fileStore.getCurrentParentID(),{
         directoryName:folderName,
     }).then((res)=>{
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: "创建文件夹失败:"+res.data.message,
+                life: 3000
+            });
+            console.log("error:",res.data.message)
+            return;
+        }
         toast.add({
             severity: 'success',
             summary: '成功',
@@ -570,4 +579,71 @@ export async function downloadFile(file:FileItem,toast: ToastServiceMethods){
     }).catch(e=>{
         console.log("error:",e);
     })
+}
+export async function cancelAuth(toast: ToastServiceMethods){
+    if(!fileStore.selectedUser){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "请选择要取消授权的用户",
+            life: 3000
+        });
+        return
+    }
+    const namespaceID=fileStore.selectedNamespace.id;
+    if(!namespaceID){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "请选择对应的命名空间",
+            life: 3000
+        });
+        return
+    }
+    await axios.delete("/user/namespace/"+namespaceID+"/authority/"+fileStore.selectedUser.id).then((res)=>{
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: res.data.message,
+                life: 3000
+            });
+            return
+        }
+        toast.add({
+            severity: 'success',
+            summary: '成功',
+            detail: "取消成功",
+            life: 3000
+        });
+        fileStore.selectedUser=EmptyNamespaceUser;
+
+    })
+    console.log("cancelAuth:",fileStore.selectedUser.id,namespaceID)
+}
+export async function fetchNamespaceUsers(toast: ToastServiceMethods){
+    const id =fileStore.selectedNamespace.id
+    if(!id){
+        toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: "请选择对应的命名空间",
+            life: 3000
+        });
+        return
+    }
+    await axios.get("/user/namespace/"+id+"/users").then((res)=>{
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: res.data.message,
+                life: 3000
+            });
+            return
+        }
+        fileStore.namespaceUsers=res.data.data;
+    }).catch((e)=>{
+        console.log("error:",e);
+    });
 }

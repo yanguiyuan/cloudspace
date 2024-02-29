@@ -3,11 +3,12 @@ import FloatLabel from 'primevue/floatlabel';
 
 import Dropdown from 'primevue/dropdown';
 import {onMounted, ref} from "vue";
-import {DefaultNamespace, Namespace, useFileStore} from "../../store/file";
+import {DefaultNamespace, Namespace, NamespaceUser, useFileStore} from "../../store/file";
 import {
-    createNamespace,
-    generateNamespaceJoinLink,
-    getUserNamespaces,
+  cancelAuth,
+  createNamespace, fetchNamespaceUsers,
+  generateNamespaceJoinLink,
+  getUserNamespaces,
 } from "../../service/filemanage";
 import Menu from 'primevue/menu';
 import Card from "primevue/card";
@@ -23,6 +24,7 @@ const visible=ref<string>("create")
 const title=ref<string>("新建命名空间");
 const fileStore = useFileStore()
 const namespaceName=ref<string>("");
+
 const copyLink=async ()=>{
     if(!selectedAuth.value){
         toast.add({ severity: 'error', summary: '错误', detail: '请选择授权类型', life: 3000});
@@ -35,11 +37,12 @@ const copyLink=async ()=>{
     const res=await generateNamespaceJoinLink(selectedNamespace.value,selectedAuth.value?.code);
     console.log(res);
     await navigator.clipboard.writeText(res);
-    toast.add({ severity: 'info', summary: '链接复制成功', detail: res, life: 6000});
+    toast.add({ severity: 'info', summary: '链接复制成功', detail: res, life: 12000});
 }
 const items=ref([
     { label: '新建', icon: 'pi pi-plus', command:()=>{visible.value="create";title.value="新建命名空间"} },
-    { label: '授权', icon: 'pi pi-paperclip',command:()=>{visible.value="auth";title.value="命名空间授权"} }
+    { label: '授权', icon: 'pi pi-paperclip',command:()=>{visible.value="auth";title.value="命名空间授权"} },
+  { label: '取消授权', icon: 'pi pi-paperclip',command:()=>{visible.value="cancel-auth";title.value="命名空间授权取消"} }
 ])
 
 </script>
@@ -81,6 +84,17 @@ const items=ref([
                             <Button @click="copyLink" size="small" class="mt-2">复制链接</Button>
                             <p class="text-sm text-neutral-400">请复制链接后发送给需要邀请其加入该命名空间的用户</p>
                         </div>
+                      <div v-if="visible=='cancel-auth'" >
+                        <div>
+                          <div>命名空间:</div>
+                          <Dropdown v-model="fileStore.selectedNamespace" :options="fileStore.namespaces.filter(it=>it.authority==1)" optionLabel="name" placeholder="选择一个命名空间"  />
+                        </div>
+                        <div>
+                          <div>用户:</div>
+                          <Dropdown @before-show="fetchNamespaceUsers(toast)" v-model="fileStore.selectedUser" :options="fileStore.namespaceUsers.filter(it=>it.authority!=1)" optionLabel="username" placeholder="选择对应的用户"  />
+                        </div>
+                        <Button @click="cancelAuth(toast)" size="small" class="mt-2">取消授权</Button>
+                      </div>
                     </template>
                 </Card>
 

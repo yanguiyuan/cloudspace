@@ -50,6 +50,11 @@ struct RemoveRequest{
     2:i64 uid
     3:string filename
 }
+struct NamespaceUser{
+    1:i64 id
+    2:string username
+    3:i32 authority
+}
 service CloudFileService{
     CloudFileItem uploadFile(1:UploadFileRequest req)
     CloudFileItem add(1:AddRequest req)
@@ -72,4 +77,6 @@ service CloudFileService{
     CloudFileItem createTextFile(1:string name,2:string parentID,3:string content,4:i64 namespaceID)
     i32 getAuthority(1:i64 userID,2:string fileID)
     i32 queryUserNamespaceAuthority(1:i64 userID,2:i64 namespaceID)
+    list<NamespaceUser> queryNamespaceUsers(1:i64 namespaceID)
+    void removeNamespaceAuthority(1:i64 userID,2:i64 namespaceID)
 }

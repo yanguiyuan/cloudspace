@@ -590,3 +590,72 @@ func Download(ctx context.Context, c *app.RequestContext) {
 	c.Header("Content-Disposition", "attachment; filename="+it.FileName)
 	c.Data(consts.StatusOK, "application/octet-stream", data)
 }
+
+func QueryNamespaceUsers(ctx context.Context, c *app.RequestContext) {
+	namespaceIDStr := c.Param("id")
+	client, err := cloudfile.NewFileServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		return
+	}
+	namespaceID, err := strconv.ParseInt(namespaceIDStr, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	resp, err := client.QueryNamespaceUsers(ctx, namespaceID)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+		"data":    resp,
+	})
+}
+
+func RemoveNamespaceAuthority(ctx context.Context, c *app.RequestContext) {
+	namespaceIDStr := c.Param("id")
+	userIDStr := c.Param("user_id")
+	namespaceID, err := strconv.ParseInt(namespaceIDStr, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	client, err := cloudfile.NewFileServiceClient()
+	if err != nil {
+		c.String(consts.StatusInternalServerError, err.Error())
+		return
+	}
+	err = client.RemoveNamespaceAuthority(ctx, userID, namespaceID)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(consts.StatusOK, utils.H{
+			"code":    errno.ServiceErrCode,
+			"message": err.Error(),
+		})
+		return
+	}
+	c.JSON(consts.StatusOK, utils.H{
+		"code":    errno.SuccessCode,
+		"message": errno.SuccessMsg,
+	})
+}

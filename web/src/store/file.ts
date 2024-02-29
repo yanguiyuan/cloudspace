@@ -44,6 +44,9 @@ export const useFileStore=defineStore({
         rename:{
            oldName:""
         },
+        namespaceUsers:[],
+        selectedUser:EmptyNamespaceUser,
+        selectedNamespace:DefaultNamespace,
         clickedFileItem:EmptyFileItem,
         linkParams:DefaultLinkParams,
         namespaces:[],
@@ -115,7 +118,10 @@ export interface FileManagementState{
     }
     rename:{
         oldName:string;
-    }
+    },
+    selectedUser:NamespaceUser;
+    selectedNamespace:Namespace;
+    namespaceUsers:NamespaceUser[];
     clickedFileItem:FileItem;
     namespaces:Namespace[];
     breadcrumbs:FileItem[];
@@ -123,7 +129,16 @@ export interface FileManagementState{
     linkParams:LinkParams;
     urlMap:Map<string,string>
 }
-
+export interface NamespaceUser{
+    id:number;
+    username:string;
+    authority:number;
+}
+export const EmptyNamespaceUser:NamespaceUser={
+    id:0,
+    username:"",
+    authority:0,
+}
 export interface FileItem{
     id:string;
     fileName:string;

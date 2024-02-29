@@ -98,3 +98,10 @@ func (s *UserServiceImpl) ResetPassword(ctx context.Context, id int64, password 
 	_, err = dal.User.WithContext(ctx).Where(dal.User.ID.Eq(id)).Updates(map[string]interface{}{"password": password})
 	return err
 }
+func (s *UserServiceImpl) QueryUsersInBatches(ctx context.Context, ids []int64) (resp []*rpc.User, err error) {
+	err = dal.User.WithContext(ctx).Where(dal.User.ID.In(ids...)).Scan(&resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}

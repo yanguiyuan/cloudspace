@@ -6,6 +6,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/hertz-contrib/cors"
+	"github.com/hertz-contrib/pprof"
 	"github.com/yanguiyuan/cloudspace/internal/api/mw"
 	"github.com/yanguiyuan/cloudspace/internal/api/router"
 	"github.com/yanguiyuan/yuan/pkg/config"
@@ -27,6 +28,7 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+	pprof.Register(h)
 	hlog.Debug()
 
 	router.Register(h)

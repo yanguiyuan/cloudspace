@@ -46,6 +46,8 @@ import CurrentTime from '../components/CurrentTime.vue';
 import { useToast } from "primevue/usetoast";
 import {useUserStore} from "../store/user";
 import {getUrlParams} from "../service/filemanage";
+import {Hash} from "node:crypto";
+import {hashPassword} from "../service/user";
 const toast = useToast();
 const userStore=useUserStore();
 const btnmessage = ref<string>("登录")
@@ -57,54 +59,58 @@ const isLoginActive = ref<boolean>(true)
 const isRegisterActive = ref<boolean>(false)
 const router = useRouter()
 console.log("linkNamespace",userStore.linkNamespace)
-let loginOrRegister = function () {
-    if (btnmessage.value == "登录") {
-        axios.post("/login", {
-            "username": user.value,
-            "password": pwd.value
-        }).then((res) => {
-            localStorage.setItem("token", JSON.stringify(res.data.token))
-            localStorage.setItem("user", JSON.stringify(res.data.user))
-            const params=getUrlParams(window.location.href);
-            axios.defaults.headers.common["Authorization"]="Bearer "+res.data.token
+let loginOrRegister = async function () {
+  if (btnmessage.value == "登录") {
+    const p = await hashPassword(pwd.value)
+    console.log(p)
+    axios.post("/login", {
+      "username": user.value,
+      "password": p
+    }).then((res) => {
+      localStorage.setItem("token", JSON.stringify(res.data.token))
+      localStorage.setItem("user", JSON.stringify(res.data.user))
+      const params = getUrlParams(window.location.href);
+      axios.defaults.headers.common["Authorization"] = "Bearer " + res.data.token
 
-            if(userStore.linkNamespace){
-              userStore.user.id=0
-              router.push("/link")
-              return;
-            }
-            router.push("/");
-        }).catch((err) => {
-            console.log(err)
-            ElMessage.error(err.response.data.message)
-        })
-    } else {
-        if (pwd.value == comfirmPwd.value) {
-            axios.post("/register", {
-                "username": user.value,
-                "password": pwd.value
-            }).then((res) => {
-                if(res.data.code==0){
-                  ElMessage.success("注册成功")
-                  loginActive();
-                  return
-                }
-                if(res.data.code==1002){
-                  toast.add({ severity: 'error', summary: '错误', detail: "用户名已经存在", life: 3000 })
-                  return;
-                }
-                toast.add({ severity: 'error', summary: '错误', detail: res.data.msg, life: 3000 })
-
-            }).catch((err)=>{
-                console.log(err.response)
-                ElMessage.error(err.response.data.error)
-            })
-        }else{
-            ElMessage.error("密码不一致")
+      if (userStore.linkNamespace) {
+        userStore.user.id = 0
+        router.push("/link")
+        return;
+      }
+      router.push("/");
+    }).catch((err) => {
+      console.log(err)
+      ElMessage.error(err.response.data.message)
+    })
+  } else {
+    if (pwd.value == comfirmPwd.value) {
+      const p = await hashPassword(pwd.value)
+      console.log(p)
+      axios.post("/register", {
+        "username": user.value,
+        "password": p
+      }).then((res) => {
+        if (res.data.code == 0) {
+          ElMessage.success("注册成功")
+          loginActive();
+          return
         }
+        if (res.data.code == 1002) {
+          toast.add({severity: 'error', summary: '错误', detail: "用户名已经存在", life: 3000})
+          return;
+        }
+        toast.add({severity: 'error', summary: '错误', detail: res.data.msg, life: 3000})
 
+      }).catch((err) => {
+        console.log(err.response)
+        ElMessage.error(err.response.data.error)
+      })
+    } else {
+      ElMessage.error("密码不一致")
     }
-    console.log(user.value, pwd.value)
+
+  }
+  console.log(user.value, pwd.value)
 }
 
 const registerActive = function () {

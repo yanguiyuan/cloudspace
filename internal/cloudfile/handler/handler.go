@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/yanguiyuan/cloudspace/internal/api/handler/user"
 	"github.com/yanguiyuan/cloudspace/internal/cloudfile"
 	"github.com/yanguiyuan/cloudspace/internal/cloudfile/dal"
 	"github.com/yanguiyuan/cloudspace/internal/cloudfile/model"
@@ -184,14 +185,7 @@ func (s *CloudFileServiceImpl) CreateDirectory(ctx context.Context, req *rpc.Cre
 		if err != nil {
 			return err
 		}
-		if err != nil {
-			return err
-		}
-		client, err := cloudfile.NewFileServiceClient()
-		if err != nil {
-			return err
-		}
-		r, err := client.QueryFileItemByID(ctx, req.ParentID)
+		r, err := s.QueryFileItemByID(ctx, req.ParentID)
 		if err != nil {
 			return err
 		}
@@ -457,4 +451,30 @@ func (s *CloudFileServiceImpl) QueryUserNamespaceAuthority(ctx context.Context, 
 		Scan(&r)
 	//dal.Namespace.
 	return r, err
+}
+func (s *CloudFileServiceImpl) QueryNamespaceUsers(ctx context.Context, namespaceID int64) (r []*rpc.NamespaceUser, err error) {
+	var res []*model.UserNamespace
+	res, err = dal.UserNamespace.WithContext(ctx).Where(dal.UserNamespace.NamespaceID.Eq(namespaceID)).Find()
+	var ids []int64
+	authorityMap := make(map[int64]int32)
+	for _, v := range res {
+		ids = append(ids, v.UserID)
+		authorityMap[v.UserID] = v.Authority
+	}
+	userClient, err := user.NewUserServiceClient()
+	users, err := userClient.QueryUsersInBatches(ctx, ids)
+	for _, v := range users {
+		r = append(r, &rpc.NamespaceUser{
+			Id:        v.Id,
+			Username:  v.Username,
+			Authority: authorityMap[v.Id],
+		})
+	}
+	return
+}
+func (s *CloudFileServiceImpl) RemoveNamespaceAuthority(ctx context.Context, userID int64, namespaceID int64) (err error) {
+	_, err = dal.UserNamespace.WithContext(ctx).
+		Where(dal.UserNamespace.UserID.Eq(userID), dal.UserNamespace.NamespaceID.Eq(namespaceID)).
+		Delete()
+	return
 }

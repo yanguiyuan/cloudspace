@@ -28,7 +28,7 @@ func Register(r *server.Hertz) {
 		}
 		directory := user.Group("/directory")
 		{
-			directory.POST("", mw.CheckWritePermission, fileserver.CreateDirectory)
+			directory.POST("/:id", mw.CheckWritePermission, fileserver.CreateDirectory)
 			directory.DELETE("/:id", mw.CheckWritePermission, fileserver.RemoveDirectory)
 		}
 		namespace := user.Group("/namespace")
@@ -38,6 +38,8 @@ func Register(r *server.Hertz) {
 			namespace.POST("/:name", fileserver.CreateNamespace)
 			namespace.GET("/:id/link", mw.CheckAllPermission, fileserver.NamespaceLink)
 			namespace.POST("/:id/link", fileserver.LinkNamespace)
+			namespace.GET("/:id/users", mw.CheckAllPermission, fileserver.QueryNamespaceUsers)
+			namespace.DELETE("/:id/authority/:user_id", mw.CheckAllPermission, fileserver.RemoveNamespaceAuthority)
 		}
 	}
 

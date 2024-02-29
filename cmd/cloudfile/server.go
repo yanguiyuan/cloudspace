@@ -5,6 +5,7 @@ import (
 	"github.com/cloudwego/kitex/server"
 	"github.com/yanguiyuan/cloudspace/internal/cloudfile/dal"
 	"github.com/yanguiyuan/cloudspace/internal/cloudfile/handler"
+	dal2 "github.com/yanguiyuan/cloudspace/internal/user/dal"
 	rpc "github.com/yanguiyuan/cloudspace/pkg/rpc/cloudfileservice"
 	"github.com/yanguiyuan/yuan/pkg/config"
 	"gorm.io/driver/mysql"
@@ -20,6 +21,11 @@ func main() {
 		log.Println(err.Error())
 	}
 	dal.SetDefault(db)
+	db2, err := gorm.Open(mysql.Open(c.GetString("user.mysql.dsn")), &gorm.Config{})
+	if err != nil {
+		log.Println(err.Error())
+	}
+	dal2.SetDefault(db2)
 	client, err := oss.New(c.GetString("cloudfile.oss.endpoint"), c.GetString("cloudfile.oss.accessKeyID"), c.GetString("cloudfile.oss.accessKeySecret"))
 	if err != nil {
 		log.Println(err.Error())

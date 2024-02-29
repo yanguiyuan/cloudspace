@@ -6,7 +6,7 @@ const js=axios.create({
     baseURL:"http://127.0.0.1:8080/nt"
 })
 const api=axios.create({
-    baseURL:"http://123.60.88.220:31888/"
+    baseURL:"http://localhost:8888/"
 })
 // cf.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 // cf.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';

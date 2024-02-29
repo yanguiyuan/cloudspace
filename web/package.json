@@ -15,6 +15,7 @@
     "@types/three": "^0.149.0",
     "@types/vue-markdown": "^2.2.1",
     "baidu-map-vue3": "^0.4.9",
+    "crypto": "^1.0.1",
     "echarts": "^5.4.1",
     "element-plus": "^2.2.26",
     "pinia": "^2.0.28",

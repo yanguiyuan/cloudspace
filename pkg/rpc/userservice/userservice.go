@@ -19,12 +19,13 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "UserService"
 	handlerType := (*rpc.UserService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"UserLogin":     kitex.NewMethodInfo(userLoginHandler, newUserServiceUserLoginArgs, newUserServiceUserLoginResult, false),
-		"UserRegister":  kitex.NewMethodInfo(userRegisterHandler, newUserServiceUserRegisterArgs, newUserServiceUserRegisterResult, false),
-		"GetUser":       kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
-		"UpdateUser":    kitex.NewMethodInfo(updateUserHandler, newUserServiceUpdateUserArgs, newUserServiceUpdateUserResult, false),
-		"GetUsers":      kitex.NewMethodInfo(getUsersHandler, newUserServiceGetUsersArgs, newUserServiceGetUsersResult, false),
-		"ResetPassword": kitex.NewMethodInfo(resetPasswordHandler, newUserServiceResetPasswordArgs, newUserServiceResetPasswordResult, false),
+		"UserLogin":           kitex.NewMethodInfo(userLoginHandler, newUserServiceUserLoginArgs, newUserServiceUserLoginResult, false),
+		"UserRegister":        kitex.NewMethodInfo(userRegisterHandler, newUserServiceUserRegisterArgs, newUserServiceUserRegisterResult, false),
+		"GetUser":             kitex.NewMethodInfo(getUserHandler, newUserServiceGetUserArgs, newUserServiceGetUserResult, false),
+		"UpdateUser":          kitex.NewMethodInfo(updateUserHandler, newUserServiceUpdateUserArgs, newUserServiceUpdateUserResult, false),
+		"GetUsers":            kitex.NewMethodInfo(getUsersHandler, newUserServiceGetUsersArgs, newUserServiceGetUsersResult, false),
+		"QueryUsersInBatches": kitex.NewMethodInfo(queryUsersInBatchesHandler, newUserServiceQueryUsersInBatchesArgs, newUserServiceQueryUsersInBatchesResult, false),
+		"ResetPassword":       kitex.NewMethodInfo(resetPasswordHandler, newUserServiceResetPasswordArgs, newUserServiceResetPasswordResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "rpc",
@@ -130,6 +131,24 @@ func newUserServiceGetUsersResult() interface{} {
 	return rpc.NewUserServiceGetUsersResult()
 }
 
+func queryUsersInBatchesHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*rpc.UserServiceQueryUsersInBatchesArgs)
+	realResult := result.(*rpc.UserServiceQueryUsersInBatchesResult)
+	success, err := handler.(rpc.UserService).QueryUsersInBatches(ctx, realArg.Ids)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newUserServiceQueryUsersInBatchesArgs() interface{} {
+	return rpc.NewUserServiceQueryUsersInBatchesArgs()
+}
+
+func newUserServiceQueryUsersInBatchesResult() interface{} {
+	return rpc.NewUserServiceQueryUsersInBatchesResult()
+}
+
 func resetPasswordHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*rpc.UserServiceResetPasswordArgs)
 
@@ -206,6 +225,16 @@ func (p *kClient) GetUsers(ctx context.Context, offset int32, limit int32) (r []
 	_args.Limit = limit
 	var _result rpc.UserServiceGetUsersResult
 	if err = p.c.Call(ctx, "GetUsers", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) QueryUsersInBatches(ctx context.Context, ids []int64) (r []*rpc.User, err error) {
+	var _args rpc.UserServiceQueryUsersInBatchesArgs
+	_args.Ids = ids
+	var _result rpc.UserServiceQueryUsersInBatchesResult
+	if err = p.c.Call(ctx, "QueryUsersInBatches", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
