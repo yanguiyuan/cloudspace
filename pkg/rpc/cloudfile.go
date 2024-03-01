@@ -2390,7 +2390,7 @@ func (p *UrlTable) Field2DeepEqual(src string) bool {
 
 type CreateDirectoryRequest struct {
 	DirectoryName string `thrift:"directoryName,1" frugal:"1,default,string" json:"directoryName"`
-	ParentID      string `thrift:"parentID,2" frugal:"2,default,string" json:"parentID"`
+	ParentID      string `thrift:"parentID,2" frugal:"2,default,string" json:"parentID" path:"id"`
 }
 
 func NewCreateDirectoryRequest() *CreateDirectoryRequest {

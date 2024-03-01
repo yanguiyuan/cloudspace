@@ -17,6 +17,7 @@ const (
 	NoReadPermissionCode
 	NoAdminPermissionCode
 	NoAllPermissionCode
+	FolderNotEmptyCode
 )
 
 const (
@@ -31,6 +32,7 @@ const (
 	NoReadPermissionMsg        = "No read permission"
 	NoAdminPermissionMsg       = "No admin permission"
 	NoAllPermissionMsg         = "No all permission"
+	FolderNotEmptyMsg          = "Folder is not empty"
 )
 
 var (

@@ -17,8 +17,8 @@ import (
 	"strings"
 )
 
-func LinkPath(userID int64, id, fileType string) string {
-	return fmt.Sprintf("cloud-file/user/%d/%s.%s", userID, id, fileType)
+func LinkPath(namespaceID int64, id, fileType string) string {
+	return fmt.Sprintf("cloud-file/namespace/%d/%s.%s", namespaceID, id, fileType)
 }
 func ParseFileType(filename string) string {
 	ext := filepath.Ext(filename)
@@ -78,7 +78,7 @@ func (s *CloudFileServiceImpl) Add(ctx context.Context, req *rpc.AddRequest) (re
 		if err != nil {
 			return err
 		}
-		err = s.OssBucket.PutObject(LinkPath(req.Uid, id1, fileType), bytes.NewReader(req.FileData))
+		err = s.OssBucket.PutObject(fmt.Sprintf("cloud-file/namespace/%d/%s.%s", r.NamespaceID, id1, fileType), bytes.NewReader(req.FileData))
 		if err != nil {
 			fmt.Println("oss err:", err.Error())
 			return err
@@ -140,7 +140,7 @@ func (s *CloudFileServiceImpl) Query(ctx context.Context, pid string, uid int64)
 	for _, item := range items {
 		var url string
 		if item.Type != Directory && item.Type != Namespace {
-			url, err = s.OssBucket.SignURL(LinkPath(uid, item.ID, item.Type), oss.HTTPGet, 60*60*24)
+			url, err = s.OssBucket.SignURL(fmt.Sprintf("cloud-file/namespace/%d/%s.%s", item.NamespaceID, item.ID, item.Type), oss.HTTPGet, 60*60*24)
 			if err != nil {
 				return nil, err
 			}
@@ -168,7 +168,7 @@ func (s *CloudFileServiceImpl) Update(ctx context.Context, req *rpc.UpdateReques
 		if err != nil {
 			return err
 		}
-		err = s.OssBucket.PutObject(LinkPath(req.Uid, req.Id, item.Type), strings.NewReader(req.Content))
+		err = s.OssBucket.PutObject(LinkPath(item.NamespaceID, req.Id, item.Type), strings.NewReader(req.Content))
 		if err != nil {
 			return err
 		}
@@ -222,7 +222,7 @@ func (s *CloudFileServiceImpl) RemoveDirectory(ctx context.Context, id string) (
 
 	err = dal.Q.Transaction(func(tx *dal.Query) error {
 		first, err := tx.FileIndex.WithContext(ctx).Where(dal.FileIndex.ParentID.Eq(id)).First()
-		if err != nil {
+		if err != nil && err.Error() != "record not found" {
 			return err
 		}
 		if first != nil {
@@ -405,6 +405,7 @@ func (s *CloudFileServiceImpl) FetchFileData(ctx context.Context, id string) ([]
 	if err != nil {
 		return nil, err
 	}
+	defer object.Close()
 	all, err := io.ReadAll(object)
 	if err != nil {
 		return nil, err

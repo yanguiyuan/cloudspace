@@ -92,6 +92,15 @@ export function initLinkParams(){
 }
 export async function deleteDirectory(file:FileItem,toast: ToastServiceMethods):Promise<any> {
     const res=await axios.delete("/user/directory/"+file.id).then((res)=>{
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: res.data.message,
+                life: 3000
+            });
+            return
+        }
         fileStore.fileList.splice(fileStore.fileList.indexOf(file),1);
         toast.add({
             severity: 'success',
@@ -151,7 +160,7 @@ export  async function onClickFileItem (it:FileItem) {
             console.log("error:",e);
         })
         fileStore.fileList=res.data.items;
-    }else if(it.fileType=="png"){
+    }else if(it.fileType=="png"||it.fileType=="jpg"||it.fileType=="jpeg"||it.fileType=="gif"||it.fileType=="bmp"){
         const urlMap=fileStore.urlMap;
         let url=urlMap.get(it.id);
         if(url==undefined){
@@ -332,6 +341,15 @@ export async function  changeNamespace(id:string){
 export async function createNamespace(name:string,toast: ToastServiceMethods){
     await axios.post("/user/namespace/"+name).then((res)=>{
         console.log("namespace-create:",res);
+        if(res.data.code!=0){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail:res.data.message,
+                life: 3000
+            });
+            return;
+        }
         toast.add({
             severity: 'success',
             summary: '成功',
@@ -381,6 +399,7 @@ export async function linkNamespace(id:number,auth:number,token:string,toast: To
             detail: "加入命名空间成功",
             life: 3000
         });
+        await router.push("/")
     }else{
         console.log("resp:",resp);
         toast.add({
@@ -392,8 +411,8 @@ export async function linkNamespace(id:number,auth:number,token:string,toast: To
     }
 }
 export function canEdit(file:FileItem):boolean{
-    const stringArray: string[] = ["png","jpg","exe","directory","pdf"];
-    return !stringArray.includes(file.fileType);
+    const stringArray: string[] = ["go","cpp","c","vue","md","txt","ts","js","json","html","css","yml"];
+    return stringArray.includes(file.fileType);
 }
 export async function  getFileURL(id:string){
     let url=fileStore.urlMap.get(id);
@@ -560,8 +579,36 @@ export async function createTextFile(toast: ToastServiceMethods){
     });
 }
 export async function downloadFile(file:FileItem,toast: ToastServiceMethods){
-    const resp=await axios.get("/user/file/"+file.id+"/download").then((res)=>{
+    if(!canEdit(file)){
+        //通过url下载
+        const urlMap=fileStore.urlMap;
+        let url=urlMap.get(file.id);
+        if(url==undefined){
+            const resp=await axios.get("/user/file/"+file.id+"/url").then((res)=>{
+                return res.data;
+            }).catch((e)=>{
+                console.log("error:",e);
+            })
+           url=resp.data
+        }
+        if(!url){
+            toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: "文件不存在",
+                life: 3000
+            });
+            return
+        }
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = file.fileName;
+        a.click();
+        window.URL.revokeObjectURL(url); // 释放该 url
+       return
 
+    }
+    const resp=await axios.get("/user/file/"+file.id+"/download").then((res)=>{
         var blob = new Blob([res.data]);
         var url = window.URL.createObjectURL(blob); // 创建 url 并指向 blob
         var a = document.createElement('a');

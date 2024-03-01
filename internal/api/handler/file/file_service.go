@@ -279,7 +279,7 @@ func CreateNamespace(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	err = client.CreateUserNamespace(ctx, userid, namespaceID, 0)
+	err = client.CreateUserNamespace(ctx, userid, namespaceID, 1)
 	if err != nil {
 		c.JSON(consts.StatusOK, utils.H{
 			"code":    errno.ServiceErrCode,
@@ -413,6 +413,13 @@ func RemoveDirectory(ctx context.Context, c *app.RequestContext) {
 	}
 	err = client.RemoveDirectory(ctx, id)
 	if err != nil {
+		if err.Error() == "remote or network error[remote]: biz error: 目录不为空，无法进行删除" {
+			c.JSON(consts.StatusOK, utils.H{
+				"code":    errno.FolderNotEmptyCode,
+				"message": "目录不为空，无法进行删除",
+			})
+			return
+		}
 		c.JSON(consts.StatusOK, utils.H{
 			"code":    errno.ServiceErrCode,
 			"message": err.Error(),
